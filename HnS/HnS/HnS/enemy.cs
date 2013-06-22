@@ -13,13 +13,13 @@ using Microsoft.Xna.Framework.Media;
 
 namespace HnS
 {
-    class Hero : Entity
+    class Enemy : Entity
     {
         override Vector2 position;
 
-        public Hero() { }
+        public Enemy() { }
 
-        public Hero(Vector2 pos)
+        public Enemy(Vector2 pos)
         {
             position = pos;
         }

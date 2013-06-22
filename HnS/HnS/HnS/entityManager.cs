@@ -21,6 +21,22 @@ namespace HnS
         Dictionary<int, Entity> entityMap = new Dictionary<int, Entity>();
         Entity temp = new Entity(Vector2.Zero);
 
+        public void createHero(Vector2 pos)
+        {
+            Hero hero = new Hero(pos);
+            entityMap.Add(nextUID, hero);
+            UIDs.Add(nextUID);
+            nextUID++;
+        }
+
+        public void createEnemy(Vector2 pos)
+        {
+            Enemy enemy = new Enemy(pos);
+            entityMap.Add(nextUID, enemy);
+            UIDs.Add(nextUID);
+            nextUID++;
+        }
+
         public void updateAll(GameTime theGameTime)
         {
             for (int i = 0, len = entityMap.Count; i < len; i++)

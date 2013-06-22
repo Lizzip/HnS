@@ -16,9 +16,11 @@ namespace HnS
 {
     class Entity
     {
-        Vector2 position;
+        public virtual Vector2 position;
         Texture2D image;
         EntityManager entityManager;
+
+        public Entity() { }
 
         public Entity(Vector2 pos)
         {
@@ -26,7 +28,7 @@ namespace HnS
         }
 
         public virtual void update(GameTime theGameTime)
-        {
+        { 
 
         }
 
