@@ -107,7 +107,7 @@ namespace HnS
                     countdownTimer = 100.0f;
                 }
 
-                position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
+//                position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
             }
 
             if (currentKB.IsKeyDown(Keys.A))
@@ -133,7 +133,7 @@ namespace HnS
                     countdownTimer = 100.0f;
                 }
 
-                position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
+ //               position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
             }
 
             //Set previous mouse and keyboard states
