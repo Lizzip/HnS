@@ -166,5 +166,10 @@ namespace HnS
             base.draw(theSpriteBatch);
         }
 
+        public Vector2 getPos()
+        {
+            return position;
+        }
+
     }
 }

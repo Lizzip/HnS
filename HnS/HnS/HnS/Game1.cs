@@ -29,6 +29,7 @@ namespace HnS
         int windowHeight = 600, windowWidth = 800;
         int platformHeight = 502;
         List<string> heroAssetList = new List<string>();
+        List<string> enemyAssetList = new List<string>();
 
         public Game1()
         {
@@ -52,6 +53,12 @@ namespace HnS
             heroAssetList.Add("man2");
             heroAssetList.Add("man2Walk");
 
+            //Push images for enemy entity to list
+            enemyAssetList.Add("enemy1");
+            enemyAssetList.Add("enemy1Walk");
+            enemyAssetList.Add("enemy2");
+            enemyAssetList.Add("enemy2Walk");
+
             base.Initialize();
         }
 
@@ -61,6 +68,7 @@ namespace HnS
             platformImage = Content.Load<Texture2D>("platform");
             background = Content.Load<Texture2D>("bg");
             entityManager.createHero(new Vector2(100, platformHeight),heroAssetList);
+            entityManager.createEnemy(new Vector2(550, platformHeight), enemyAssetList);
         }
 
         protected override void UnloadContent(){}

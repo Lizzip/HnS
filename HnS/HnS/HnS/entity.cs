@@ -16,11 +16,13 @@ namespace HnS
 {
     class Entity
     {
+        Vector2 position;
+         
         //Update class to override
         public virtual void update(GameTime theGameTime){}
 
         //Draw class to override
         public virtual void draw(SpriteBatch theSpriteBatch){}
-        
+
     }
 }

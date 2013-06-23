@@ -42,9 +42,9 @@ namespace HnS
         }
 
         //Create enemy entity
-        public void createEnemy(Vector2 pos)
+        public void createEnemy(Vector2 pos, List<string> assets)
         {
-            Enemy enemy = new Enemy(pos);
+            Enemy enemy = new Enemy(this, pos, contentManager, assets);
             entityMap.Add(nextUID, enemy);
             UIDs.Add(nextUID);
             nextUID++;
@@ -67,6 +67,13 @@ namespace HnS
                 entityMap[i].draw(theSpriteBatch);
             }
         }
+
+        //Return hero entity
+        public Hero getHero()
+        {
+            return (Hero)entityMap.ElementAt(UIDs.ElementAt(0)).Value;
+        }
+
 
     }
 }
