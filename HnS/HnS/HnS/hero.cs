@@ -80,8 +80,8 @@ namespace HnS
             }
 
             //Switch directions
-            if (currentKB.IsKeyDown(Keys.A) && prevKB.IsKeyDown(Keys.A) == false) facing = 1;
-            if (currentKB.IsKeyDown(Keys.D) && prevKB.IsKeyDown(Keys.D) == false) facing = 0;
+            if (MoveLeft()) facing = 1;
+            if (MoveRight()) facing = 0;
 
             //Walking movement
             if (currentKB.IsKeyDown(Keys.D))
@@ -140,6 +140,20 @@ namespace HnS
             prevKB = currentKB;
             prevMouse = currentMouse;
             base.update(theGameTime);
+        }
+
+        public bool MoveLeft()
+        {
+            if (currentKB.IsKeyDown(Keys.A) && prevKB.IsKeyDown(Keys.A) == false)
+                return true;
+            else return false;
+        }
+
+        public bool MoveRight()
+        {
+            if (currentKB.IsKeyDown(Keys.D) && prevKB.IsKeyDown(Keys.D) == false)
+                return true;
+            else return false;
         }
 
         public override void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch theSpriteBatch)
