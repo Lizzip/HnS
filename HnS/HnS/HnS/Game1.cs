@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+
+// You are a tit
 namespace HnS
 {
     public class Game1 : Microsoft.Xna.Framework.Game
