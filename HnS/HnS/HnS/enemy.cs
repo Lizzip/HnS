@@ -15,8 +15,10 @@ namespace HnS
 {
     class Enemy : Entity
     {
-        override Vector2 position;
+        //General Vars
+        Vector2 position;
 
+        //Constructors
         public Enemy() { }
 
         public Enemy(Vector2 pos)

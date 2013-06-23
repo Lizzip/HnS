@@ -16,28 +16,11 @@ namespace HnS
 {
     class Entity
     {
-        public virtual Vector2 position;
-        Texture2D image;
-        EntityManager entityManager;
+        //Update class to override
+        public virtual void update(GameTime theGameTime){}
 
-        public Entity() { }
-
-        public Entity(Vector2 pos)
-        {
-            position = pos;
-        }
-
-        public virtual void update(GameTime theGameTime)
-        { 
-
-        }
-
-
-        public virtual void draw(SpriteBatch theSpriteBatch)
-        {
-
-        }
-
-
+        //Draw class to override
+        public virtual void draw(SpriteBatch theSpriteBatch){}
+        
     }
 }

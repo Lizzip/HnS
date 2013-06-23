@@ -11,130 +11,93 @@ using Microsoft.Xna.Framework.Media;
 
 namespace HnS
 {
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        //Loaders and Managers
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        EntityManager entityManager;
 
+        //Input states
         KeyboardState currentKB, prevKB;
         MouseState currentMouse, prevMouse;
-        int windowHeight, windowWidth;
-        int platformHeight = 502, manIndex = 0;
-        Texture2D platformImage;
-        Texture2D[] manImages = new Texture2D[2];
-        int facing = 1; //0 = Right, 1 = left
+
+        //Textures and Fonts
+        Texture2D platformImage, background;
+
+        //General vars
+        int windowHeight = 600, windowWidth = 800;
+        int platformHeight = 502;
+        List<string> heroAssetList = new List<string>();
 
         public Game1()
         {
-            windowHeight = 600;
-            windowWidth = 800;
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            //Set window dimensions and make cursor visible
             this.IsMouseVisible = true;
             graphics.PreferredBackBufferHeight = windowHeight;
             graphics.PreferredBackBufferWidth = windowWidth;
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            //Create entity manager
+            entityManager = new EntityManager(Content);
+
+            //Push images for hero entity to list
+            heroAssetList.Add("man1");
+            heroAssetList.Add("man1Walk");
+            heroAssetList.Add("man2");
+            heroAssetList.Add("man2Walk");
+
             base.Initialize();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             platformImage = Content.Load<Texture2D>("platform");
-            manImages[0] = Content.Load<Texture2D>("man1");
-            manImages[1] = Content.Load<Texture2D>("man2");
-
-            // TODO: use this.Content to load your game content here
+            background = Content.Load<Texture2D>("bg");
+            entityManager.createHero(new Vector2(100, platformHeight),heroAssetList);
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
-        /// </summary>
-        protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
-        }
+        protected override void UnloadContent(){}
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            //Get new mouse and keyboard states
             currentKB = Keyboard.GetState();
             currentMouse = Mouse.GetState();
+
+            //Quit game on Esc key press
             if (currentKB.IsKeyDown(Keys.Escape)) this.Exit();
 
-            if (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released)
-            {
-                if (manIndex == 0)
-                {
-                    manIndex = 1;
-                }
-                else
-                {
-                    manIndex = 0;
-                }
-            }
+            //EntityManager - Update all entities
+            entityManager.updateAll(gameTime);
 
-            if (currentKB.IsKeyDown(Keys.A) && prevKB.IsKeyDown(Keys.A) == false)
-            {
-                facing = 1;
-            }
-
-            if (currentKB.IsKeyDown(Keys.D) && prevKB.IsKeyDown(Keys.D) == false)
-            {
-                facing = 0;
-            }
-
+            //Set previous mouse and keyboard states
             prevKB = currentKB;
             prevMouse = currentMouse;
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            //Set background colour as gray
             GraphicsDevice.Clear(Color.Gray);
             spriteBatch.Begin();
 
+            //Draw Background
+            spriteBatch.Draw(background, Vector2.Zero, Color.White * 0.3f);
+
+            //Draw platform
             spriteBatch.Draw(platformImage, Vector2.Zero, Color.White);
 
-            if (facing == 0)
-            {
-                spriteBatch.Draw(manImages[manIndex], new Vector2(100,
-                    platformHeight - manImages[manIndex].Height), Color.White);
-            }
-            else
-            {
-                spriteBatch.Draw(manImages[manIndex], new Vector2(100, 
-                    platformHeight - manImages[manIndex].Height), null, 
-                    Color.White, 0, Vector2.Zero, 1.0f, SpriteEffects.FlipHorizontally, 0);
-            }
-
+            //EntityManager - Draw all entities
+            entityManager.drawAll(spriteBatch);
+            
             spriteBatch.End();
             base.Draw(gameTime);
         }
