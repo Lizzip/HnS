@@ -27,6 +27,7 @@ namespace HnS
         int activeImage = 2, facing = 1;
         Vector2 position;
         float speed = 0.05f, countdownTimer = 250.0f;
+        bool walking = true;
 
         //Constructors
         public Enemy() { }
@@ -58,29 +59,73 @@ namespace HnS
             //If there is a countdown timer going on, count it down
             if (countdownTimer > 0.0f) countdownTimer -= theGameTime.ElapsedGameTime.Milliseconds;
 
-            //Wander to the left of the screen
-            position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
-
-            //Walking animations
-            if (countdownTimer < 0.0f)
+            if (walking)
             {
-                switch (activeImage)
+                //Dont walk off the screen
+                if (position.X > 790 || position.X < 10)
                 {
-                    case 0:
-                        activeImage = 1;
-                        break;
-                    case 1:
-                        activeImage = 0;
-                        break;
-                    case 2:
-                        activeImage = 3;
-                        break;
-                    case 3:
-                        activeImage = 2;
-                        break;
+                    walking = false;
+                    countdownTimer = 0.0f;
                 }
+                else
+                {
+                    //Wander direction of facing
+                    if (facing == 1)
+                    {
+                        position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
+                    }
+                    else
+                    {
+                        position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
+                    }
+                }
+                
+                //Walking animations
+                if (countdownTimer < 0.0f)
+                {
+                    switch (activeImage)
+                    {
+                        case 0:
+                            activeImage = 1;
+                            break;
+                        case 1:
+                            activeImage = 0;
+                            break;
+                        case 2:
+                            activeImage = 3;
+                            break;
+                        case 3:
+                            activeImage = 2;
+                            break;
+                    }
 
-                countdownTimer = 250.0f;
+                    countdownTimer = 250.0f;
+                }
+            }
+            else
+            {
+                if (Vector2.Distance(position, entityManager.getHero().getPos()) > 150.0f)
+                {
+                    walking = true;
+
+                    if (entityManager.getHero().getPos().X > position.X)
+                    {
+                        facing = 0;
+                    }
+                    else
+                    {
+                        facing = 1;
+                    }
+
+                    if (activeImage == 1)
+                    {
+                        activeImage = 3;
+                    }
+                    else if (activeImage == 0)
+                    {
+                        activeImage = 2;
+                    }
+                }
             }
 
             //If close enough to hero, raise sword
@@ -94,6 +139,7 @@ namespace HnS
                 {
                     activeImage = 0;
                 }
+                walking = false;
             }
 
             base.update(theGameTime);
