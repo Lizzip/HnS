@@ -32,12 +32,16 @@ namespace HnS
         int activeImage = 0, health, facing = 0;
         Vector2 position, healthTextPos;
         float speed = 0.15f, countdownTimer = 100.0f;
+        bool isJumping;
+        float velocityY;
 
         //Constructors
         public Hero() { }
 
         public Hero(Vector2 pos, ContentManager content, List<string> assets)
         {
+            isJumping = false;
+            velocityY = 0;
             position = pos;
             health = 100;
             contentManager = content;
@@ -71,6 +75,11 @@ namespace HnS
             //Get new mouse and keyboard states
             currentKB = Keyboard.GetState();
             currentMouse = Mouse.GetState();
+
+            position.Y += velocityY;
+
+            //Make the character jump based on spacebar press
+            Jump(theGameTime);
 
             //Attack with left mouseclick
             if (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released)
@@ -140,6 +149,31 @@ namespace HnS
             prevKB = currentKB;
             prevMouse = currentMouse;
             base.update(theGameTime);
+        }
+
+        private void Jump(GameTime theGameTime)
+        {
+            //Check if the space is pressed and character is not already jumping. Then move the character
+            //in negative Y position (upwards) and set to fall back down based on the Y velocity.
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isJumping)
+            {
+                position.Y -= 10.0f;
+                velocityY = -5.0f;
+                isJumping = true;
+            }
+
+            //Make the character fall based on in increasing Y velocity
+            if (isJumping)
+            {
+                float i = 0.15f;
+                velocityY += i;
+            }
+            else velocityY = 0;
+
+            //Once the player Y position reaches the platform (need to pass in this really rather than "magic" number)
+            //the isJumping bool is set to false (can't fall below platform)
+            if (position.Y + images.ElementAt(activeImage).Height >= 495)
+                isJumping = false;
         }
 
         public bool MoveLeft()

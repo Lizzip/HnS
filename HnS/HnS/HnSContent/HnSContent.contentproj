@@ -119,14 +119,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="background\background1.png">
+    <Compile Include="background1.png">
       <Name>background1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="background\background2.png">
+    <Compile Include="background2.png">
       <Name>background2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
