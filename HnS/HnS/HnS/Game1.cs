@@ -67,7 +67,7 @@ namespace HnS
             //Background
             moveLeft = false;
             moveRight = false;
-            background = new Background("background1", "background2", 2.0f);
+            background = new Background("background//sky", "background//mountains", "background//hills", "background//grass", 2.0f);
 
             base.Initialize();
         }
