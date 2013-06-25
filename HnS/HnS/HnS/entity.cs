@@ -16,13 +16,20 @@ namespace HnS
 {
     class Entity
     {
-        Vector2 position;
-         
         //Update class to override
         public virtual void update(GameTime theGameTime){}
 
         //Draw class to override
         public virtual void draw(SpriteBatch theSpriteBatch){}
+
+        //Recieve damage / be hit
+        public virtual void beHit(float damage, Vector2 pointOfImpact) { }
+
+        //get position of entity
+        public virtual Vector2 getPos()
+        {
+            return Vector2.Zero;
+        }
 
     }
 }

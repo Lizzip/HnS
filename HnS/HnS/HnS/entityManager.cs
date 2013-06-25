@@ -112,5 +112,33 @@ namespace HnS
             return platformHeight;
         }
 
+
+        ///////////////////////////////////////////////////
+        // COMBAT /////////////////////////////////////////
+        ///////////////////////////////////////////////////
+
+        //hit an entity in given position with given damage (via UID)
+        public void damageEntity(int UID, float damage, Vector2 pos)
+        {
+            entityMap.ElementAt(UID).Value.beHit(damage, pos);
+        }
+
+        //hit an entity in given position with given damage (via entity reference)
+        public void damageEntity(Entity entity, float damage, Vector2 pos)
+        {
+            entity.beHit(damage, pos);
+        }
+
+        //broadcast to all enemies that hero has attacked. Each entity will recieve damage if it is within range
+        public void broadcastAttack(float damage, Vector2 origin)
+        {
+            for (int i = 0, len = entityMap.Count; i < len; i++)
+            {
+                if (Vector2.Distance(origin, entityMap.ElementAt(i).Value.getPos()) < 25.0f)
+                {
+                    entityMap.ElementAt(i).Value.beHit(damage, origin);
+                }
+            }
+        }
     }
 }

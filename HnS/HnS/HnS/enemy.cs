@@ -21,12 +21,17 @@ namespace HnS
 
         //Textures and Fonts
         List<Texture2D> images = new List<Texture2D>();
+        Texture2D bloodSplat;
+
+        //Timers
+        List<float> countDownTimers = new List<float>();
+        int walkingTimer = 0, bloodTimer = 1;
 
         //General Vars
         //facing 0 = right, 1 = left
         int activeImage = 2, facing = 1;
-        Vector2 position;
-        float speed = 0.05f, countdownTimer = 250.0f, scale = 0.8f;
+        Vector2 position, bloodPos;
+        float speed, scale, health, armourLevel;
         bool walking = true;
 
 
@@ -41,13 +46,12 @@ namespace HnS
             entityManager = EM;
             position = pos;
             contentManager = content;
+            health = 100.0f;
+            armourLevel = 1.0f;
+            speed = 0.05f;
+            scale = 0.8f;
             loadContent(assets);
         }
-
-
-        ///////////////////////////////////////////////////
-        // ENTITY OVERRIDES ///////////////////////////////
-        ///////////////////////////////////////////////////
 
         void loadContent(List<string> assets)
         {
@@ -61,12 +65,30 @@ namespace HnS
 
             //offset to draw ontop of the platform
             position.Y -= images.ElementAt(0).Height * scale;
+
+            //Create countdown timers
+            countDownTimers.Add(250.0f);//walking timer
+            countDownTimers.Add(0.0f);//blood splat timer
+
+            //Load bloodSplat image
+            bloodSplat = contentManager.Load<Texture2D>("bloodSplat");
         }
-        
+
+
+        ///////////////////////////////////////////////////
+        // ENTITY OVERRIDES ///////////////////////////////
+        ///////////////////////////////////////////////////
+
         public override void update(Microsoft.Xna.Framework.GameTime theGameTime)
         {
-            //If there is a countdown timer going on, count it down
-            if (countdownTimer > 0.0f) countdownTimer -= theGameTime.ElapsedGameTime.Milliseconds;
+            //Count down all count down timers in progress
+            for (int i = 0, len = countDownTimers.Count; i < len; i++)
+            {
+                if (countDownTimers[i] > 0.0f)
+                {
+                    countDownTimers[i] -= (float)theGameTime.ElapsedGameTime.Milliseconds;
+                }
+            }
 
             if (walking)
             {
@@ -74,7 +96,7 @@ namespace HnS
                 if (position.X > 790 || position.X < 10)
                 {
                     walking = false;
-                    countdownTimer = 0.0f;
+                    countDownTimers[walkingTimer] = 0.0f;
                 }
                 else
                 {
@@ -90,7 +112,7 @@ namespace HnS
                 }
                 
                 //Walking animations
-                if (countdownTimer < 0.0f)
+                if (countDownTimers[walkingTimer] < 0.0f)
                 {
                     switch (activeImage)
                     {
@@ -108,7 +130,7 @@ namespace HnS
                             break;
                     }
 
-                    countdownTimer = 250.0f;
+                    countDownTimers[walkingTimer] = 250.0f;
                 }
             }
             else
@@ -162,7 +184,38 @@ namespace HnS
             else theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
                     Color.White, 0, Vector2.Zero, scale, SpriteEffects.FlipHorizontally, 0);
 
+            //draw blood if we've been hit recently
+            if (countDownTimers[bloodTimer] > 0.0f)
+            {
+                theSpriteBatch.Draw(bloodSplat, new Vector2(bloodPos.X - bloodSplat.Width / 2, bloodPos.Y - bloodSplat.Height / 2), Color.White);
+            }
+
             base.draw(theSpriteBatch);
+        }
+
+        ///////////////////////////////////////////////////
+        // GETTERS AND SETTERS ////////////////////////////
+        ///////////////////////////////////////////////////
+
+        public override Vector2 getPos()
+        {
+            return position;
+        }
+
+        ///////////////////////////////////////////////////
+        // COMBAT /////////////////////////////////////////
+        ///////////////////////////////////////////////////
+
+        public override void beHit(float damage, Vector2 pointOfImpact)
+        {
+            health -= damage * armourLevel;
+            splurgeBlood(pointOfImpact);
+        }
+
+        void splurgeBlood(Vector2 pointOfImpact)
+        {
+            countDownTimers[bloodTimer] = 1000.0f;
+            bloodPos = pointOfImpact;
         }
 
     }

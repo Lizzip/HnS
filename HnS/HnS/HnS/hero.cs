@@ -27,12 +27,16 @@ namespace HnS
         List<Texture2D> images = new List<Texture2D>();
         Texture2D healthBarOutline;
         SpriteFont smallFont;
+
+        //Timers
+        List<float> countDownTimers = new List<float>();
+        int walkingTimer = 0;
                 
         //General Vars
         //facing 0 = right, 1 = left
-        int activeImage = 0, health, facing = 0;
+        int activeImage = 0, facing = 0;
         Vector2 position, healthTextPos;
-        float speed = 0.15f, countdownTimer = 100.0f, scale = 0.8f;
+        float speed, scale, attackDamage, health;
         bool isJumping;
         float velocityY;
 
@@ -48,7 +52,10 @@ namespace HnS
             isJumping = false;
             velocityY = 0;
             position = pos;
-            health = 100;
+            health = 100.0f;
+            speed = 0.15f;
+            scale = 0.8f;
+            attackDamage = 10.0f;
             contentManager = content;
             loadContent(assets);
         }
@@ -70,6 +77,9 @@ namespace HnS
             //Set other variables (adjust default draw height for image height - to draw hero standing on platform)
             position.Y -= images.ElementAt(0).Height * scale;
             healthTextPos = new Vector2(25, 17);
+
+            //Create countdown timers
+            countDownTimers.Add(250.0f);//walking timer
         }
 
 
@@ -79,8 +89,14 @@ namespace HnS
 
         public override void update(Microsoft.Xna.Framework.GameTime theGameTime)
         {
-            //If there is a countdown timer going on, count it down
-            if (countdownTimer > 0.0f) countdownTimer -= theGameTime.ElapsedGameTime.Milliseconds;
+            //Count down all count down timers in progress
+            for (int i = 0, len = countDownTimers.Count; i < len; i++)
+            {
+                if (countDownTimers[i] > 0.0f)
+                {
+                    countDownTimers[i] -= (float)theGameTime.ElapsedGameTime.Milliseconds;
+                }
+            }
 
             //Get new mouse and keyboard states
             currentKB = Keyboard.GetState();
@@ -105,7 +121,7 @@ namespace HnS
             //Walking movement
             if (currentKB.IsKeyDown(Keys.D))
             {
-                if (countdownTimer < 0.0f)
+                if (countDownTimers[walkingTimer] < 0.0f)
                 {
                     switch (activeImage)
                     {
@@ -123,7 +139,7 @@ namespace HnS
                             break;
                     }
 
-                    countdownTimer = 100.0f;
+                    countDownTimers[walkingTimer] = 100.0f;
                 }
 
                  position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
@@ -131,7 +147,7 @@ namespace HnS
 
             if (currentKB.IsKeyDown(Keys.A))
             {
-                if (countdownTimer < 0.0f)
+                if (countDownTimers[walkingTimer] < 0.0f)
                 {
                     switch (activeImage)
                     {
@@ -149,7 +165,7 @@ namespace HnS
                             break;
                     }
 
-                    countdownTimer = 100.0f;
+                    countDownTimers[walkingTimer] = 100.0f;
                 }
 
                    position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
@@ -237,10 +253,19 @@ namespace HnS
         // GETTERS AND SETTERS ////////////////////////////
         ///////////////////////////////////////////////////
 
-        public Vector2 getPos()
+        public override Vector2 getPos()
         {
             return position;
         }
 
+
+        ///////////////////////////////////////////////////
+        // COMBAT /////////////////////////////////////////
+        ///////////////////////////////////////////////////
+
+        void broadcastAttack()
+        {
+            entityManager.broadcastAttack(attackDamage, position);
+        }
     }
 }
