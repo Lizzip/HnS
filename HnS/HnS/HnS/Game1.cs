@@ -32,7 +32,7 @@ namespace HnS
 
         //General vars
         int windowHeight = 600, windowWidth = 800;
-        int platformHeight = 502;
+        int platformHeight = 512;
         List<string> heroAssetList = new List<string>();
         List<string> enemyAssetList = new List<string>();
 
@@ -67,7 +67,7 @@ namespace HnS
             //Background
             moveLeft = false;
             moveRight = false;
-            background = new Background("background//sky", "background//mountains", "background//hills", "background//grass", 2.0f);
+            background = new Background("background//sky", "background//mountains", "background//hills", "background//grass", "platform", 2.0f);
 
             base.Initialize();
         }
@@ -75,7 +75,6 @@ namespace HnS
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            platformImage = Content.Load<Texture2D>("platform");
             background.LoadContent(Content);
             entityManager.createHero(new Vector2(100, platformHeight),heroAssetList);
             entityManager.createEnemy(new Vector2(700, platformHeight), enemyAssetList); 
@@ -123,10 +122,6 @@ namespace HnS
 
             //Draw Background
             background.Draw(spriteBatch);
-            //spriteBatch.Draw(background, Vector2.Zero, Color.White * 0.3f);
-
-            //Draw platform
-            spriteBatch.Draw(platformImage, Vector2.Zero, Color.White);
 
             //EntityManager - Draw all entities
             entityManager.drawAll(spriteBatch);
