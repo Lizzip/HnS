@@ -29,7 +29,11 @@ namespace HnS
         float speed = 0.05f, countdownTimer = 250.0f, scale = 0.8f;
         bool walking = true;
 
-        //Constructors
+
+        ///////////////////////////////////////////////////
+        // CONSTRUCTORS AND LOADING ///////////////////////
+        ///////////////////////////////////////////////////
+
         public Enemy() { }
 
         public Enemy(EntityManager EM, Vector2 pos, ContentManager content, List<string> assets)
@@ -39,6 +43,11 @@ namespace HnS
             contentManager = content;
             loadContent(assets);
         }
+
+
+        ///////////////////////////////////////////////////
+        // ENTITY OVERRIDES ///////////////////////////////
+        ///////////////////////////////////////////////////
 
         void loadContent(List<string> assets)
         {

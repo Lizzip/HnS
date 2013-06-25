@@ -36,7 +36,10 @@ namespace HnS
         bool isJumping;
         float velocityY;
 
-        //Constructors
+        ///////////////////////////////////////////////////
+        // CONSTRUCTORS AND LOADING ///////////////////////
+        ///////////////////////////////////////////////////
+
         public Hero() { }
 
         public Hero(EntityManager eManager, Vector2 pos, ContentManager content, List<string> assets)
@@ -68,6 +71,11 @@ namespace HnS
             position.Y -= images.ElementAt(0).Height * scale;
             healthTextPos = new Vector2(25, 17);
         }
+
+
+        ///////////////////////////////////////////////////
+        // ENTITY OVERRIDES ///////////////////////////////
+        ///////////////////////////////////////////////////
 
         public override void update(Microsoft.Xna.Framework.GameTime theGameTime)
         {
@@ -153,6 +161,35 @@ namespace HnS
             base.update(theGameTime);
         }
 
+        public override void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch theSpriteBatch)
+        {
+            //If facing right (0) draw normally, if facing left (1) flip sprite horizontally
+            if (facing == 0) theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
+                    Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+            else theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
+                    Color.White, 0, Vector2.Zero, scale, SpriteEffects.FlipHorizontally, 0);
+
+            //Draw white health bar outline
+            theSpriteBatch.Draw(healthBarOutline, new Vector2(20, 19), Color.White);
+
+            //Draw grey health bar area for health lost
+            theSpriteBatch.Draw(healthBarOutline, new Rectangle(21, 20, healthBarOutline.Width - 2, 18),
+                new Rectangle(0, 45, healthBarOutline.Width, 44), Color.Gray);
+
+            //Draw red health bar area for current health
+            theSpriteBatch.Draw(healthBarOutline, new Rectangle(21, 20, (int)(healthBarOutline.Width * ((double)health / 100) - 2), 18),
+                 new Rectangle(0, 45, healthBarOutline.Width, 44), Color.Red);
+
+            //Write health text
+            theSpriteBatch.DrawString(smallFont, "Health: " + health + "%", healthTextPos, Color.White);
+
+            base.draw(theSpriteBatch);
+        }
+
+        ///////////////////////////////////////////////////
+        // ADDITIONAL MOVEMENT ////////////////////////////
+        ///////////////////////////////////////////////////
+
         private void Jump(GameTime theGameTime)
         {
             //Check if the space is pressed and character is not already jumping. Then move the character
@@ -195,31 +232,10 @@ namespace HnS
             if (currentKB.IsKeyDown(Keys.D)) return true;
             else return false;
         }
-        
-        public override void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch theSpriteBatch)
-        {
-            //If facing right (0) draw normally, if facing left (1) flip sprite horizontally
-            if (facing == 0) theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
-                    Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-            else theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
-                    Color.White, 0, Vector2.Zero, scale, SpriteEffects.FlipHorizontally, 0);
 
-            //Draw white health bar outline
-            theSpriteBatch.Draw(healthBarOutline, new Vector2(20, 19), Color.White);
-
-            //Draw grey health bar area for health lost
-            theSpriteBatch.Draw(healthBarOutline, new Rectangle(21, 20, healthBarOutline.Width - 2, 18),
-                new Rectangle(0, 45, healthBarOutline.Width, 44), Color.Gray);
-
-            //Draw red health bar area for current health
-            theSpriteBatch.Draw(healthBarOutline, new Rectangle(21, 20, (int)(healthBarOutline.Width * ((double)health / 100) - 2), 18),
-                 new Rectangle(0, 45, healthBarOutline.Width, 44), Color.Red);
-
-            //Write health text
-            theSpriteBatch.DrawString(smallFont, "Health: " + health + "%", healthTextPos, Color.White);
-
-            base.draw(theSpriteBatch);
-        }
+        ///////////////////////////////////////////////////
+        // GETTERS AND SETTERS ////////////////////////////
+        ///////////////////////////////////////////////////
 
         public Vector2 getPos()
         {
