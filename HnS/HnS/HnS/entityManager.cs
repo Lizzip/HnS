@@ -20,7 +20,7 @@ namespace HnS
         ContentManager contentManager;
 
         //UID Management
-        int nextUID = 0;
+        int nextUID = 0, heroUID;
         public List<int> UIDs = new List<int>();
 
         //Entity Management
@@ -38,6 +38,7 @@ namespace HnS
             Hero hero = new Hero(pos, contentManager, assets);
             entityMap.Add(nextUID, hero);
             UIDs.Add(nextUID);
+            heroUID = nextUID;
             nextUID++;
         }
 
@@ -46,6 +47,15 @@ namespace HnS
         {
             Enemy enemy = new Enemy(this, pos, contentManager, assets);
             entityMap.Add(nextUID, enemy);
+            UIDs.Add(nextUID);
+            nextUID++;
+        }
+        
+        //Create backgroundManager entity
+        public void createBackground(List<string> textureNames, float scrollSpeed)
+        {
+            Background background = new Background(contentManager, this, textureNames, scrollSpeed);
+            entityMap.Add(nextUID, background);
             UIDs.Add(nextUID);
             nextUID++;
         }
@@ -71,7 +81,7 @@ namespace HnS
         //Return hero entity
         public Hero getHero()
         {
-            return (Hero)entityMap.ElementAt(UIDs.ElementAt(0)).Value;
+            return (Hero)entityMap.ElementAt(UIDs.ElementAt(heroUID)).Value;
         }
 
 

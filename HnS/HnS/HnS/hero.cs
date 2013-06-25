@@ -178,18 +178,16 @@ namespace HnS
 
         public bool MoveLeft()
         {
-            if (currentKB.IsKeyDown(Keys.A) && prevKB.IsKeyDown(Keys.A) == false)
-                return true;
+            if (currentKB.IsKeyDown(Keys.A)) return true;
             else return false;
         }
 
         public bool MoveRight()
         {
-            if (currentKB.IsKeyDown(Keys.D) && prevKB.IsKeyDown(Keys.D) == false)
-                return true;
+            if (currentKB.IsKeyDown(Keys.D)) return true;
             else return false;
         }
-
+        
         public override void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch theSpriteBatch)
         {
             //If facing right (0) draw normally, if facing left (1) flip sprite horizontally

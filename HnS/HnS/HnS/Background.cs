@@ -8,8 +8,12 @@ using Microsoft.Xna.Framework.Content;
 
 namespace HnS
 {
-    public class Background
+    class Background : Entity
     {
+        //-------------
+        //Loaders and Managers
+        EntityManager entityManager;
+
         //------------------
         //Texture members
         //
@@ -23,27 +27,31 @@ namespace HnS
         private Texture2D m_floorTex1, m_floorTex2; // Two textures for floor (both same file)
         
         //-------------
-
+        //Position variables
         private Vector2 m_pos1, m_pos2, m_pos3, m_pos4, m_pos5, m_pos6, m_pos7; //6 + 7 used for floor
-       
+
+        //-------------
+        //Scroll speed variables
         private float m_speed, m_floorSpeed;
-        
+
 
         //Constructor
-        public Background(string tex1Name, string tex2Name, string tex3Name, string tex4Name, string floorName, float scrollSpeed)
+        public Background(ContentManager contentManager, EntityManager eManager, List<string> textureNames, float scrollSpeed)
         {
+            entityManager = eManager;
             m_texture1 = null;
             m_texture2 = null;
             m_texture3 = null;
             m_texture4 = null;
             m_texture5 = null;
-            m_tex1Name = tex1Name;
-            m_tex2Name = tex2Name;
-            m_tex3Name = tex3Name;
-            m_tex4Name = tex4Name;
-            m_floorName = floorName;
+            m_tex1Name = textureNames.ElementAt(0);
+            m_tex2Name = textureNames.ElementAt(1);
+            m_tex3Name = textureNames.ElementAt(2);
+            m_tex4Name = textureNames.ElementAt(3);
+            m_floorName = textureNames.ElementAt(4);
             m_speed = scrollSpeed;
             m_floorSpeed = scrollSpeed / 4;
+            LoadContent(contentManager);
         }
 
         //Load content
@@ -65,37 +73,22 @@ namespace HnS
             m_pos7 = new Vector2(m_floorTex1.Width, 0);
         }
 
-        public void Update(GameTime gameTime, bool moveLeft, bool moveRight)
+        public override void update(GameTime gameTime)
         {
             //Set the scroll speed for if the player is moving right. Move left the third and fifth
             //texture positions so it looks like the player is moving in the right direction. Tag 
             //texture 5 onto the end of texture 3, and vice versa.
-            if (moveRight)
+            if (entityManager.getHero().MoveRight())
             {
+                //scroll background image
                 m_pos3.X -= m_speed;
                 m_pos5.X -= m_speed;
                 if (m_pos3.X <= -(m_texture3.Width))
                     m_pos3.X = m_pos5.X + m_texture5.Width;
                 if (m_pos5.X <= -(m_texture5.Width))
                     m_pos5.X = m_pos3.X + m_texture3.Width;
-            }
 
-            //Same as above except increase the texture positions so it appears the player
-            //is moving in the left direction.
-            else if (moveLeft)
-            {
-                m_pos3.X += m_speed;
-                m_pos5.X += m_speed;
-                if (m_pos3.X >= m_texture3.Width)
-                    m_pos3.X = m_pos5.X - m_texture5.Width;
-                if (m_pos5.X >= m_texture5.Width)
-                    m_pos5.X = m_pos3.X - m_texture3.Width;
-            }
-
-            //Scroll floor at same speeds as above textures
-
-            if (moveRight)
-            {
+                //scroll floor image
                 m_pos6.X -= m_floorSpeed;
                 m_pos7.X -= m_floorSpeed;
                 if (m_pos6.X <= -(m_floorTex1.Width))
@@ -103,8 +96,20 @@ namespace HnS
                 if (m_pos7.X <= -(m_floorTex2.Width))
                     m_pos7.X = m_pos6.X + m_floorTex1.Width;
             }
-            else if (moveLeft)
+                
+            //Same as above except increase the texture positions so it appears the player
+            //is moving in the left direction.
+            else if (entityManager.getHero().MoveLeft())
             {
+                //scroll background image
+                m_pos3.X += m_speed;
+                m_pos5.X += m_speed;
+                if (m_pos3.X >= m_texture3.Width)
+                    m_pos3.X = m_pos5.X - m_texture5.Width;
+                if (m_pos5.X >= m_texture5.Width)
+                    m_pos5.X = m_pos3.X - m_texture3.Width;
+
+                //scroll floor image
                 m_pos6.X += m_floorSpeed;
                 m_pos7.X += m_floorSpeed;
                 if (m_pos6.X >= m_floorTex1.Width)
@@ -112,9 +117,10 @@ namespace HnS
                 if (m_pos7.X >= m_floorTex2.Width)
                     m_pos7.X = m_pos6.X - m_floorTex1.Width;
             }
+
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void draw(SpriteBatch spriteBatch)
         {
             //Draw sky and mountains
             spriteBatch.Draw(m_texture1, m_pos1, Color.White);

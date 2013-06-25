@@ -23,18 +23,14 @@ namespace HnS
         MouseState currentMouse, prevMouse;
 
         //Textures and Fonts
-        Texture2D platformImage;//, background;
-        
-        //Background
-        bool moveRight;
-        bool moveLeft;
-        Background background;
+        Texture2D platformImage;
 
         //General vars
         int windowHeight = 600, windowWidth = 800;
         int platformHeight = 512;
         List<string> heroAssetList = new List<string>();
         List<string> enemyAssetList = new List<string>();
+        List<string> backgroundAssetList = new List<string>();
 
         public Game1()
         {
@@ -64,10 +60,12 @@ namespace HnS
             enemyAssetList.Add("enemy2");
             enemyAssetList.Add("enemy2Walk");
 
-            //Background
-            moveLeft = false;
-            moveRight = false;
-            background = new Background("background//sky", "background//mountains", "background//hills", "background//grass", "platform", 2.0f);
+            //Push images for background manager
+            backgroundAssetList.Add("background//sky");
+            backgroundAssetList.Add("background//mountains");
+            backgroundAssetList.Add("background//hills");
+            backgroundAssetList.Add("background//grass");
+            backgroundAssetList.Add("platform");
 
             base.Initialize();
         }
@@ -75,7 +73,7 @@ namespace HnS
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            background.LoadContent(Content);
+            entityManager.createBackground(backgroundAssetList, 2.0f);
             entityManager.createHero(new Vector2(100, platformHeight),heroAssetList);
             entityManager.createEnemy(new Vector2(700, platformHeight), enemyAssetList); 
         }
@@ -87,7 +85,7 @@ namespace HnS
             //Get new mouse and keyboard states
             currentKB = Keyboard.GetState();
             currentMouse = Mouse.GetState();
-
+/*
             //Update the background if the player is moving based on the move direction
             if (currentKB.IsKeyDown(Keys.A))
             {
@@ -100,7 +98,7 @@ namespace HnS
 
             else moveRight = false;
 
-            background.Update(gameTime, moveLeft, moveRight );
+            background.Update(gameTime, moveLeft, moveRight );*/
 
             //Quit game on Esc key press
             if (currentKB.IsKeyDown(Keys.Escape)) this.Exit();
@@ -119,10 +117,7 @@ namespace HnS
             //Set background colour as gray
             GraphicsDevice.Clear(Color.Gray);
             spriteBatch.Begin();
-
-            //Draw Background
-            background.Draw(spriteBatch);
-
+            
             //EntityManager - Draw all entities
             entityManager.drawAll(spriteBatch);
             
