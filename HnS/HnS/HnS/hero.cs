@@ -31,7 +31,7 @@ namespace HnS
         //facing 0 = right, 1 = left
         int activeImage = 0, health, facing = 0;
         Vector2 position, healthTextPos;
-        float speed = 0.15f, countdownTimer = 100.0f;
+        float speed = 0.15f, countdownTimer = 100.0f, scale = 0.8f;
         bool isJumping;
         float velocityY;
 
@@ -63,7 +63,7 @@ namespace HnS
             smallFont = contentManager.Load<SpriteFont>("smallFont");
 
             //Set other variables (adjust default draw height for image height - to draw hero standing on platform)
-            position.Y -= images.ElementAt(0).Height;
+            position.Y -= images.ElementAt(0).Height * scale;
             healthTextPos = new Vector2(25, 17);
         }
 
@@ -193,9 +193,10 @@ namespace HnS
         public override void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch theSpriteBatch)
         {
             //If facing right (0) draw normally, if facing left (1) flip sprite horizontally
-            if (facing == 0) theSpriteBatch.Draw(images.ElementAt(activeImage), position, Color.White);
+            if (facing == 0) theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
+                    Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
             else theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
-                    Color.White, 0, Vector2.Zero, 1.0f, SpriteEffects.FlipHorizontally, 0);
+                    Color.White, 0, Vector2.Zero, scale, SpriteEffects.FlipHorizontally, 0);
 
             //Draw white health bar outline
             theSpriteBatch.Draw(healthBarOutline, new Vector2(20, 19), Color.White);

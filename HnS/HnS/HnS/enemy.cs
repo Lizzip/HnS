@@ -26,7 +26,7 @@ namespace HnS
         //facing 0 = right, 1 = left
         int activeImage = 2, facing = 1;
         Vector2 position;
-        float speed = 0.05f, countdownTimer = 250.0f;
+        float speed = 0.05f, countdownTimer = 250.0f, scale = 0.8f;
         bool walking = true;
 
         //Constructors
@@ -51,7 +51,7 @@ namespace HnS
             }
 
             //offset to draw ontop of the platform
-            position.Y -= images.ElementAt(0).Height;
+            position.Y -= images.ElementAt(0).Height * scale;
         }
         
         public override void update(Microsoft.Xna.Framework.GameTime theGameTime)
@@ -148,9 +148,10 @@ namespace HnS
         public override void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch theSpriteBatch)
         {
             //If facing right (0) draw normally, if facing left (1) flip sprite horizontally
-            if (facing == 0) theSpriteBatch.Draw(images.ElementAt(activeImage), position, Color.White);
+            if (facing == 0) theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
+                    Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
             else theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
-                    Color.White, 0, Vector2.Zero, 1.0f, SpriteEffects.FlipHorizontally, 0);
+                    Color.White, 0, Vector2.Zero, scale, SpriteEffects.FlipHorizontally, 0);
 
             base.draw(theSpriteBatch);
         }
