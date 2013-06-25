@@ -16,6 +16,10 @@ namespace HnS
 {
     class EntityManager
     {
+        ///////////////////////////////////////////////////
+        // VARIABLES //////////////////////////////////////
+        ///////////////////////////////////////////////////
+
         //Loaders and Managers
         ContentManager contentManager;
 
@@ -25,17 +29,26 @@ namespace HnS
 
         //Entity Management
         Dictionary<int, Entity> entityMap = new Dictionary<int, Entity>();
+
+        //Variables needed by all entities
+        int platformHeight;
         
+
+        ///////////////////////////////////////////////////
+        // CONSTRUCTORS ///////////////////////////////////
+        ///////////////////////////////////////////////////
+
         //Constructor
-        public EntityManager(ContentManager content)
+        public EntityManager(ContentManager content, int pHeight)
         {
             contentManager = content;
+            platformHeight = pHeight;
         }
 
         //Create player char entity
         public void createHero(Vector2 pos, List<string> assets)
         {
-            Hero hero = new Hero(pos, contentManager, assets);
+            Hero hero = new Hero(this, pos, contentManager, assets);
             entityMap.Add(nextUID, hero);
             UIDs.Add(nextUID);
             heroUID = nextUID;
@@ -60,6 +73,11 @@ namespace HnS
             nextUID++;
         }
 
+
+        ///////////////////////////////////////////////////
+        // UPDATE AND DRAW ////////////////////////////////
+        ///////////////////////////////////////////////////
+
         //Update all entities
         public void updateAll(GameTime theGameTime)
         {
@@ -78,12 +96,21 @@ namespace HnS
             }
         }
 
+
+        ///////////////////////////////////////////////////
+        // GETTERS ////////////////////////////////////////
+        ///////////////////////////////////////////////////
+
         //Return hero entity
         public Hero getHero()
         {
             return (Hero)entityMap.ElementAt(UIDs.ElementAt(heroUID)).Value;
         }
 
+        public int getPlatformHeight()
+        {
+            return platformHeight;
+        }
 
     }
 }

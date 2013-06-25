@@ -17,6 +17,7 @@ namespace HnS
     {
         //Loaders and Managers
         ContentManager contentManager;
+        EntityManager entityManager;
 
         //Input states
         KeyboardState currentKB, prevKB;
@@ -38,8 +39,9 @@ namespace HnS
         //Constructors
         public Hero() { }
 
-        public Hero(Vector2 pos, ContentManager content, List<string> assets)
+        public Hero(EntityManager eManager, Vector2 pos, ContentManager content, List<string> assets)
         {
+            entityManager = eManager;
             isJumping = false;
             velocityY = 0;
             position = pos;
@@ -116,7 +118,7 @@ namespace HnS
                     countdownTimer = 100.0f;
                 }
 
-//                position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
+                 position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
             }
 
             if (currentKB.IsKeyDown(Keys.A))
@@ -142,7 +144,7 @@ namespace HnS
                     countdownTimer = 100.0f;
                 }
 
- //               position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
+                   position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
             }
 
             //Set previous mouse and keyboard states
@@ -170,10 +172,16 @@ namespace HnS
             }
             else velocityY = 0;
 
-            //Once the player Y position reaches the platform (need to pass in this really rather than "magic" number)
+            //Once the player Y position reaches the platform
             //the isJumping bool is set to false (can't fall below platform)
-            if (position.Y + images.ElementAt(activeImage).Height >= 495)
+            if (position.Y + (images.ElementAt(activeImage).Height * scale) >= entityManager.getPlatformHeight() && isJumping)
+            {
                 isJumping = false;
+
+                //Ensure player is set to exact same height after every jump (was varying slightly before due to decrementing by float)
+                position.Y = entityManager.getPlatformHeight() -5 - (images.ElementAt(activeImage).Height * scale);
+                
+            }
         }
 
         public bool MoveLeft()

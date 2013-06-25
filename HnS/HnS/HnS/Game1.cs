@@ -22,9 +22,6 @@ namespace HnS
         KeyboardState currentKB, prevKB;
         MouseState currentMouse, prevMouse;
 
-        //Textures and Fonts
-        Texture2D platformImage;
-
         //General vars
         int windowHeight = 600, windowWidth = 800;
         int platformHeight = 512;
@@ -46,7 +43,7 @@ namespace HnS
         protected override void Initialize()
         {
             //Create entity manager
-            entityManager = new EntityManager(Content);
+            entityManager = new EntityManager(Content, platformHeight);
 
             //Push images for hero entity to list
             heroAssetList.Add("man1");
@@ -85,20 +82,6 @@ namespace HnS
             //Get new mouse and keyboard states
             currentKB = Keyboard.GetState();
             currentMouse = Mouse.GetState();
-/*
-            //Update the background if the player is moving based on the move direction
-            if (currentKB.IsKeyDown(Keys.A))
-            {
-                moveLeft = true;
-            }
-            else moveLeft = false;
-
-            if (currentKB.IsKeyDown(Keys.D))
-                moveRight = true;
-
-            else moveRight = false;
-
-            background.Update(gameTime, moveLeft, moveRight );*/
 
             //Quit game on Esc key press
             if (currentKB.IsKeyDown(Keys.Escape)) this.Exit();
