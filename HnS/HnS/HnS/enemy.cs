@@ -187,7 +187,9 @@ namespace HnS
             //draw blood if we've been hit recently
             if (countDownTimers[bloodTimer] > 0.0f)
             {
-                theSpriteBatch.Draw(bloodSplat, new Vector2(bloodPos.X - bloodSplat.Width / 2, bloodPos.Y - bloodSplat.Height / 2), Color.White);
+                theSpriteBatch.Draw(bloodSplat, new Vector2(position.X + (images.ElementAt(activeImage).Width*scale)/2,
+                    position.Y + (images.ElementAt(activeImage).Height*scale)/2),
+                    null, Color.White, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
             }
 
             base.draw(theSpriteBatch);

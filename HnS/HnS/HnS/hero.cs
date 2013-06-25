@@ -31,14 +31,17 @@ namespace HnS
         //Timers
         List<float> countDownTimers = new List<float>();
         int walkingTimer = 0;
+
+        //Combat
+        Vector2 attackOrigin, healthTextPos;
+        float attackDamage, health;
                 
         //General Vars
         //facing 0 = right, 1 = left
         int activeImage = 0, facing = 0;
-        Vector2 position, healthTextPos;
-        float speed, scale, attackDamage, health;
+        Vector2 position;
+        float speed, scale, velocityY;
         bool isJumping;
-        float velocityY;
 
         ///////////////////////////////////////////////////
         // CONSTRUCTORS AND LOADING ///////////////////////
@@ -112,6 +115,8 @@ namespace HnS
             {
                 if (activeImage == 0) activeImage = 2;
                 else activeImage = 0;
+
+                broadcastAttack();
             }
 
             //Switch directions
