@@ -21,11 +21,16 @@ namespace HnS
 
         //Textures and Fonts
         List<Texture2D> images = new List<Texture2D>();
+        Texture2D healthBarOutline;
         Texture2D bloodSplat;
+        SpriteFont font;
 
         //Timers
         List<float> countDownTimers = new List<float>();
         int walkingTimer = 0, bloodTimer = 1;
+        
+        //Combat 
+        Vector2 healthTextPos;
 
         //General Vars
         //facing 0 = right, 1 = left
@@ -63,8 +68,15 @@ namespace HnS
                 images.Add(temp);
             }
 
+            //Load other images and fonts
+            healthBarOutline = contentManager.Load<Texture2D>("enemyHealthBarOutline");
+            font = contentManager.Load<SpriteFont>("smallfont");
+
             //offset to draw ontop of the platform
             position.Y -= images.ElementAt(0).Height * scale;
+
+            //Set health text position to just above enemy position
+            healthTextPos = new Vector2(position.X, position.Y - 10);
 
             //Create countdown timers
             countDownTimers.Add(250.0f);//walking timer
@@ -173,6 +185,9 @@ namespace HnS
                 walking = false;
             }
 
+            //Update health text position
+            healthTextPos = new Vector2(position.X, position.Y - 15);
+
             base.update(theGameTime);
         }
 
@@ -191,6 +206,17 @@ namespace HnS
                     position.Y + (images.ElementAt(activeImage).Height*scale)/2),
                     null, Color.White, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
             }
+
+            //Draw white health bar outline
+            theSpriteBatch.Draw(healthBarOutline, new Vector2(position.X, position.Y - 17), Color.White);
+
+            //Draw grey health bar area for health lost
+            theSpriteBatch.Draw(healthBarOutline, new Rectangle((int)position.X, (int)position.Y - 15, healthBarOutline.Width - 2, 9),
+                null, Color.Gray);
+
+            //Draw a red health bar area for current health
+            theSpriteBatch.Draw(healthBarOutline, new Rectangle((int)position.X, (int)position.Y - 15, (int)(healthBarOutline.Width * ((double)health / 100) - 2), 9),
+                null, Color.Red);
 
             base.draw(theSpriteBatch);
         }

@@ -47,6 +47,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="enemyHealthBarOutline.png">
+      <Name>enemyHealthBarOutline</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="man1.png">
       <Name>man1</Name>
       <Importer>TextureImporter</Importer>

@@ -134,7 +134,7 @@ namespace HnS
         {
             for (int i = 0, len = entityMap.Count; i < len; i++)
             {
-                if (Vector2.Distance(origin, entityMap.ElementAt(i).Value.getPos()) < 25.0f)
+                if (Vector2.Distance(origin, entityMap.ElementAt(i).Value.getPos()) < 30.0f)
                 {
                     entityMap.ElementAt(i).Value.beHit(damage, origin);
                 }
