@@ -43,7 +43,7 @@ namespace HnS
         protected override void Initialize()
         {
             //Create entity manager
-            entityManager = new EntityManager(Content, platformHeight);
+            entityManager = new EntityManager(Content, platformHeight, windowWidth, windowHeight);
 
             //Push images for hero entity to list
             heroAssetList.Add("man1");

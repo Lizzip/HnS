@@ -32,6 +32,9 @@ namespace HnS
 
         //Variables needed by all entities
         int platformHeight;
+
+        //Store screen width and height
+        int screenWidth, screenHeight;
         
 
         ///////////////////////////////////////////////////
@@ -39,10 +42,12 @@ namespace HnS
         ///////////////////////////////////////////////////
 
         //Constructor
-        public EntityManager(ContentManager content, int pHeight)
+        public EntityManager(ContentManager content, int pHeight, int screenW, int screenH)
         {
             contentManager = content;
             platformHeight = pHeight;
+            screenWidth = screenW;
+            screenHeight = screenH;
         }
 
         //Create player char entity
@@ -112,6 +117,15 @@ namespace HnS
             return platformHeight;
         }
 
+        public int getScreenWidth()
+        {
+            return screenWidth;
+        }
+
+        public int getScreenHeight()
+        {
+            return screenHeight;
+        }
 
         ///////////////////////////////////////////////////
         // COMBAT /////////////////////////////////////////
