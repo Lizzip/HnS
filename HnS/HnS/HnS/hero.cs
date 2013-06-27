@@ -27,14 +27,17 @@ namespace HnS
         List<Texture2D> images = new List<Texture2D>();
         Texture2D healthBarOutline;
         SpriteFont smallFont;
+        SpriteFont deathFont;
 
         //Timers
         List<float> countDownTimers = new List<float>();
-        int walkingTimer = 0;
+        int walkingTimer = 0, deathTimer = 1;
+
 
         //Combat
-        Vector2 attackOrigin, healthTextPos;
+        Vector2 attackOrigin, healthTextPos, numLivesPos, deathTextPos;
         float attackDamage, health;
+        int numLives;
                 
         //General Vars
         //facing 0 = right, 1 = left
@@ -59,6 +62,7 @@ namespace HnS
             speed = 0.15f;
             scale = 0.8f;
             attackDamage = 10.0f;
+            numLives = 3;
             contentManager = content;
             loadContent(assets);
         }
@@ -76,13 +80,17 @@ namespace HnS
             //Load other images and fonts
             healthBarOutline = contentManager.Load<Texture2D>("healthBarOutline");
             smallFont = contentManager.Load<SpriteFont>("smallFont");
+            deathFont = contentManager.Load<SpriteFont>("deathFont");
 
             //Set other variables (adjust default draw height for image height - to draw hero standing on platform)
             position.Y -= images.ElementAt(0).Height * scale;
             healthTextPos = new Vector2(25, 17);
+            numLivesPos = new Vector2(25, 35);
+            deathTextPos = new Vector2((float)entityManager.getScreenWidth() / 3, (float)entityManager.getScreenHeight() / 2);
 
             //Create countdown timers
             countDownTimers.Add(250.0f);//walking timer
+            countDownTimers.Add(0.0f);//death timer
         }
 
 
@@ -118,6 +126,20 @@ namespace HnS
 
                 broadcastAttack();
             }
+
+            ////////////////////////////////
+            // Death testing ///////////////
+            ////////////////////////////////
+            if (Keyboard.GetState().IsKeyDown(Keys.J))
+                health--;
+
+            // Death
+            if (health <= 0.0)
+            {
+                position.X = 25;
+                RemoveLife();
+            }
+
 
             //Switch directions
             if (MoveLeft()) facing = 1;
@@ -206,6 +228,13 @@ namespace HnS
             //Write health text
             theSpriteBatch.DrawString(smallFont, "Health: " + health + "%", healthTextPos, Color.White);
 
+            //Write number of lives
+            theSpriteBatch.DrawString(smallFont, "Lives: " + numLives, numLivesPos, Color.Black);
+            
+            //Display death text after dying
+            if (countDownTimers[deathTimer] > 0.0f)
+                theSpriteBatch.DrawString(deathFont, "YOU LOSE A LIFE", deathTextPos, Color.Red);
+
             base.draw(theSpriteBatch);
         }
 
@@ -257,6 +286,16 @@ namespace HnS
         }
 
         ///////////////////////////////////////////////////
+        // DEATH //////////////////////////////////////////
+        ///////////////////////////////////////////////////
+        public void RemoveLife()
+        {
+            numLives--;
+            health = 100.0f;
+            countDownTimers[deathTimer] = 1500.0f;
+        }
+
+        ///////////////////////////////////////////////////
         // GETTERS AND SETTERS ////////////////////////////
         ///////////////////////////////////////////////////
 
@@ -265,6 +304,10 @@ namespace HnS
             return position;
         }
 
+        public int getNumLives
+        {
+            get { return numLives; }
+        }
 
         ///////////////////////////////////////////////////
         // COMBAT /////////////////////////////////////////

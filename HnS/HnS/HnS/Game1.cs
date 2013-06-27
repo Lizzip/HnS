@@ -91,6 +91,10 @@ namespace HnS
             //EntityManager - Update all entities
             entityManager.updateAll(gameTime);
 
+            //If the player number of lives 0 then quit the game
+            if (entityManager.getHero().getNumLives <= 0)
+                this.Exit();
+
             //Set previous mouse and keyboard states
             prevKB = currentKB;
             prevMouse = currentMouse;
