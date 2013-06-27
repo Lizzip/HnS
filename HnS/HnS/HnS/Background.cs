@@ -80,42 +80,48 @@ namespace HnS
             //texture 5 onto the end of texture 3, and vice versa.
             if (entityManager.getHero().MoveRight())
             {
-                //scroll background image
-                m_pos3.X -= m_speed;
-                m_pos5.X -= m_speed;
-                if (m_pos3.X <= -(m_texture3.Width))
-                    m_pos3.X = m_pos5.X + m_texture5.Width;
-                if (m_pos5.X <= -(m_texture5.Width))
-                    m_pos5.X = m_pos3.X + m_texture3.Width;
+                if (entityManager.getHero().getPos().X > entityManager.getScreenWidth() * 0.8)
+                {
+                    //scroll background image
+                    m_pos3.X -= m_speed;
+                    m_pos5.X -= m_speed;
+                    if (m_pos3.X <= -(m_texture3.Width))
+                        m_pos3.X = m_pos5.X + m_texture5.Width;
+                    if (m_pos5.X <= -(m_texture5.Width))
+                        m_pos5.X = m_pos3.X + m_texture3.Width;
 
-                //scroll floor image
-                m_pos6.X -= m_floorSpeed;
-                m_pos7.X -= m_floorSpeed;
-                if (m_pos6.X <= -(m_floorTex1.Width))
-                    m_pos6.X = m_pos7.X + m_floorTex2.Width;
-                if (m_pos7.X <= -(m_floorTex2.Width))
-                    m_pos7.X = m_pos6.X + m_floorTex1.Width;
+                    //scroll floor image
+                    m_pos6.X -= m_floorSpeed;
+                    m_pos7.X -= m_floorSpeed;
+                    if (m_pos6.X <= -(m_floorTex1.Width))
+                        m_pos6.X = m_pos7.X + m_floorTex2.Width;
+                    if (m_pos7.X <= -(m_floorTex2.Width))
+                        m_pos7.X = m_pos6.X + m_floorTex1.Width;
+                }
             }
                 
             //Same as above except increase the texture positions so it appears the player
             //is moving in the left direction.
             else if (entityManager.getHero().MoveLeft())
             {
-                //scroll background image
-                m_pos3.X += m_speed;
-                m_pos5.X += m_speed;
-                if (m_pos3.X >= m_texture3.Width)
-                    m_pos3.X = m_pos5.X - m_texture5.Width;
-                if (m_pos5.X >= m_texture5.Width)
-                    m_pos5.X = m_pos3.X - m_texture3.Width;
+                if (entityManager.getHero().getPos().X < entityManager.getScreenWidth() * 0.2)
+                {
+                    //scroll background image
+                    m_pos3.X += m_speed;
+                    m_pos5.X += m_speed;
+                    if (m_pos3.X >= m_texture3.Width)
+                        m_pos3.X = m_pos5.X - m_texture5.Width;
+                    if (m_pos5.X >= m_texture5.Width)
+                        m_pos5.X = m_pos3.X - m_texture3.Width;
 
-                //scroll floor image
-                m_pos6.X += m_floorSpeed;
-                m_pos7.X += m_floorSpeed;
-                if (m_pos6.X >= m_floorTex1.Width)
-                    m_pos6.X = m_pos7.X - m_floorTex2.Width;
-                if (m_pos7.X >= m_floorTex2.Width)
-                    m_pos7.X = m_pos6.X - m_floorTex1.Width;
+                    //scroll floor image
+                    m_pos6.X += m_floorSpeed;
+                    m_pos7.X += m_floorSpeed;
+                    if (m_pos6.X >= m_floorTex1.Width)
+                        m_pos6.X = m_pos7.X - m_floorTex2.Width;
+                    if (m_pos7.X >= m_floorTex2.Width)
+                        m_pos7.X = m_pos6.X - m_floorTex1.Width;
+                }
             }
 
         }

@@ -146,8 +146,9 @@ namespace HnS
 
                     countDownTimers[walkingTimer] = 100.0f;
                 }
-
-                 position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
+                
+                if(position.X < entityManager.getScreenWidth() * 0.8)
+                    position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
             }
 
             if (currentKB.IsKeyDown(Keys.A))
@@ -172,8 +173,9 @@ namespace HnS
 
                     countDownTimers[walkingTimer] = 100.0f;
                 }
-
-                   position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
+                
+                if(position.X > entityManager.getScreenWidth() * 0.15)
+                    position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
             }
 
             //Set previous mouse and keyboard states
