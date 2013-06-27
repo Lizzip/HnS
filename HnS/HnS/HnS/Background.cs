@@ -19,20 +19,23 @@ namespace HnS
         //
         // Only 4 textures names for 5 texture memmbers, 2 textures are loaded from the same file.
         private string m_tex1Name, m_tex2Name, m_tex3Name, m_tex4Name;
+        private string m_cloudsName1, m_cloudsName2;
         private string m_floorName; //name of floor texture
 
         //List of textures to create the layered background. Texture3 and Texture5 are passed the same texture name
         // (this is to create the scroll-layer effect). 
         private Texture2D m_texture1, m_texture2, m_texture3, m_texture4, m_texture5;
+        //Clouds
+        private Texture2D m_clouds1, m_clouds2; 
         private Texture2D m_floorTex1, m_floorTex2; // Two textures for floor (both same file)
         
         //-------------
         //Position variables
         private Vector2 m_pos1, m_pos2, m_pos3, m_pos4, m_pos5, m_pos6, m_pos7; //6 + 7 used for floor
-
+        private Vector2 m_clouds1Pos, m_clouds2Pos;
         //-------------
         //Scroll speed variables
-        private float m_speed, m_floorSpeed;
+        private float m_speed, m_floorSpeed, m_cloudsSpeed;
 
 
         //Constructor
@@ -49,8 +52,11 @@ namespace HnS
             m_tex3Name = textureNames.ElementAt(2);
             m_tex4Name = textureNames.ElementAt(3);
             m_floorName = textureNames.ElementAt(4);
+            m_cloudsName1 = textureNames.ElementAt(5);
+            m_cloudsName2 = textureNames.ElementAt(6);
             m_speed = scrollSpeed;
             m_floorSpeed = scrollSpeed / 4;
+            m_cloudsSpeed = scrollSpeed / 5;
             LoadContent(contentManager);
         }
 
@@ -64,6 +70,8 @@ namespace HnS
             m_texture5 = contentManager.Load<Texture2D>(m_tex3Name); // Same texture file as texture 3
             m_floorTex1 = contentManager.Load<Texture2D>(m_floorName);
             m_floorTex2 = contentManager.Load<Texture2D>(m_floorName); // Both floor textures loaded from same file
+            m_clouds1 = contentManager.Load<Texture2D>(m_cloudsName1);
+            m_clouds2 = contentManager.Load<Texture2D>(m_cloudsName2);
             m_pos1 = Vector2.Zero;
             m_pos2 = Vector2.Zero;
             m_pos3 = Vector2.Zero;
@@ -71,6 +79,8 @@ namespace HnS
             m_pos5 = new Vector2(m_texture3.Width, 0);
             m_pos6 = Vector2.Zero;
             m_pos7 = new Vector2(m_floorTex1.Width, 0);
+            m_clouds1Pos = Vector2.Zero;
+            m_clouds2Pos = new Vector2(m_clouds1Pos.X + m_clouds1.Width, 0);
         }
 
         public override void update(GameTime gameTime)
@@ -97,6 +107,14 @@ namespace HnS
                         m_pos6.X = m_pos7.X + m_floorTex2.Width;
                     if (m_pos7.X <= -(m_floorTex2.Width))
                         m_pos7.X = m_pos6.X + m_floorTex1.Width;
+
+                    //scroll clouds
+                    m_clouds1Pos.X -= m_cloudsSpeed;
+                    m_clouds2Pos.X -= m_cloudsSpeed;
+                    if (m_clouds1Pos.X <= -(m_clouds1.Width))
+                        m_clouds1Pos.X = m_clouds2Pos.X + m_clouds2.Width;
+                    if (m_clouds2Pos.X <= -(m_clouds2.Width))
+                        m_clouds2Pos.X = m_clouds1Pos.X + m_clouds1.Width;
                 }
             }
                 
@@ -121,6 +139,14 @@ namespace HnS
                         m_pos6.X = m_pos7.X - m_floorTex2.Width;
                     if (m_pos7.X >= m_floorTex2.Width)
                         m_pos7.X = m_pos6.X - m_floorTex1.Width;
+
+                    //scroll clouds
+                    m_clouds1Pos.X += m_cloudsSpeed;
+                    m_clouds2Pos.X += m_cloudsSpeed;
+                    if (m_clouds1Pos.X >= m_clouds1.Width)
+                        m_clouds1Pos.X = m_clouds2Pos.X - m_clouds2.Width;
+                    if (m_clouds2Pos.X >= m_clouds2.Width)
+                        m_clouds2Pos.X = m_clouds1Pos.X - m_clouds1.Width;
                 }
             }
 
@@ -131,6 +157,10 @@ namespace HnS
             //Draw sky and mountains
             spriteBatch.Draw(m_texture1, m_pos1, Color.White);
             spriteBatch.Draw(m_texture2, m_pos2, Color.White);
+
+            //Draw clouds
+            spriteBatch.Draw(m_clouds1, m_clouds1Pos, Color.White);
+            spriteBatch.Draw(m_clouds2, m_clouds2Pos, Color.White);
 
             //Draw texture three and five (connected, scroll textures) before
             //drawing the foreground texture (texture4)
