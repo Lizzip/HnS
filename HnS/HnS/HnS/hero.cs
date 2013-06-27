@@ -44,7 +44,7 @@ namespace HnS
         int activeImage = 0, facing = 0;
         Vector2 position;
         float speed, scale, velocityY;
-        bool isJumping;
+        bool isJumping, imageForward=false;
 
         ///////////////////////////////////////////////////
         // CONSTRUCTORS AND LOADING ///////////////////////
