@@ -50,6 +50,9 @@ namespace HnS
             heroAssetList.Add("man1Walk");
             heroAssetList.Add("man2");
             heroAssetList.Add("man2Walk");
+            heroAssetList.Add("middleMan");
+            heroAssetList.Add("wideMan");
+            heroAssetList.Add("narrowMan");
 
             //Push images for enemy entity to list
             enemyAssetList.Add("enemy1");
