@@ -53,6 +53,9 @@ namespace HnS
             heroAssetList.Add("middleMan");
             heroAssetList.Add("wideMan");
             heroAssetList.Add("narrowMan");
+            heroAssetList.Add("jump1Man");
+            heroAssetList.Add("jump2Man");
+            heroAssetList.Add("jump3Man");
 
             //Push images for enemy entity to list
             enemyAssetList.Add("enemy1");
@@ -76,7 +79,7 @@ namespace HnS
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             entityManager.createBackground(backgroundAssetList, 2.0f);
-            entityManager.createHero(new Vector2(100, platformHeight),heroAssetList);
+            entityManager.createHero(new Vector2(100, platformHeight-10/*-10 due to bigger character*/),heroAssetList);
             entityManager.createEnemy(new Vector2(700, platformHeight), enemyAssetList); 
         }
 

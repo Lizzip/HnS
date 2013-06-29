@@ -28,6 +28,7 @@ namespace HnS
         Texture2D healthBarOutline;
         SpriteFont smallFont;
         SpriteFont deathFont;
+        SpriteEffects spriteEffects;
 
         //Timers
         List<float> countDownTimers = new List<float>();
@@ -41,10 +42,10 @@ namespace HnS
                 
         //General Vars
         //facing 0 = right, 1 = left
-        int activeImage = 0, facing = 0, patternIndex = 0;
+        int activeImage = 0, facing = 0, walkingIndex = 0, jumpingImage = 9, charHeightOffset = 15;
         Vector2 position;
         float speed, scale, velocityY;
-        bool isJumping, imageForward=false;
+        bool isJumping;
         int[] walkingPattern;
 
         ///////////////////////////////////////////////////
@@ -61,7 +62,7 @@ namespace HnS
             position = pos;
             health = 100.0f;
             speed = 0.15f;
-            scale = 0.8f;
+            scale = 0.7f;
             attackDamage = 10.0f;
             numLives = 3;
             contentManager = content;
@@ -110,7 +111,7 @@ namespace HnS
                     countDownTimers[i] -= (float)theGameTime.ElapsedGameTime.Milliseconds;
                 }
             }
-
+            
             //Get new mouse and keyboard states
             currentKB = Keyboard.GetState();
             currentMouse = Mouse.GetState();
@@ -152,24 +153,8 @@ namespace HnS
             {
                 if (countDownTimers[walkingTimer] < 0.0f)
                 {
-                    /*
-                    switch (activeImage)
-                    {
-                        case 0:
-                            activeImage = 1;
-                            break;
-                        case 1:
-                            activeImage = 0;
-                            break;
-                        case 2:
-                            activeImage = 3;
-                            break;
-                        case 3:
-                            activeImage = 2;
-                            break;
-                    }*/
-                    if (patternIndex < 3) patternIndex++;
-                    else patternIndex = 0;
+                    if (walkingIndex < 3) walkingIndex++;
+                    else walkingIndex = 0;
                     countDownTimers[walkingTimer] = 100.0f;
                 }
                 
@@ -181,25 +166,8 @@ namespace HnS
             {
                 if (countDownTimers[walkingTimer] < 0.0f)
                 {
-                    /*
-                    switch (activeImage)
-                    {
-                        case 0:
-                            activeImage = 1;
-                            break;
-                        case 1:
-                            activeImage = 0;
-                            break;
-                        case 2:
-                            activeImage = 3;
-                            break;
-                        case 3:
-                            activeImage = 2;
-                            break;
-                    }
-                    */
-                    if (patternIndex < 3) patternIndex++;
-                    else patternIndex = 0;
+                    if (walkingIndex < 3) walkingIndex++;
+                    else walkingIndex = 0;
 
                     countDownTimers[walkingTimer] = 100.0f;
                 }
@@ -217,10 +185,20 @@ namespace HnS
         public override void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch theSpriteBatch)
         {
             //If facing right (0) draw normally, if facing left (1) flip sprite horizontally
-            if (facing == 0) theSpriteBatch.Draw(images.ElementAt(walkingPattern[patternIndex]/*activeImage*/), position, null,
-                    Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-            else theSpriteBatch.Draw(images.ElementAt(walkingPattern[patternIndex]/*activeImage*/), position, null,
-                    Color.White, 0, Vector2.Zero, scale, SpriteEffects.FlipHorizontally, 0);
+            if(facing == 0)spriteEffects = SpriteEffects.None;
+            else spriteEffects = SpriteEffects.FlipHorizontally;
+
+            //if jumping draw jump image, else draw walking image
+            if (isJumping)
+            {
+                theSpriteBatch.Draw(images.ElementAt(jumpingImage), position, null,
+                    Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+            }
+            else
+            {
+                theSpriteBatch.Draw(images.ElementAt(walkingPattern[walkingIndex]), position, null,
+                    Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+            }
 
             //Draw white health bar outline
             theSpriteBatch.Draw(healthBarOutline, new Vector2(20, 19), Color.White);
@@ -257,7 +235,7 @@ namespace HnS
             if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isJumping)
             {
                 position.Y -= 10.0f;
-                velocityY = -5.0f;
+                velocityY = -3.0f;
                 isJumping = true;
             }
 
@@ -271,12 +249,12 @@ namespace HnS
 
             //Once the player Y position reaches the platform
             //the isJumping bool is set to false (can't fall below platform)
-            if (position.Y + (images.ElementAt(activeImage).Height * scale) >= entityManager.getPlatformHeight() && isJumping)
+            if (position.Y + (images.ElementAt(activeImage).Height * scale) >= entityManager.getPlatformHeight()-charHeightOffset && isJumping)
             {
                 isJumping = false;
 
                 //Ensure player is set to exact same height after every jump (was varying slightly before due to decrementing by float)
-                position.Y = entityManager.getPlatformHeight() -5 - (images.ElementAt(activeImage).Height * scale);
+                position.Y = entityManager.getPlatformHeight() - charHeightOffset - (images.ElementAt(activeImage).Height * scale);
                 
             }
         }
