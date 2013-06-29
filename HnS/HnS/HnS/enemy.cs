@@ -211,13 +211,13 @@ namespace HnS
             theSpriteBatch.Draw(healthBarOutline, new Vector2(position.X, position.Y - 17), Color.White);
 
             //Draw grey health bar area for health lost
-            theSpriteBatch.Draw(healthBarOutline, new Rectangle((int)position.X, (int)position.Y - 15, healthBarOutline.Width - 2, 9),
+            theSpriteBatch.Draw(healthBarOutline, new Rectangle((int)position.X + 1, (int)position.Y - 15, healthBarOutline.Width - 2, 8),
                 null, Color.Gray);
-
+            
             //Draw a red health bar area for current health
-            theSpriteBatch.Draw(healthBarOutline, new Rectangle((int)position.X, (int)position.Y - 15, (int)(healthBarOutline.Width * ((double)health / 100) - 2), 9),
+            theSpriteBatch.Draw(healthBarOutline, new Rectangle((int)position.X + 1, (int)position.Y - 15, (int)(healthBarOutline.Width * ((double)health / 100) - 2), 8),
                 null, Color.Red);
-
+            
             base.draw(theSpriteBatch);
         }
 
