@@ -41,10 +41,11 @@ namespace HnS
                 
         //General Vars
         //facing 0 = right, 1 = left
-        int activeImage = 0, facing = 0;
+        int activeImage = 0, facing = 0, patternIndex = 0;
         Vector2 position;
         float speed, scale, velocityY;
         bool isJumping, imageForward=false;
+        int[] walkingPattern;
 
         ///////////////////////////////////////////////////
         // CONSTRUCTORS AND LOADING ///////////////////////
@@ -64,6 +65,7 @@ namespace HnS
             attackDamage = 10.0f;
             numLives = 3;
             contentManager = content;
+            walkingPattern = new int[4] { 4, 5, 4, 6 };
             loadContent(assets);
         }
 
@@ -150,6 +152,7 @@ namespace HnS
             {
                 if (countDownTimers[walkingTimer] < 0.0f)
                 {
+                    /*
                     switch (activeImage)
                     {
                         case 0:
@@ -164,8 +167,9 @@ namespace HnS
                         case 3:
                             activeImage = 2;
                             break;
-                    }
-
+                    }*/
+                    if (patternIndex < 3) patternIndex++;
+                    else patternIndex = 0;
                     countDownTimers[walkingTimer] = 100.0f;
                 }
                 
@@ -177,6 +181,7 @@ namespace HnS
             {
                 if (countDownTimers[walkingTimer] < 0.0f)
                 {
+                    /*
                     switch (activeImage)
                     {
                         case 0:
@@ -192,6 +197,9 @@ namespace HnS
                             activeImage = 2;
                             break;
                     }
+                    */
+                    if (patternIndex < 3) patternIndex++;
+                    else patternIndex = 0;
 
                     countDownTimers[walkingTimer] = 100.0f;
                 }
@@ -209,9 +217,9 @@ namespace HnS
         public override void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch theSpriteBatch)
         {
             //If facing right (0) draw normally, if facing left (1) flip sprite horizontally
-            if (facing == 0) theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
+            if (facing == 0) theSpriteBatch.Draw(images.ElementAt(walkingPattern[patternIndex]/*activeImage*/), position, null,
                     Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-            else theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
+            else theSpriteBatch.Draw(images.ElementAt(walkingPattern[patternIndex]/*activeImage*/), position, null,
                     Color.White, 0, Vector2.Zero, scale, SpriteEffects.FlipHorizontally, 0);
 
             //Draw white health bar outline
