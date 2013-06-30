@@ -31,7 +31,7 @@ namespace HnS
         Dictionary<int, Entity> entityMap = new Dictionary<int, Entity>();
 
         //Variables needed by all entities
-        int platformHeight;
+        int platformHeight, maxEnemyCount;
 
         //Store screen width and height
         int screenWidth, screenHeight;
@@ -42,12 +42,13 @@ namespace HnS
         ///////////////////////////////////////////////////
 
         //Constructor
-        public EntityManager(ContentManager content, int pHeight, int screenW, int screenH)
+        public EntityManager(ContentManager content, int pHeight, int screenW, int screenH, int maxEnemies = 2)
         {
             contentManager = content;
             platformHeight = pHeight;
             screenWidth = screenW;
             screenHeight = screenH;
+            maxEnemyCount = maxEnemies;
         }
 
         //Create player char entity
@@ -63,10 +64,14 @@ namespace HnS
         //Create enemy entity
         public void createEnemy(Vector2 pos, List<string> assets)
         {
-            Enemy enemy = new Enemy(this, pos, contentManager, assets);
-            entityMap.Add(nextUID, enemy);
-            UIDs.Add(nextUID);
-            nextUID++;
+            if (maxEnemyCount > 0)
+            {
+                Enemy enemy = new Enemy(this, pos, contentManager, assets);
+                entityMap.Add(nextUID, enemy);
+                UIDs.Add(nextUID);
+                nextUID++;
+                maxEnemyCount--;
+            }
         }
         
         //Create backgroundManager entity
@@ -127,6 +132,11 @@ namespace HnS
             return screenHeight;
         }
 
+        public int getMaxEnemyCount()
+        {
+            return maxEnemyCount;
+        }
+
         ///////////////////////////////////////////////////
         // COMBAT /////////////////////////////////////////
         ///////////////////////////////////////////////////
@@ -153,6 +163,11 @@ namespace HnS
                     entityMap.ElementAt(i).Value.beHit(damage, origin);
                 }
             }
+        }
+
+        public void reduceMaxEnemyCount(int reduction = 1)
+        {
+            maxEnemyCount -= reduction;
         }
     }
 }
