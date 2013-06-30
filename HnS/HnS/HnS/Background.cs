@@ -107,18 +107,16 @@ namespace HnS
                         m_pos6.X = m_pos7.X + m_floorTex2.Width;
                     if (m_pos7.X <= -(m_floorTex2.Width))
                         m_pos7.X = m_pos6.X + m_floorTex1.Width;
-
-                    
                 }
             }
 
             //scroll clouds
-                    m_clouds1Pos.X -= m_cloudsSpeed;
-                    m_clouds2Pos.X -= m_cloudsSpeed;
-                    if (m_clouds1Pos.X <= -(m_clouds1.Width))
-                        m_clouds1Pos.X = m_clouds2Pos.X + m_clouds2.Width;
-                    if (m_clouds2Pos.X <= -(m_clouds2.Width))
-                        m_clouds2Pos.X = m_clouds1Pos.X + m_clouds1.Width;
+            m_clouds1Pos.X -= m_cloudsSpeed;
+            m_clouds2Pos.X -= m_cloudsSpeed;
+            if (m_clouds1Pos.X <= -(m_clouds1.Width))
+                m_clouds1Pos.X = m_clouds2Pos.X + m_clouds2.Width;
+            if (m_clouds2Pos.X <= -(m_clouds2.Width))
+                m_clouds2Pos.X = m_clouds1Pos.X + m_clouds1.Width;
             
                 
             //Same as above except increase the texture positions so it appears the player

@@ -161,8 +161,7 @@ namespace HnS
                 if(position.X < entityManager.getScreenWidth() * 0.8)
                     position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
             }
-
-            if (currentKB.IsKeyDown(Keys.A))
+            else if (currentKB.IsKeyDown(Keys.A))
             {
                 if (countDownTimers[walkingTimer] < 0.0f)
                 {
