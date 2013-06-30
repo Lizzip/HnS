@@ -130,9 +130,17 @@ namespace HnS
                     if (entityManager.getHero().getPos().X > position.X) facing = 0;
                     else facing = 1;
 
-                    //Wander direction of facing/player
-                    if (facing == 1) position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
-                    else position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
+                    if ((entityManager.getHero().getPos().X > entityManager.getScreenWidth() * 0.8 && entityManager.getHero().MoveRight()) ||
+                        (entityManager.getHero().getPos().X < entityManager.getScreenWidth() * 0.2 && entityManager.getHero().MoveLeft()))
+                    {
+                        //Dont move position as screen is scrolling
+                    }
+                    else
+                    {
+                        //Wander direction of facing/player
+                        if (facing == 1) position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
+                        else position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
+                    }
 
                     //Cycle walking animations
                     if (countDownTimers[walkingTimer] < 0.0f)

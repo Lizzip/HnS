@@ -54,9 +54,9 @@ namespace HnS
             m_floorName = textureNames.ElementAt(4);
             m_cloudsName1 = textureNames.ElementAt(5);
             m_cloudsName2 = textureNames.ElementAt(6);
-            m_speed = scrollSpeed;
-            m_floorSpeed = scrollSpeed / 4;
-            m_cloudsSpeed = scrollSpeed / 10;
+            m_speed = scrollSpeed / 3;
+            m_floorSpeed = scrollSpeed * 2;
+            m_cloudsSpeed = scrollSpeed / 30;
             LoadContent(contentManager);
         }
 
