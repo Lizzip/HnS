@@ -80,7 +80,8 @@ namespace HnS
             spriteBatch = new SpriteBatch(GraphicsDevice);
             entityManager.createBackground(backgroundAssetList, 2.0f);
             entityManager.createHero(new Vector2(100, platformHeight-10/*-10 due to bigger character*/),heroAssetList);
-            entityManager.createEnemy(new Vector2(850, platformHeight), enemyAssetList); 
+            entityManager.createEnemy(new Vector2(900, platformHeight), enemyAssetList);
+            entityManager.createEnemy(new Vector2(-200, platformHeight), enemyAssetList); 
         }
 
         protected override void UnloadContent(){}

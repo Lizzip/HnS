@@ -42,7 +42,7 @@ namespace HnS
         ///////////////////////////////////////////////////
 
         //Constructor
-        public EntityManager(ContentManager content, int pHeight, int screenW, int screenH, int maxEnemies = 2)
+        public EntityManager(ContentManager content, int pHeight, int screenW, int screenH, int maxEnemies = 8)
         {
             contentManager = content;
             platformHeight = pHeight;
