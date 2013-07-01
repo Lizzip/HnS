@@ -154,15 +154,19 @@ namespace HnS
             spriteBatch.Draw(m_clouds2, m_clouds2Pos, Color.White);
 
             //Draw mountains
-            spriteBatch.Draw(m_texture2, m_pos2, Color.White);
+/*          spriteBatch.Draw(m_texture2, m_pos2, Color.White);
             
+            //Draw grass texture
+            spriteBatch.Draw(m_texture4, m_pos4, Color.White);
+ */
+
+
             //Draw texture three and five (connected, scroll textures) before
             //drawing the foreground texture (texture4)
             spriteBatch.Draw(m_texture3, m_pos3, Color.White);
             spriteBatch.Draw(m_texture5, m_pos5, Color.White);
 
-            //Draw grass texture
-            spriteBatch.Draw(m_texture4, m_pos4, Color.White);
+            
 
             //Draw floor textures
             spriteBatch.Draw(m_floorTex1, m_pos6, Color.White);
