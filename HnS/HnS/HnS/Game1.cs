@@ -69,8 +69,7 @@ namespace HnS
             backgroundAssetList.Add("background//hills");
             backgroundAssetList.Add("background//grass");
             backgroundAssetList.Add("background//platform");
-            backgroundAssetList.Add("background//clouds1");
-            backgroundAssetList.Add("background//clouds2");
+            backgroundAssetList.Add("background//cloudsFull");
 
             base.Initialize();
         }
