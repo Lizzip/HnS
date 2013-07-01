@@ -13,10 +13,12 @@ using Microsoft.Xna.Framework.Media;
 
 namespace HnS
 {
+    //This is the "main game" screen, where the action in the game takes place. All
+    //code from the Game1 class can be placed here. 
     class actionScreen : gameScreen
     {
         KeyboardState kbState;
-        //Texture2D image;
+        
         Background background;
 
         public actionScreen(Game theGame, SpriteBatch theSpriteBatch)

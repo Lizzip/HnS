@@ -13,6 +13,8 @@ using Microsoft.Xna.Framework.Media;
 
 namespace HnS
 {
+    //Game screen layout class. Not instantiated itself but contains all items
+    //to instantiate a basic screen: main menu, pop-up menu, main game etc.
     public abstract class gameScreen : Microsoft.Xna.Framework.DrawableGameComponent
     {
         List<GameComponent> components = new List<GameComponent>();
@@ -39,6 +41,8 @@ namespace HnS
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            //Only update the components in the list if enabled is set to true
             foreach (GameComponent component in components)
                 if (component.Enabled == true)
                     component.Update(gameTime);
@@ -47,6 +51,8 @@ namespace HnS
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
+
+            //Only draw the each component if it is a drawable game component
             foreach (GameComponent component in components)
             {
                 if (component is DrawableGameComponent && ((DrawableGameComponent)component).Visible)
