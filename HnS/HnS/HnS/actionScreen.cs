@@ -18,7 +18,7 @@ namespace HnS
     class actionScreen : gameScreen
     {
         EntityManager entityManager;
-        Game game;
+        //Game game;
 
         //Input states
         KeyboardState currentKB, prevKB;
@@ -61,7 +61,7 @@ namespace HnS
             //Push images for background manager
             backgroundAssetList.Add("background//sky");
             backgroundAssetList.Add("background//mountains");
-            backgroundAssetList.Add("background//hills");
+            backgroundAssetList.Add("background//trees");
             backgroundAssetList.Add("background//grass");
             backgroundAssetList.Add("background//platform");
             backgroundAssetList.Add("background//cloudsFull");
@@ -92,6 +92,10 @@ namespace HnS
 
             //Entity manager - update all entities
             entityManager.updateAll(gameTime);
+
+            //If the player number of lives is 0. then quit
+            if (entityManager.getHero().getNumLives <= 0)
+                game.Exit();
 
             //Set previous mouse and keyboard states
             prevKB = currentKB;
