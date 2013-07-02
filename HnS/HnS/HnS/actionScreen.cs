@@ -61,8 +61,8 @@ namespace HnS
             //Push images for background manager
             backgroundAssetList.Add("background//sky");
             backgroundAssetList.Add("background//mountains");
+            backgroundAssetList.Add("background//hills");
             backgroundAssetList.Add("background//trees");
-            backgroundAssetList.Add("background//grass");
             backgroundAssetList.Add("background//platform");
             backgroundAssetList.Add("background//cloudsFull");
 

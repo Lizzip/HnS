@@ -18,68 +18,69 @@ namespace HnS
         //Texture members
         //
         // Only 4 textures names for 5 texture memmbers, 2 textures are loaded from the same file.
-        private string m_tex1Name, m_tex2Name, m_tex3Name, m_tex4Name;
-        private string m_cloudsName1, m_cloudsName2;
-        private string m_floorName; //name of floor texture
+        private string skyName, mountainsName, hillsName, treesName;
+        private string cloudsName;
+        private string floorName; //name of floor texture
 
         //List of textures to create the layered background. Texture3 and Texture5 are passed the same texture name
         // (this is to create the scroll-layer effect). 
-        private Texture2D m_texture1, m_texture2, m_texture3, m_texture4, m_texture5;
+        private Texture2D skyTex, mountainsTex, hillsTex, trees1Tex, trees2Tex;
         //Clouds
-        private Texture2D m_clouds1, m_clouds2; 
-        private Texture2D m_floorTex1, m_floorTex2; // Two textures for floor (both same file)
+        private Texture2D clouds1Tex, clouds2Tex; 
+        private Texture2D floor1Tex, floor2Tex; // Two textures for floor (both same file)
         
         //-------------
         //Position variables
-        private Vector2 m_pos1, m_pos2, m_pos3, m_pos4, m_pos5, m_pos6, m_pos7; //6 + 7 used for floor
-        private Vector2 m_clouds1Pos, m_clouds2Pos;
+        private Vector2 skyPos, mountainsPos, hillsPos, trees1Pos, trees2Pos;
+        private Vector2 clouds1Pos, clouds2Pos;
+        private Vector2 floor1Pos, floor2Pos;
         //-------------
         //Scroll speed variables
-        private float m_speed, m_floorSpeed, m_cloudsSpeed;
+        private float speed, floorSpeed, cloudsSpeed;
 
 
         //Constructor
         public Background(ContentManager contentManager, EntityManager eManager, List<string> textureNames, float scrollSpeed)
         {
             entityManager = eManager;
-            m_texture1 = null;
-            m_texture2 = null;
-            m_texture3 = null;
-            m_texture4 = null;
-            m_texture5 = null;
-            m_tex1Name = textureNames.ElementAt(0);
-            m_tex2Name = textureNames.ElementAt(1);
-            m_tex3Name = textureNames.ElementAt(2);
-            m_tex4Name = textureNames.ElementAt(3);
-            m_floorName = textureNames.ElementAt(4);
-            m_cloudsName1 = textureNames.ElementAt(5);
-            m_speed = scrollSpeed / 3;
-            m_floorSpeed = scrollSpeed * 2;
-            m_cloudsSpeed = scrollSpeed / 10;
+            skyTex = null;
+            mountainsTex = null;
+            hillsTex = null;
+            trees1Tex = null;
+            trees2Tex = null;
+            skyName = textureNames.ElementAt(0);
+            mountainsName = textureNames.ElementAt(1);
+            hillsName = textureNames.ElementAt(2);
+            treesName = textureNames.ElementAt(3);
+            floorName = textureNames.ElementAt(4);
+            cloudsName = textureNames.ElementAt(5);
+            speed = scrollSpeed / 3;
+            floorSpeed = scrollSpeed * 2;
+            cloudsSpeed = scrollSpeed / 10;
             LoadContent(contentManager);
         }
 
         //Load content
         public void LoadContent(ContentManager contentManager)
         {
-            m_texture1 = contentManager.Load<Texture2D>(m_tex1Name);
-            m_texture2 = contentManager.Load<Texture2D>(m_tex2Name);
-            m_texture3 = contentManager.Load<Texture2D>(m_tex3Name);
-            m_texture4 = contentManager.Load<Texture2D>(m_tex4Name);
-            m_texture5 = contentManager.Load<Texture2D>(m_tex3Name); // Same texture file as texture 3
-            m_floorTex1 = contentManager.Load<Texture2D>(m_floorName);
-            m_floorTex2 = contentManager.Load<Texture2D>(m_floorName); // Both floor textures loaded from same file
-            m_clouds1 = contentManager.Load<Texture2D>(m_cloudsName1);
-            m_clouds2 = contentManager.Load<Texture2D>(m_cloudsName1);
-            m_pos1 = Vector2.Zero;
-            m_pos2 = Vector2.Zero;
-            m_pos3 = Vector2.Zero;
-            m_pos4 = Vector2.Zero;
-            m_pos5 = new Vector2(m_texture3.Width, 0);
-            m_pos6 = Vector2.Zero;
-            m_pos7 = new Vector2(m_floorTex1.Width, 0);
-            m_clouds1Pos = Vector2.Zero;
-            m_clouds2Pos = new Vector2(m_clouds1Pos.X + m_clouds1.Width, 0);
+            skyTex = contentManager.Load<Texture2D>(skyName);
+            mountainsTex = contentManager.Load<Texture2D>(mountainsName);
+            hillsTex = contentManager.Load<Texture2D>(hillsName);
+            trees1Tex = contentManager.Load<Texture2D>(treesName);
+            trees2Tex = contentManager.Load<Texture2D>(treesName); // Same texture file as texture 3
+            floor1Tex = contentManager.Load<Texture2D>(floorName);
+            floor2Tex = contentManager.Load<Texture2D>(floorName); // Both floor textures loaded from same file
+            clouds1Tex = contentManager.Load<Texture2D>(cloudsName);
+            clouds2Tex = contentManager.Load<Texture2D>(cloudsName);
+            skyPos = Vector2.Zero;
+            mountainsPos = Vector2.Zero;
+            hillsPos = Vector2.Zero;
+            trees1Pos = Vector2.Zero;
+            trees2Pos = new Vector2(trees1Tex.Width, 0);
+            floor1Pos = Vector2.Zero;
+            floor2Pos = new Vector2(floor1Tex.Width, 0);
+            clouds1Pos = Vector2.Zero;
+            clouds2Pos = new Vector2(clouds1Tex.Width, 0);
         }
 
         public override void update(GameTime gameTime)
@@ -91,31 +92,31 @@ namespace HnS
             {
                 if (entityManager.getHero().getPos().X > entityManager.getScreenWidth() * 0.8)
                 {
-                    //scroll background image
-                    m_pos3.X -= m_speed;
-                    m_pos5.X -= m_speed;
-                    if (m_pos3.X <= -(m_texture3.Width))
-                        m_pos3.X = m_pos5.X + m_texture5.Width;
-                    if (m_pos5.X <= -(m_texture5.Width))
-                        m_pos5.X = m_pos3.X + m_texture3.Width;
+                    //scroll trees image
+                    trees1Pos.X -= speed;
+                    trees2Pos.X -= speed;
+                    if (trees1Pos.X <= -(trees1Tex.Width))
+                        trees1Pos.X = trees2Pos.X + trees2Tex.Width;
+                    if (trees2Pos.X <= -(trees2Tex.Width))
+                        trees2Pos.X = trees1Pos.X + trees1Tex.Width;
 
                     //scroll floor image
-                    m_pos6.X -= m_floorSpeed;
-                    m_pos7.X -= m_floorSpeed;
-                    if (m_pos6.X <= -(m_floorTex1.Width))
-                        m_pos6.X = m_pos7.X + m_floorTex2.Width;
-                    if (m_pos7.X <= -(m_floorTex2.Width))
-                        m_pos7.X = m_pos6.X + m_floorTex1.Width;
+                    floor1Pos.X -= floorSpeed;
+                    floor2Pos.X -= floorSpeed;
+                    if (floor1Pos.X <= -(floor1Tex.Width))
+                        floor1Pos.X = floor2Pos.X + floor2Tex.Width;
+                    if (floor2Pos.X <= -(floor2Tex.Width))
+                        floor2Pos.X = floor1Pos.X + floor1Tex.Width;
                 }
             }
 
             //scroll clouds
-            m_clouds1Pos.X -= m_cloudsSpeed;
-            m_clouds2Pos.X -= m_cloudsSpeed;
-            if (m_clouds1Pos.X <= -(m_clouds1.Width))
-                m_clouds1Pos.X = m_clouds2Pos.X + m_clouds2.Width;
-            if (m_clouds2Pos.X <= -(m_clouds2.Width))
-                m_clouds2Pos.X = m_clouds1Pos.X + m_clouds1.Width;
+            clouds1Pos.X -= cloudsSpeed;
+            clouds2Pos.X -= cloudsSpeed;
+            if (clouds1Pos.X <= -(clouds1Tex.Width))
+                clouds1Pos.X = clouds2Pos.X + clouds2Tex.Width;
+            if (clouds2Pos.X <= -(clouds2Tex.Width))
+                clouds2Pos.X = clouds1Pos.X + clouds1Tex.Width;
             
                 
             //Same as above except increase the texture positions so it appears the player
@@ -124,21 +125,21 @@ namespace HnS
             {
                 if (entityManager.getHero().getPos().X < entityManager.getScreenWidth() * 0.2)
                 {
-                    //scroll background image
-                    m_pos3.X += m_speed;
-                    m_pos5.X += m_speed;
-                    if (m_pos3.X >= m_texture3.Width)
-                        m_pos3.X = m_pos5.X - m_texture5.Width;
-                    if (m_pos5.X >= m_texture5.Width)
-                        m_pos5.X = m_pos3.X - m_texture3.Width;
+                    //scroll trees image
+                    trees1Pos.X += speed;
+                    trees2Pos.X += speed;
+                    if (trees1Pos.X >= trees1Tex.Width)
+                        trees1Pos.X = trees2Pos.X - trees2Tex.Width;
+                    if (trees2Pos.X >= trees2Tex.Width)
+                        trees2Pos.X = trees1Pos.X - trees1Tex.Width;
 
                     //scroll floor image
-                    m_pos6.X += m_floorSpeed;
-                    m_pos7.X += m_floorSpeed;
-                    if (m_pos6.X >= m_floorTex1.Width)
-                        m_pos6.X = m_pos7.X - m_floorTex2.Width;
-                    if (m_pos7.X >= m_floorTex2.Width)
-                        m_pos7.X = m_pos6.X - m_floorTex1.Width;
+                    floor1Pos.X += floorSpeed;
+                    floor2Pos.X += floorSpeed;
+                    if (floor1Pos.X >= floor1Tex.Width)
+                        floor1Pos.X = floor2Pos.X - floor2Tex.Width;
+                    if (floor2Pos.X >= floor2Tex.Width)
+                        floor2Pos.X = floor1Pos.X - floor1Tex.Width;
                 }
             }
 
@@ -147,11 +148,11 @@ namespace HnS
         public override void draw(SpriteBatch spriteBatch)
         {
             //Draw sky
-            spriteBatch.Draw(m_texture1, m_pos1, Color.White);
+            spriteBatch.Draw(skyTex, skyPos, Color.White);
 
             //Draw clouds
-            spriteBatch.Draw(m_clouds1, m_clouds1Pos, Color.White);
-            spriteBatch.Draw(m_clouds2, m_clouds2Pos, Color.White);
+            spriteBatch.Draw(clouds1Tex, clouds1Pos, Color.White);
+            spriteBatch.Draw(clouds2Tex, clouds2Pos, Color.White);
 
             //Draw mountains
 /*          spriteBatch.Draw(m_texture2, m_pos2, Color.White);
@@ -160,17 +161,16 @@ namespace HnS
             spriteBatch.Draw(m_texture4, m_pos4, Color.White);
  */
 
+            //Draw hills texture
+            spriteBatch.Draw(hillsTex, hillsPos, Color.White);
 
-            //Draw texture three and five (connected, scroll textures) before
-            //drawing the foreground texture (texture4)
-            spriteBatch.Draw(m_texture3, m_pos3, Color.White);
-            spriteBatch.Draw(m_texture5, m_pos5, Color.White);
-
-            
+            //Draw trees
+            spriteBatch.Draw(trees1Tex, trees1Pos, Color.White);
+            spriteBatch.Draw(trees2Tex, trees2Pos, Color.White);
 
             //Draw floor textures
-            spriteBatch.Draw(m_floorTex1, m_pos6, Color.White);
-            spriteBatch.Draw(m_floorTex2, m_pos7, Color.White);
+            spriteBatch.Draw(floor1Tex, floor1Pos, Color.White);
+            spriteBatch.Draw(floor2Tex, floor2Pos, Color.White);
         }
     }
 }
