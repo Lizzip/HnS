@@ -23,30 +23,37 @@ namespace HnS
         KeyboardState currentKB, prevKB;
         MouseState currentMouse, prevMouse;
 
-        //Textures and Fonts
-        List<Texture2D> images = new List<Texture2D>();
-        Texture2D healthBarOutline;
+        //Fonts
         SpriteFont smallFont;
         SpriteFont deathFont;
-        SpriteEffects spriteEffects;
+
+        //Textures
+        List<Texture2D> legImages = new List<Texture2D>();
+        List<Texture2D> topImages = new List<Texture2D>();
+        Texture2D healthBarOutline, temp;
+
+        //Animation
+        int activeLegImage = 0, activeTopImage = 0, 
+            walkingIndex = 0, jumpingImage = 4, stationaryLegImage = 3;
+        bool isJumping;
+        int[] walkingPattern;
+        float speed, scale, velocityY;
 
         //Timers
         List<float> countDownTimers = new List<float>();
         int walkingTimer = 0, deathTimer = 1;
 
-
         //Combat
-        Vector2 attackOrigin, healthTextPos, numLivesPos, deathTextPos;
+        Vector2 healthTextPos, numLivesPos, deathTextPos;
         float attackDamage, health;
         int numLives;
                 
         //General Vars
         //facing 0 = right, 1 = left
-        int activeImage = 0, facing = 0, walkingIndex = 0, jumpingImage = 9, charHeightOffset = 15;
+        int facing = 0, charHeightOffset = 2;
         Vector2 position;
-        float speed, scale, velocityY;
-        bool isJumping;
-        int[] walkingPattern;
+        SpriteEffects spriteEffects;
+        
 
         ///////////////////////////////////////////////////
         // CONSTRUCTORS AND LOADING ///////////////////////
@@ -54,7 +61,7 @@ namespace HnS
 
         public Hero() { }
 
-        public Hero(EntityManager eManager, Vector2 pos, ContentManager content, List<string> assets)
+        public Hero(EntityManager eManager, Vector2 pos, ContentManager content, List<string> legAssets, List<string> topAssets)
         {
             entityManager = eManager;
             isJumping = false;
@@ -66,18 +73,24 @@ namespace HnS
             attackDamage = 10.0f;
             numLives = 3;
             contentManager = content;
-            walkingPattern = new int[4] { 4, 5, 4, 6 };
-            loadContent(assets);
+            walkingPattern = new int[4] { 1, 2, 1, 0 };
+            loadContent(legAssets, topAssets);
         }
 
-        void loadContent(List<string> assets)
+        void loadContent(List<string> legAssets, List<string> topAssets)
         {
-            //Load all animation images for hero
-            Texture2D temp;
-            for (int i = 0, len = assets.Count; i < len; i++)
+            //Load all leg images
+            for (int i = 0, len = legAssets.Count; i < len; i++)
             {
-                temp = contentManager.Load<Texture2D>(assets.ElementAt(i));
-                images.Add(temp);
+                temp = contentManager.Load<Texture2D>(legAssets.ElementAt(i));
+                legImages.Add(temp);
+            }
+
+            //Load all top images
+            for (int i = 0, len = topAssets.Count; i < len; i++)
+            {
+                temp = contentManager.Load<Texture2D>(topAssets.ElementAt(i));
+                topImages.Add(temp);
             }
 
             //Load other images and fonts
@@ -86,7 +99,7 @@ namespace HnS
             deathFont = contentManager.Load<SpriteFont>("deathFont");
 
             //Set other variables (adjust default draw height for image height - to draw hero standing on platform)
-            position.Y -= images.ElementAt(0).Height * scale;
+            position.Y -= topImages.ElementAt(0).Height *scale;
             healthTextPos = new Vector2(25, 17);
             numLivesPos = new Vector2(25, 35);
             deathTextPos = new Vector2((float)entityManager.getScreenWidth() / 3, (float)entityManager.getScreenHeight() / 2);
@@ -124,8 +137,8 @@ namespace HnS
             //Attack with left mouseclick
             if (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released)
             {
-                if (activeImage == 0) activeImage = 2;
-                else activeImage = 0;
+                if (activeLegImage == 0) activeLegImage = 2;
+                else activeLegImage = 0;
 
                 broadcastAttack();
             }
@@ -187,17 +200,32 @@ namespace HnS
             if(facing == 0)spriteEffects = SpriteEffects.None;
             else spriteEffects = SpriteEffects.FlipHorizontally;
 
-            //if jumping draw jump image, else draw walking image
+            //Draw leg image
             if (isJumping)
             {
-                theSpriteBatch.Draw(images.ElementAt(jumpingImage), position, null,
+                //Draw jumping leg image
+                theSpriteBatch.Draw(legImages.ElementAt(jumpingImage), position, null,
                     Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
             }
             else
             {
-                theSpriteBatch.Draw(images.ElementAt(walkingPattern[walkingIndex]), position, null,
+                if (currentKB.IsKeyDown(Keys.A) == false && currentKB.IsKeyDown(Keys.D) == false)
+                {
+                    //Draw stationary leg image
+                    theSpriteBatch.Draw(legImages.ElementAt(stationaryLegImage), position, null,
                     Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+                }
+                else
+                {
+                    //Draw active walking leg image
+                    theSpriteBatch.Draw(legImages.ElementAt(walkingPattern[walkingIndex]), position, null,
+                        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+                }
             }
+
+            //Draw top image
+            theSpriteBatch.Draw(topImages.ElementAt(activeTopImage), position, null,
+                    Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
 
             //Draw white health bar outline
             theSpriteBatch.Draw(healthBarOutline, new Vector2(20, 19), Color.White);
@@ -248,12 +276,12 @@ namespace HnS
 
             //Once the player Y position reaches the platform
             //the isJumping bool is set to false (can't fall below platform)
-            if (position.Y + (images.ElementAt(activeImage).Height * scale) >= entityManager.getPlatformHeight()-charHeightOffset && isJumping)
+            if (position.Y + (legImages.ElementAt(activeLegImage).Height * scale) >= entityManager.getPlatformHeight()-charHeightOffset && isJumping)
             {
                 isJumping = false;
 
                 //Ensure player is set to exact same height after every jump (was varying slightly before due to decrementing by float)
-                position.Y = entityManager.getPlatformHeight() - charHeightOffset - (images.ElementAt(activeImage).Height * scale);
+                position.Y = entityManager.getPlatformHeight() - charHeightOffset - (legImages.ElementAt(activeLegImage).Height * scale);
                 
             }
         }
