@@ -19,6 +19,11 @@ namespace HnS
         ContentManager contentManager;
         EntityManager entityManager;
 
+        //FPS counter
+        int frameRate = 0;
+        int frameCounter = 0;
+        TimeSpan elapsedTime = TimeSpan.Zero;
+
         //Input states
         KeyboardState currentKB, prevKB;
         MouseState currentMouse, prevMouse;
@@ -116,6 +121,16 @@ namespace HnS
 
         public override void update(Microsoft.Xna.Framework.GameTime theGameTime)
         {
+            //Update FPS
+            elapsedTime += theGameTime.ElapsedGameTime;
+
+            if (elapsedTime > TimeSpan.FromSeconds(1))
+            {
+                elapsedTime -= TimeSpan.FromSeconds(1);
+                frameRate = frameCounter;
+                frameCounter = 0;
+            }
+
             //Count down all count down timers in progress
             for (int i = 0, len = countDownTimers.Count; i < len; i++)
             {
@@ -247,6 +262,12 @@ namespace HnS
             //Display death text after dying
             if (countDownTimers[deathTimer] > 0.0f)
                 theSpriteBatch.DrawString(deathFont, "YOU LOSE A LIFE", deathTextPos, Color.Red);
+
+            //Draw FPS
+            frameCounter++;
+            string fps = string.Format("fps: {0}", frameRate);
+            theSpriteBatch.DrawString(smallFont, fps, new Vector2(713, 13), Color.Black);
+            theSpriteBatch.DrawString(smallFont, fps, new Vector2(712, 12), Color.White);
 
             base.draw(theSpriteBatch);
         }
