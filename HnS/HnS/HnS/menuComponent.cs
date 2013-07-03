@@ -111,6 +111,7 @@ namespace HnS
 
         public override void Update(GameTime gameTime)
         {
+            kbState = Keyboard.GetState();
             //If the down arrow is pressed, increase the index of the selected item, 
             //moving it down the list of items. Set the selected index back to the top
             //of the list if we pass the bottom of the list.

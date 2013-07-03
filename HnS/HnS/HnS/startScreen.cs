@@ -22,10 +22,10 @@ namespace HnS
         }
 
         public startScreen(Game theGame, SpriteBatch theSpriteBatch,
-            SpriteFont theSpriteFont, Texture2D theImage)
+            SpriteFont theSpriteFont, Texture2D theImage, string[] theMenuItems)
             : base(theGame, theSpriteBatch)
         {
-            string[] menuItems = { "Start Game", "End Game" };
+            string[] menuItems = theMenuItems;
             menuComponent = new menuComponent(theGame, theSpriteBatch, theSpriteFont,
                 menuItems);
             Components.Add(menuComponent);

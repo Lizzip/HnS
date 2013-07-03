@@ -31,6 +31,34 @@ namespace HnS
         List<string> enemyAssetList = new List<string>();
         List<string> backgroundAssetList = new List<string>();
 
+          
+        
+        //////////////////////////////////////////////
+        //GAME SCREEN STUFF - IGNORE FOR NOW ! :P
+         
+        //Game screens
+        gameScreen activeScreen;
+        startScreen startScreen;
+        actionScreen actionScreen;
+        popupScreen quitScreen;
+        popupScreen pauseScreen;
+
+        //Pause screen states
+        bool isPaused = false;
+        SpriteFont largeText;
+        string pausedText = "PAUSED";
+        Vector2 pausedTextPos;
+        Vector2 pausedTextOrigin;
+
+        //Screen text string lists
+        string[] startItems = { "Start Game", "End Game" };
+        string[] quitItems = { "Yes", "No" };
+        string[] pauseItems = { "PAUSED" };
+
+        // END GAME SCREEN STUFF
+        ////////////////////////
+
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -84,6 +112,35 @@ namespace HnS
             entityManager.createHero(new Vector2(100, platformHeight), heroLegAssetList, heroTopAssetList);
             entityManager.createEnemy(new Vector2(900, platformHeight), enemyAssetList);
             entityManager.createEnemy(new Vector2(-200, platformHeight), enemyAssetList);
+
+            /////////////////////////////////////////////
+            // GAME SCREEN INITIALISATION - IGNORE FOR NOW//
+            ////////////////////////////////////////////////
+            //startScreen = new startScreen(this, spriteBatch, Content.Load<SpriteFont>("menufont"),
+            //    Content.Load<Texture2D>("screens\\startscreen"), startItems);
+            //Components.Add(startScreen);
+            //startScreen.Hide();
+
+            //actionScreen = new actionScreen(this, Content, spriteBatch);
+            //actionScreen.loadContent(Content);
+            //Components.Add(actionScreen);
+            //actionScreen.Hide();
+
+            //quitScreen = new popupScreen(this, spriteBatch, Content.Load<SpriteFont>("menufont"),
+            //    Content.Load<Texture2D>("screens\\quitscreen"), quitItems);
+            //Components.Add(quitScreen);
+            //quitScreen.Hide();
+
+            //pauseScreen = new popupScreen(this, spriteBatch, Content.Load<SpriteFont>("pausefont"),
+            //    Content.Load<Texture2D>("screens\\flame2"), pauseItems);
+            //Components.Add(pauseScreen);
+            //pauseScreen.Hide();
+
+            //activeScreen = startScreen;
+            //activeScreen.Show();
+
+            // END GAME SCREEN 
+            //////////////////////////////////////
         }
 
         protected override void UnloadContent(){}
@@ -95,7 +152,7 @@ namespace HnS
             currentMouse = Mouse.GetState();
 
             //Quit game on Esc key press
-            if (currentKB.IsKeyDown(Keys.Escape)) this.Exit();
+            if (CheckKey(Keys.Escape)) this.Exit();
 
             //EntityManager - Update all entities
             entityManager.updateAll(gameTime);
@@ -104,11 +161,106 @@ namespace HnS
             if (entityManager.getHero().getNumLives <= 0)
                 this.Exit();
 
+
+            ///////////////////////////////////////////////
+            // GAME SCREEN STUFF - IGNORE FOR NOW ///////
+            //////////////////////////////////////////////
+            //if (activeScreen == startScreen)
+            //    HandleStartScreen();
+            //else if (activeScreen == actionScreen)
+            //    HandleActionScreen(gameTime);
+            //else if (activeScreen == quitScreen)
+            //    HandleQuitScreen();
+            //else if (activeScreen == pauseScreen)
+            //    HandlePauseScreen();
+            // END GAME SCREEN //
+            /////////////////////////////////
+
+            base.Update(gameTime);
+
             //Set previous mouse and keyboard states
             prevKB = currentKB;
             prevMouse = currentMouse;
-            base.Update(gameTime);
+            
         }
+
+        private void HandleStartScreen()
+        {
+            if (CheckKey(Keys.Enter))
+            {
+                if (startScreen.SelectedIndex == 0)
+                {
+                    activeScreen.Hide();
+                    activeScreen = actionScreen;
+                    activeScreen.Show();
+                }
+                if (startScreen.SelectedIndex == 1)
+                {
+                    this.Exit();
+                }
+            }
+        }
+
+        private void HandleActionScreen(GameTime gameTime)
+        {
+            actionScreen.Update(gameTime);
+
+            if (CheckKey(Keys.Escape))
+            {
+                activeScreen.Enabled = false;
+                activeScreen = quitScreen;
+                activeScreen.Show();
+            }
+
+            if (CheckKey(Keys.P) && !isPaused)
+            {
+                isPaused = true;
+                activeScreen.Enabled = false;
+                activeScreen = pauseScreen;
+                activeScreen.Show();
+            }
+
+
+        }
+
+        private void HandleQuitScreen()
+        {
+            if (CheckKey(Keys.Enter))
+            {
+                if (quitScreen.SelectedIndex == 0)
+                {
+                    activeScreen.Hide();
+                    actionScreen.Hide();
+                    activeScreen = startScreen;
+                    activeScreen.Show();
+                    
+                }
+
+                if (quitScreen.SelectedIndex == 1)
+                {
+                    activeScreen.Hide();
+                    activeScreen = actionScreen;
+                    activeScreen.Show();
+                }
+            }
+        }
+
+        private void HandlePauseScreen()
+        {
+            if (isPaused && CheckKey(Keys.P))
+            {
+                isPaused = false;
+                activeScreen.Hide();
+                activeScreen = actionScreen;
+                activeScreen.Show();
+            }
+        }
+
+        private bool CheckKey(Keys key)
+        {
+            return currentKB.IsKeyUp(key) && prevKB.IsKeyDown(key);
+        }
+        
 
         protected override void Draw(GameTime gameTime)
         {
@@ -116,12 +268,19 @@ namespace HnS
             GraphicsDevice.Clear(Color.Gray);
             spriteBatch.Begin();
             
+            /////////////////////////////////////
+            // COMMENT THIS SECTION OUT TO TEST GAME SCREENS
+
             //EntityManager - Draw all entities
             entityManager.drawAll(spriteBatch);
             debugger.Output(spriteBatch);
-            
-            spriteBatch.End();
+
+            // END OF COMMENT OUT SECTION
+            /////////////////////////////////
+
             base.Draw(gameTime);
+            spriteBatch.End();
+            
         }
     }
 }

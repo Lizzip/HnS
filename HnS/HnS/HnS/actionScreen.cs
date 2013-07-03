@@ -19,6 +19,7 @@ namespace HnS
     {
         EntityManager entityManager;
         //Game game;
+        public static Debugger debugger;
 
         //Input states
         KeyboardState currentKB, prevKB;
@@ -35,11 +36,14 @@ namespace HnS
         public actionScreen(Game theGame, ContentManager theContent, SpriteBatch theSpriteBatch)
             : base(theGame, theSpriteBatch)
         {
+            //Create the debugger
+            debugger = new Debugger(theContent);
+
             game = theGame;
 
             //Create the entity manager
-    //        entityManager = new EntityManager(theContent, platformHeight, windowWidth,
-    //            windowHeight);
+            entityManager = new EntityManager(theContent, debugger, platformHeight, windowWidth,
+               windowHeight);
 
             //Push images for hero legs to list
             heroLegAssetList.Add("hero//legsNarrow");
@@ -87,7 +91,7 @@ namespace HnS
             currentMouse = Mouse.GetState();
 
             //Quit if escape key is pressed
-            if (currentKB.IsKeyDown(Keys.Escape)) game.Exit();
+            //if (currentKB.IsKeyDown(Keys.Escape)) game.Exit();
 
             //Entity manager - update all entities
             entityManager.updateAll(gameTime);
@@ -99,19 +103,19 @@ namespace HnS
             //Set previous mouse and keyboard states
             prevKB = currentKB;
             prevMouse = currentMouse;
-            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
             //Set background colour to grey
             GraphicsDevice.Clear(Color.Gray);
-            spriteBatch.Begin();
+            //spriteBatch.Begin();
 
             //EntityManager - draw all entities
             entityManager.drawAll(spriteBatch);
+            debugger.Out(spriteBatch);
 
-            spriteBatch.End();
+            //spriteBatch.End();
 
             base.Draw(gameTime);
         }
