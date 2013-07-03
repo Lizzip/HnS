@@ -38,8 +38,8 @@ namespace HnS
             game = theGame;
 
             //Create the entity manager
-            entityManager = new EntityManager(theContent, platformHeight, windowWidth,
-                windowHeight);
+    //        entityManager = new EntityManager(theContent, platformHeight, windowWidth,
+    //            windowHeight);
 
             //Push images for hero legs to list
             heroLegAssetList.Add("hero//legsNarrow");

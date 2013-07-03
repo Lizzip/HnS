@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="actionScreen.cs" />
     <Compile Include="Background.cs" />
+    <Compile Include="Debugger.cs" />
     <Compile Include="enemy.cs" />
     <Compile Include="entity.cs" />
     <Compile Include="entityManager.cs" />

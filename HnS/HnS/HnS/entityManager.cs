@@ -22,6 +22,7 @@ namespace HnS
 
         //Loaders and Managers
         ContentManager contentManager;
+        Debugger debugger;
 
         //UID Management
         int nextUID = 0, heroUID;
@@ -42,13 +43,14 @@ namespace HnS
         ///////////////////////////////////////////////////
 
         //Constructor
-        public EntityManager(ContentManager content, int pHeight, int screenW, int screenH, int maxEnemies = 8)
+        public EntityManager(ContentManager content, Debugger debug, int pHeight, int screenW, int screenH, int maxEnemies = 8)
         {
             contentManager = content;
             platformHeight = pHeight;
             screenWidth = screenW;
             screenHeight = screenH;
             maxEnemyCount = maxEnemies;
+            debugger = debug;
         }
 
         //Create player char entity
@@ -135,6 +137,11 @@ namespace HnS
         public int getMaxEnemyCount()
         {
             return maxEnemyCount;
+        }
+
+        public Debugger getDebugger()
+        {
+            return debugger;
         }
 
         ///////////////////////////////////////////////////

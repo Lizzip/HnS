@@ -59,7 +59,6 @@ namespace HnS
         Vector2 position;
         SpriteEffects spriteEffects;
         
-
         ///////////////////////////////////////////////////
         // CONSTRUCTORS AND LOADING ///////////////////////
         ///////////////////////////////////////////////////
@@ -113,7 +112,6 @@ namespace HnS
             countDownTimers.Add(250.0f);//walking timer
             countDownTimers.Add(0.0f);//death timer
         }
-
 
         ///////////////////////////////////////////////////
         // ENTITY OVERRIDES ///////////////////////////////
@@ -285,6 +283,9 @@ namespace HnS
                 position.Y -= 10.0f;
                 velocityY = -3.0f;
                 isJumping = true;
+
+                //Debugger test
+                entityManager.getDebugger().Out("Jump", theGameTime.TotalGameTime);
             }
 
             //Make the character fall based on in increasing Y velocity

@@ -17,7 +17,8 @@ namespace HnS
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         EntityManager entityManager;
-
+        public static Debugger debugger;
+        
         //Input states
         KeyboardState currentKB, prevKB;
         MouseState currentMouse, prevMouse;
@@ -43,8 +44,11 @@ namespace HnS
 
         protected override void Initialize()
         {
+            //Create the debugger
+            debugger = new Debugger(Content);
+
             //Create entity manager
-            entityManager = new EntityManager(Content, platformHeight, windowWidth, windowHeight);
+            entityManager = new EntityManager(Content, debugger, platformHeight, windowWidth, windowHeight);
 
             //Push images for hero legs to list
             heroLegAssetList.Add("hero//legsNarrow");
@@ -79,7 +83,7 @@ namespace HnS
             entityManager.createBackground(backgroundAssetList, 2.0f);
             entityManager.createHero(new Vector2(100, platformHeight), heroLegAssetList, heroTopAssetList);
             entityManager.createEnemy(new Vector2(900, platformHeight), enemyAssetList);
-            entityManager.createEnemy(new Vector2(-200, platformHeight), enemyAssetList); 
+            entityManager.createEnemy(new Vector2(-200, platformHeight), enemyAssetList);
         }
 
         protected override void UnloadContent(){}
@@ -114,6 +118,7 @@ namespace HnS
             
             //EntityManager - Draw all entities
             entityManager.drawAll(spriteBatch);
+            debugger.Output(spriteBatch);
             
             spriteBatch.End();
             base.Draw(gameTime);
