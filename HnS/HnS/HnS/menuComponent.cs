@@ -129,7 +129,7 @@ namespace HnS
                 if (selectedIndex < 0)
                     selectedIndex = menuItems.Length - 1;
             }
-
+            
             base.Update(gameTime);
 
             prevKbState = kbState;

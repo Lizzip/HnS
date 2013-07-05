@@ -103,6 +103,8 @@ namespace HnS
             //Set previous mouse and keyboard states
             prevKB = currentKB;
             prevMouse = currentMouse;
+            
+            
         }
 
         public override void Draw(GameTime gameTime)

@@ -34,6 +34,11 @@ namespace HnS
                 theGame.Window.ClientBounds.Height);
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+        }
+
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Draw(image, imageRectangle, Color.White);

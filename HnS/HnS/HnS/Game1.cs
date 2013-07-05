@@ -45,10 +45,6 @@ namespace HnS
 
         //Pause screen states
         bool isPaused = false;
-        SpriteFont largeText;
-        string pausedText = "PAUSED";
-        Vector2 pausedTextPos;
-        Vector2 pausedTextOrigin;
 
         //Screen text string lists
         string[] startItems = { "Start Game", "End Game" };
@@ -176,11 +172,13 @@ namespace HnS
             // END GAME SCREEN //
             /////////////////////////////////
 
+
             base.Update(gameTime);
 
             //Set previous mouse and keyboard states
             prevKB = currentKB;
             prevMouse = currentMouse;
+            
             
         }
 
