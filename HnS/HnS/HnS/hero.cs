@@ -366,7 +366,7 @@ namespace HnS
                 isAttacking = true;
                 attackIndex = 0;
                 broadcastAttack();
-                countDownTimers[attackTimer] = 20.0f;
+                countDownTimers[attackTimer] = 35.0f;
                 entityManager.getDebugger().Out("Attack", theGameTime.TotalGameTime); //Debugger test for attacking
             }
 
@@ -377,7 +377,7 @@ namespace HnS
                     if (attackIndex < 4)
                     {
                         attackIndex++;
-                        countDownTimers[attackTimer] = 20.0f;
+                        countDownTimers[attackTimer] = 30.0f;
                     }
                     else if (attackIndex == 4)
                     {
