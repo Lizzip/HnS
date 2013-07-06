@@ -83,6 +83,9 @@ namespace HnS
 
             //Push images for hero top to list
             heroTopAssetList.Add("hero//topStandard");
+            heroTopAssetList.Add("hero//topAttack1");
+            heroTopAssetList.Add("hero//topAttack2");
+            heroTopAssetList.Add("hero//topAttack3");
 
             //Push images for enemy entity to list
             enemyAssetList.Add("enemy1");

@@ -38,20 +38,21 @@ namespace HnS
         Texture2D healthBarOutline, temp;
 
         //Animation
-        int activeLegImage = 0, activeTopImage = 0, 
+        int activeTopImage = 0, stationaryTopImage = 0,
             walkingIndex = 0, jumpingImage = 4, stationaryLegImage = 3;
-        bool isJumping;
-        int[] walkingPattern;
+        bool isJumping, isAttacking;
+        int[] walkingPattern, attackPattern;
         float speed, scale, velocityY;
 
         //Timers
         List<float> countDownTimers = new List<float>();
-        int walkingTimer = 0, deathTimer = 1;
+        int walkingTimer = 0, deathTimer = 1, attackTimer = 2;
 
         //Combat
         Vector2 healthTextPos, numLivesPos, deathTextPos;
         float attackDamage, health;
-        int numLives;
+        int numLives, attackIndex = 4;
+        
                 
         //General Vars
         //facing 0 = right, 1 = left
@@ -69,6 +70,7 @@ namespace HnS
         {
             entityManager = eManager;
             isJumping = false;
+            isAttacking = false;
             velocityY = 0;
             position = pos;
             health = 100.0f;
@@ -78,6 +80,7 @@ namespace HnS
             numLives = 3;
             contentManager = content;
             walkingPattern = new int[4] { 1, 2, 1, 0 };
+            attackPattern = new int[3] { 1, 2, 3 };
             loadContent(legAssets, topAssets);
         }
 
@@ -111,13 +114,14 @@ namespace HnS
             //Create countdown timers
             countDownTimers.Add(250.0f);//walking timer
             countDownTimers.Add(0.0f);//death timer
+            countDownTimers.Add(0.0f);//Attack timer
         }
 
         ///////////////////////////////////////////////////
         // ENTITY OVERRIDES ///////////////////////////////
         ///////////////////////////////////////////////////
 
-        public override void update(Microsoft.Xna.Framework.GameTime theGameTime)
+        public override void update(GameTime theGameTime)
         {
             //Update FPS
             elapsedTime += theGameTime.ElapsedGameTime;
@@ -148,13 +152,7 @@ namespace HnS
             Jump(theGameTime);
 
             //Attack with left mouseclick
-            if (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released)
-            {
-                if (activeLegImage == 0) activeLegImage = 2;
-                else activeLegImage = 0;
-
-                broadcastAttack();
-            }
+            attack(theGameTime, currentMouse, prevMouse);
 
             ////////////////////////////////
             // Death testing ///////////////
@@ -237,8 +235,18 @@ namespace HnS
             }
 
             //Draw top image
-            theSpriteBatch.Draw(topImages.ElementAt(activeTopImage), position, null,
-                    Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+            if (attackIndex < 3)
+            {
+                //Draw current active attack image
+                theSpriteBatch.Draw(topImages.ElementAt(attackPattern[attackIndex]), position, null,
+                        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+            }
+            else
+            {
+                //Draw default waist high sword image
+                theSpriteBatch.Draw(topImages.ElementAt(stationaryTopImage), position, null,
+                        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+            }
 
             //Draw white health bar outline
             theSpriteBatch.Draw(healthBarOutline, new Vector2(20, 19), Color.White);
@@ -283,9 +291,6 @@ namespace HnS
                 position.Y -= 10.0f;
                 velocityY = -3.0f;
                 isJumping = true;
-
-                //Debugger test
-                entityManager.getDebugger().Out("Jump", theGameTime.TotalGameTime);
             }
 
             //Make the character fall based on in increasing Y velocity
@@ -298,12 +303,12 @@ namespace HnS
 
             //Once the player Y position reaches the platform
             //the isJumping bool is set to false (can't fall below platform)
-            if (position.Y + (legImages.ElementAt(activeLegImage).Height * scale) >= entityManager.getPlatformHeight()-charHeightOffset && isJumping)
+            if (position.Y + (legImages.ElementAt(jumpingImage).Height * scale) >= entityManager.getPlatformHeight() - charHeightOffset && isJumping)
             {
                 isJumping = false;
 
                 //Ensure player is set to exact same height after every jump (was varying slightly before due to decrementing by float)
-                position.Y = entityManager.getPlatformHeight() - charHeightOffset - (legImages.ElementAt(activeLegImage).Height * scale);
+                position.Y = entityManager.getPlatformHeight() - charHeightOffset - (legImages.ElementAt(jumpingImage).Height * scale);
                 
             }
         }
@@ -351,6 +356,36 @@ namespace HnS
         void broadcastAttack()
         {
             entityManager.broadcastAttack(attackDamage, position);
+        }
+
+        private void attack(GameTime theGameTime, MouseState currentMS, MouseState prevMS)
+        {
+            //Check for left mouse click - Attack if not currently attacking
+            if (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released && !isAttacking)
+            {
+                isAttacking = true;
+                attackIndex = 0;
+                broadcastAttack();
+                countDownTimers[attackTimer] = 20.0f;
+                entityManager.getDebugger().Out("Attack", theGameTime.TotalGameTime); //Debugger test for attacking
+            }
+
+            if (isAttacking)
+            {
+                if (countDownTimers[attackTimer] < 0.0f)
+                {
+                    if (attackIndex < 4)
+                    {
+                        attackIndex++;
+                        countDownTimers[attackTimer] = 20.0f;
+                    }
+                    else if (attackIndex == 4)
+                    {
+                        isAttacking = false;
+                    }
+                }
+            }
+            
         }
     }
 }
