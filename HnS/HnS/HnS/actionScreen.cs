@@ -100,6 +100,7 @@ namespace HnS
             if (entityManager.getHero().getNumLives <= 0)
                 game.Exit();
 
+
             //Set previous mouse and keyboard states
             prevKB = currentKB;
             prevMouse = currentMouse;
@@ -109,6 +110,7 @@ namespace HnS
 
         public override void Draw(GameTime gameTime)
         {
+            base.Draw(gameTime);
             //Set background colour to grey
             GraphicsDevice.Clear(Color.Gray);
             //spriteBatch.Begin();
@@ -119,7 +121,7 @@ namespace HnS
 
             //spriteBatch.End();
 
-            base.Draw(gameTime);
+            
         }
 
     }

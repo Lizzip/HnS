@@ -88,7 +88,7 @@ namespace HnS
             //Set the scroll speed for if the player is moving right. Move left the third and fifth
             //texture positions so it looks like the player is moving in the right direction. Tag 
             //texture 5 onto the end of texture 3, and vice versa.
-            if (entityManager.getHero().MoveRight())
+            if (entityManager.getHero().IsMovingRight())
             {
                 if (entityManager.getHero().getPos().X > entityManager.getScreenWidth() * 0.8)
                 {
@@ -121,7 +121,7 @@ namespace HnS
                 
             //Same as above except increase the texture positions so it appears the player
             //is moving in the left direction.
-            else if (entityManager.getHero().MoveLeft())
+            else if (entityManager.getHero().IsMovingLeft())
             {
                 if (entityManager.getHero().getPos().X < entityManager.getScreenWidth() * 0.2)
                 {

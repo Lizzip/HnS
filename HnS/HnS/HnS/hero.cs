@@ -37,12 +37,30 @@ namespace HnS
         List<Texture2D> topImages = new List<Texture2D>();
         Texture2D healthBarOutline, temp, bloodSplat;
 
+        ////////////////////////////////////////////////
         //Animation
         int activeTopImage = 0, stationaryTopImage = 0,
             walkingIndex = 0, jumpingImage = 4, stationaryLegImage = 3;
-        bool isJumping, isAttacking;
+        //bool isJumping, isAttacking;
         int[] walkingPattern, attackPattern;
         float speed, scale, velocityY;
+
+        //Animation
+        animation bodyAnimation, armAnimation;
+        public animation GetBodyAnimation
+        {
+            get { return bodyAnimation; }
+        }
+
+        public animation GetArmAnimation
+        {
+            get { return armAnimation; }
+        }
+
+        Vector2 bodyTempCurrentFrame, armTempCurrentFrame;
+        bool isJumping, isAttacking, flip;
+        //////////////////////////////////////////////
+        
 
         //Timers
         List<float> countDownTimers = new List<float>();
@@ -70,13 +88,25 @@ namespace HnS
         {
             entityManager = eManager;
             UID = uid;
+
+            //Movement and animation
             isJumping = false;
             isAttacking = false;
+            flip = false;
             velocityY = 0;
             position = pos;
-            health = 100.0f;
             speed = 0.15f;
+
+            bodyTempCurrentFrame = Vector2.Zero;
+            armTempCurrentFrame = Vector2.Zero;
+            bodyAnimation = new animation(position, new Vector2(4, 2));
+            armAnimation = new animation(position, new Vector2(6, 1));
+            
+
+
             scale = 0.7f;
+
+            health = 100.0f;
             attackDamage = 10.0f;
             numLives = 3;
             contentManager = content;
@@ -87,6 +117,12 @@ namespace HnS
 
         void loadContent(List<string> legAssets, List<string> topAssets)
         {
+            //Animation stuff
+            bodyAnimation.AnimationImage = contentManager.Load<Texture2D>("hero\\herospritesheet");
+            armAnimation.AnimationImage = contentManager.Load <Texture2D>("hero\\heroarmspritesheet");
+
+
+
             //Load all leg images
             for (int i = 0, len = legAssets.Count; i < len; i++)
             {
@@ -126,6 +162,21 @@ namespace HnS
 
         public override void update(GameTime theGameTime)
         {
+            //Animation
+            //bodyAnimation.Active = true;
+            //armAnimation.Active = true;
+
+            bodyTempCurrentFrame.X = bodyAnimation.CurrentFrame.X;
+            bodyAnimation.Position = position;
+            bodyAnimation.CurrentFrame = bodyTempCurrentFrame;
+            bodyAnimation.Update(theGameTime);
+
+
+            armTempCurrentFrame.X = armAnimation.CurrentFrame.X;
+            armAnimation.Position = position;
+            armAnimation.CurrentFrame = armTempCurrentFrame;
+            armAnimation.Update(theGameTime);
+
             //Update FPS
             elapsedTime += theGameTime.ElapsedGameTime;
 
@@ -171,35 +222,22 @@ namespace HnS
             }
 
 
-            //Switch directions
-            if (MoveLeft()) facing = 1;
-            if (MoveRight()) facing = 0;
-
-            //Walking movement
+            //Movement and animation
             if (currentKB.IsKeyDown(Keys.D))
             {
-                if (countDownTimers[walkingTimer] < 0.0f)
-                {
-                    if (walkingIndex < 3) walkingIndex++;
-                    else walkingIndex = 0;
-                    countDownTimers[walkingTimer] = 100.0f;
-                }
-                
-                if(position.X < entityManager.getScreenWidth() * 0.8)
-                    position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
+                facing = 0;
+                MoveRight(theGameTime);
             }
+
             else if (currentKB.IsKeyDown(Keys.A))
             {
-                if (countDownTimers[walkingTimer] < 0.0f)
-                {
-                    if (walkingIndex < 3) walkingIndex++;
-                    else walkingIndex = 0;
-
-                    countDownTimers[walkingTimer] = 100.0f;
-                }
-                
-                if(position.X > entityManager.getScreenWidth() * 0.15)
-                    position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
+                facing = 1;
+                MoveLeft(theGameTime);
+            }
+            else
+            {
+                bodyAnimation.Active = false;
+                armAnimation.Active = false;
             }
 
             //Set previous mouse and keyboard states
@@ -213,6 +251,9 @@ namespace HnS
             //If facing right (0) draw normally, if facing left (1) flip sprite horizontally
             if(facing == 0)spriteEffects = SpriteEffects.None;
             else spriteEffects = SpriteEffects.FlipHorizontally;
+
+            //bodyAnimation.Draw(theSpriteBatch, scale, flip);
+            //armAnimation.Draw(theSpriteBatch, scale, flip);
 
             //Draw leg image
             if (isJumping)
@@ -301,8 +342,15 @@ namespace HnS
             {
                 float i = 0.15f;
                 velocityY += i;
+                //Set the Y frame to the first line of the spritesheet
+                bodyTempCurrentFrame.Y = 0;
             }
-            else velocityY = 0;
+            else
+            {
+                velocityY = 0;
+                //Set the Y frame to the second line of the spritesheet
+                //bodyTempCurrentFrame.Y = 1;
+            }
 
             //Once the player Y position reaches the platform
             //the isJumping bool is set to false (can't fall below platform)
@@ -316,16 +364,63 @@ namespace HnS
             }
         }
 
-        public bool MoveLeft()
+        public bool IsMovingLeft()
         {
-            if (currentKB.IsKeyDown(Keys.A)) return true;
+            if (currentKB.IsKeyDown(Keys.A))
+                return true;
             else return false;
         }
 
-        public bool MoveRight()
+        public void MoveLeft(GameTime theGameTime)
         {
-            if (currentKB.IsKeyDown(Keys.D)) return true;
+            //Set the Y frame to the second line of the body spritesheet if not jumping
+            //and set the animation to active.
+            if(!isJumping)
+                bodyTempCurrentFrame.Y = 1;
+            bodyAnimation.Active = true;
+            //Flip the animation if moving left. This is passed into the animation draw
+            //method.
+            flip = true;
+
+            if (countDownTimers[walkingTimer] < 0.0f)
+            {
+                if (walkingIndex < 3) walkingIndex++;
+                else walkingIndex = 0;
+
+                countDownTimers[walkingTimer] = 100.0f;
+            }
+
+            if (position.X > entityManager.getScreenWidth() * 0.15)
+                position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
+        }
+
+        public bool IsMovingRight()
+        {
+            if (currentKB.IsKeyDown(Keys.D))
+                return true;
             else return false;
+        }
+
+        public void MoveRight(GameTime theGameTime)
+        {
+            //Set the Y frame to the second line of the body spritesheet if not jumping
+            //and set the animation to active.
+            if (!isJumping)
+                bodyTempCurrentFrame.Y = 1;
+            bodyAnimation.Active = true;
+            //Don't flip the animation if moving right. This is passed into the animation draw
+            //method.
+            flip = false;
+
+            if (countDownTimers[walkingTimer] < 0.0f)
+            {
+                if (walkingIndex < 3) walkingIndex++;
+                else walkingIndex = 0;
+                countDownTimers[walkingTimer] = 100.0f;
+            }
+
+            if (position.X < entityManager.getScreenWidth() * 0.8)
+                position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
         }
 
         ///////////////////////////////////////////////////

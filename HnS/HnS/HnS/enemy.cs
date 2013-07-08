@@ -134,8 +134,8 @@ namespace HnS
                     if (entityManager.getHero().getPos().X > position.X) facing = 0;
                     else facing = 1;
 
-                    if ((entityManager.getHero().getPos().X > entityManager.getScreenWidth() * 0.8 && entityManager.getHero().MoveRight()) ||
-                        (entityManager.getHero().getPos().X < entityManager.getScreenWidth() * 0.2 && entityManager.getHero().MoveLeft()))
+                    if ((entityManager.getHero().getPos().X > entityManager.getScreenWidth() * 0.8 && entityManager.getHero().IsMovingRight()) ||
+                        (entityManager.getHero().getPos().X < entityManager.getScreenWidth() * 0.2 && entityManager.getHero().IsMovingLeft()))
                     {
                         //Dont move position as screen is scrolling
                     }
