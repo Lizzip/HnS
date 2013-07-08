@@ -35,7 +35,7 @@ namespace HnS
         //Textures
         List<Texture2D> legImages = new List<Texture2D>();
         List<Texture2D> topImages = new List<Texture2D>();
-        Texture2D healthBarOutline, temp;
+        Texture2D healthBarOutline, temp, bloodSplat;
 
         //Animation
         int activeTopImage = 0, stationaryTopImage = 0,
@@ -46,17 +46,17 @@ namespace HnS
 
         //Timers
         List<float> countDownTimers = new List<float>();
-        int walkingTimer = 0, deathTimer = 1, attackTimer = 2;
+        int walkingTimer = 0, deathTimer = 1, attackTimer = 2, bloodTimer = 3;
 
         //Combat
-        Vector2 healthTextPos, numLivesPos, deathTextPos;
+        Vector2 healthTextPos, numLivesPos, deathTextPos, bloodPos;
         float attackDamage, health;
-        int numLives, attackIndex = 4;
+        int numLives, attackIndex = 4, armourLevel = 1;
         
                 
         //General Vars
         //facing 0 = right, 1 = left
-        int facing = 0, charHeightOffset = 2;
+        int facing = 0, charHeightOffset = 2, UID;
         Vector2 position;
         SpriteEffects spriteEffects;
         
@@ -66,9 +66,10 @@ namespace HnS
 
         public Hero() { }
 
-        public Hero(EntityManager eManager, Vector2 pos, ContentManager content, List<string> legAssets, List<string> topAssets)
+        public Hero(EntityManager eManager, int uid, Vector2 pos, ContentManager content, List<string> legAssets, List<string> topAssets)
         {
             entityManager = eManager;
+            UID = uid;
             isJumping = false;
             isAttacking = false;
             velocityY = 0;
@@ -104,6 +105,7 @@ namespace HnS
             healthBarOutline = contentManager.Load<Texture2D>("healthBarOutline");
             smallFont = contentManager.Load<SpriteFont>("smallFont");
             deathFont = contentManager.Load<SpriteFont>("deathFont");
+            bloodSplat = contentManager.Load<Texture2D>("bloodSplat");
 
             //Set other variables (adjust default draw height for image height - to draw hero standing on platform)
             position.Y -= topImages.ElementAt(0).Height *scale;
@@ -115,6 +117,7 @@ namespace HnS
             countDownTimers.Add(250.0f);//walking timer
             countDownTimers.Add(0.0f);//death timer
             countDownTimers.Add(0.0f);//Attack timer
+            countDownTimers.Add(0.0f);//blood timer
         }
 
         ///////////////////////////////////////////////////
@@ -355,7 +358,19 @@ namespace HnS
 
         void broadcastAttack()
         {
-            entityManager.broadcastAttack(attackDamage, position);
+            entityManager.broadcastAttackHero(attackDamage, position);
+        }
+
+        public override void beHit(float damage, Vector2 pointOfImpact)
+        {
+            health -= damage * armourLevel;
+            splurgeBlood(pointOfImpact);
+        }
+
+        void splurgeBlood(Vector2 pointOfImpact)
+        {
+            countDownTimers[bloodTimer] = 1000.0f;
+            bloodPos = pointOfImpact;
         }
 
         private void attack(GameTime theGameTime, MouseState currentMS, MouseState prevMS)

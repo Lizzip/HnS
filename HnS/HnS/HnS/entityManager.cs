@@ -25,7 +25,7 @@ namespace HnS
         Debugger debugger;
 
         //UID Management
-        int nextUID = 0, heroUID;
+        int nextUID = 0, heroUID, backgroundUID;
         public List<int> UIDs = new List<int>();
 
         //Entity Management
@@ -56,7 +56,7 @@ namespace HnS
         //Create player char entity
         public void createHero(Vector2 pos, List<string> legAssets, List<string> topAssets)
         {
-            Hero hero = new Hero(this, pos, contentManager, legAssets, topAssets);
+            Hero hero = new Hero(this, nextUID, pos, contentManager, legAssets, topAssets);
             entityMap.Add(nextUID, hero);
             UIDs.Add(nextUID);
             heroUID = nextUID;
@@ -68,7 +68,7 @@ namespace HnS
         {
             if (maxEnemyCount > 0)
             {
-                Enemy enemy = new Enemy(this, pos, contentManager, assets);
+                Enemy enemy = new Enemy(this, nextUID, pos, contentManager, assets);
                 entityMap.Add(nextUID, enemy);
                 UIDs.Add(nextUID);
                 nextUID++;
@@ -81,6 +81,7 @@ namespace HnS
         {
             Background background = new Background(contentManager, this, textureNames, scrollSpeed);
             entityMap.Add(nextUID, background);
+            backgroundUID = nextUID;
             UIDs.Add(nextUID);
             nextUID++;
         }
@@ -160,15 +161,27 @@ namespace HnS
             entity.beHit(damage, pos);
         }
 
-        //broadcast to all enemies that hero has attacked. Each entity will recieve damage if it is within range
-        public void broadcastAttack(float damage, Vector2 origin)
+        //broadcast to all enemies that are in range of this attack
+        public void broadcastAttackHero(float damage, Vector2 origin)
         {
             for (int i = 0, len = entityMap.Count; i < len; i++)
             {
                 if (Vector2.Distance(origin, entityMap.ElementAt(i).Value.getPos()) < 30.0f)
                 {
-                    entityMap.ElementAt(i).Value.beHit(damage, origin);
+                    if (entityMap.ElementAt(i).Key != backgroundUID && entityMap.ElementAt(i).Key != heroUID)
+                    {
+                        entityMap.ElementAt(i).Value.beHit(damage, origin);
+                    }
                 }
+            }
+        }
+
+        //broadcast to hero if in range of this attack
+        public void broadcastAttackEnemy(float damage, Vector2 origin)
+        {
+            if (Vector2.Distance(origin, entityMap[heroUID].getPos()) < 30.0f)
+            {
+                entityMap[heroUID].beHit(damage, origin);
             }
         }
 

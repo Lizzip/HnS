@@ -27,15 +27,16 @@ namespace HnS
 
         //Timers
         List<float> countDownTimers = new List<float>();
-        int walkingTimer = 0, bloodTimer = 1;
+        int walkingTimer = 0, bloodTimer = 1, attackTimer = 2;
         
         //Combat 
         Vector2 healthTextPos;
         int playerStrikingDistance = 30;
+        bool isAttacking;
 
         //General Vars
         //facing 0 = right, 1 = left
-        int activeImage, facing;
+        int activeImage, facing, UID;
         Vector2 position, bloodPos, originalPos;
         float speed, scale, health, armourLevel;
         bool walking = true;
@@ -47,9 +48,11 @@ namespace HnS
 
         public Enemy() { }
 
-        public Enemy(EntityManager EM, Vector2 pos, ContentManager content, List<string> assets)
+        public Enemy(EntityManager EM, int uid, Vector2 pos, ContentManager content, List<string> assets)
         {
             entityManager = EM;
+            UID = uid;
+            isAttacking = false;
             position = pos;
             contentManager = content;
             health = 100.0f;
@@ -85,6 +88,7 @@ namespace HnS
             //Create countdown timers
             countDownTimers.Add(250.0f);//walking timer
             countDownTimers.Add(0.0f);//blood splat timer
+            countDownTimers.Add(0.0f);//Attack timer
 
             //Load bloodSplat image
             bloodSplat = contentManager.Load<Texture2D>("bloodSplat");
@@ -193,6 +197,19 @@ namespace HnS
                         activeImage = 0;
                     }
                     walking = false;
+
+                    //Attack if not already attacking
+                    if (!isAttacking)
+                    {
+                        isAttacking = true;
+                        countDownTimers[attackTimer] = 1000.0f;
+                        entityManager.broadcastAttackEnemy(20.0f, position);
+                    }
+                }
+
+                if (isAttacking && countDownTimers[attackTimer] < 0.0f)
+                {
+                    isAttacking = false;
                 }
 
                 //Update health text position
