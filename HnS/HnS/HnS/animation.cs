@@ -63,11 +63,11 @@ namespace HnS
         //End getters and setters
         ///////////////////////////
         
-        public animation(Vector2 thePosition, Vector2 theNumFrames)
+        public animation(Vector2 thePosition, Vector2 theNumFrames, int theFrameSwitch)
         {
             active = false;
             //Need to test this number, higher = slower frame switch, lower = quicker.
-            frameSwitch = 90;
+            frameSwitch = theFrameSwitch;
             this.position = thePosition;
             this.numFrames = theNumFrames;
         }

@@ -99,8 +99,8 @@ namespace HnS
 
             bodyTempCurrentFrame = Vector2.Zero;
             armTempCurrentFrame = Vector2.Zero;
-            bodyAnimation = new animation(position, new Vector2(4, 2));
-            armAnimation = new animation(position, new Vector2(6, 1));
+            bodyAnimation = new animation(position, new Vector2(4, 2), 90);
+            armAnimation = new animation(position, new Vector2(6, 1), 40);
             
 
 
@@ -171,7 +171,6 @@ namespace HnS
             bodyAnimation.CurrentFrame = bodyTempCurrentFrame;
             bodyAnimation.Update(theGameTime);
 
-
             armTempCurrentFrame.X = armAnimation.CurrentFrame.X;
             armAnimation.Position = position;
             armAnimation.CurrentFrame = armTempCurrentFrame;
@@ -236,6 +235,8 @@ namespace HnS
             }
             else
             {
+                bodyTempCurrentFrame.X = 0;
+                bodyTempCurrentFrame.Y = 0;
                 bodyAnimation.Active = false;
                 armAnimation.Active = false;
             }
@@ -252,45 +253,45 @@ namespace HnS
             if(facing == 0)spriteEffects = SpriteEffects.None;
             else spriteEffects = SpriteEffects.FlipHorizontally;
 
-            //bodyAnimation.Draw(theSpriteBatch, scale, flip);
-            //armAnimation.Draw(theSpriteBatch, scale, flip);
+            bodyAnimation.Draw(theSpriteBatch, scale, flip);
+            armAnimation.Draw(theSpriteBatch, scale, flip);
 
-            //Draw leg image
-            if (isJumping)
-            {
-                //Draw jumping leg image
-                theSpriteBatch.Draw(legImages.ElementAt(jumpingImage), position, null,
-                    Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            }
-            else
-            {
-                if (currentKB.IsKeyDown(Keys.A) == false && currentKB.IsKeyDown(Keys.D) == false)
-                {
-                    //Draw stationary leg image
-                    theSpriteBatch.Draw(legImages.ElementAt(stationaryLegImage), position, null,
-                    Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-                }
-                else
-                {
-                    //Draw active walking leg image
-                    theSpriteBatch.Draw(legImages.ElementAt(walkingPattern[walkingIndex]), position, null,
-                        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-                }
-            }
+            ////Draw leg image
+            //if (isJumping)
+            //{
+            //    //Draw jumping leg image
+            //    theSpriteBatch.Draw(legImages.ElementAt(jumpingImage), position, null,
+            //        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+            //}
+            //else
+            //{
+            //    if (currentKB.IsKeyDown(Keys.A) == false && currentKB.IsKeyDown(Keys.D) == false)
+            //    {
+            //        //Draw stationary leg image
+            //        theSpriteBatch.Draw(legImages.ElementAt(stationaryLegImage), position, null,
+            //        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+            //    }
+            //    else
+            //    {
+            //        //Draw active walking leg image
+            //        theSpriteBatch.Draw(legImages.ElementAt(walkingPattern[walkingIndex]), position, null,
+            //            Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+            //    }
+            //}
 
-            //Draw top image
-            if (attackIndex < 3)
-            {
-                //Draw current active attack image
-                theSpriteBatch.Draw(topImages.ElementAt(attackPattern[attackIndex]), position, null,
-                        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            }
-            else
-            {
-                //Draw default waist high sword image
-                theSpriteBatch.Draw(topImages.ElementAt(stationaryTopImage), position, null,
-                        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            }
+            ////Draw top image
+            //if (attackIndex < 3)
+            //{
+            //    //Draw current active attack image
+            //    theSpriteBatch.Draw(topImages.ElementAt(attackPattern[attackIndex]), position, null,
+            //            Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+            //}
+            //else
+            //{
+            //    //Draw default waist high sword image
+            //    theSpriteBatch.Draw(topImages.ElementAt(stationaryTopImage), position, null,
+            //            Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
+            //}
 
             //Draw white health bar outline
             theSpriteBatch.Draw(healthBarOutline, new Vector2(20, 19), Color.White);
@@ -482,6 +483,9 @@ namespace HnS
 
             if (isAttacking)
             {
+                //Enable the arm/sword animation
+                armAnimation.Active = true;
+
                 if (countDownTimers[attackTimer] < 0.0f)
                 {
                     if (attackIndex < 4)
@@ -495,6 +499,8 @@ namespace HnS
                     }
                 }
             }
+            else
+                armAnimation.Active = false;
             
         }
     }
