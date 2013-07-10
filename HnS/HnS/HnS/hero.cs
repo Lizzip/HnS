@@ -35,7 +35,7 @@ namespace HnS
         //Textures
         List<Texture2D> legImages = new List<Texture2D>();
         List<Texture2D> topImages = new List<Texture2D>();
-        Texture2D healthBarOutline, temp, bloodSplat;
+        Texture2D healthBarOutline, temp, bloodSplat, heroPanel;
 
         ////////////////////////////////////////////////
         //Animation
@@ -142,6 +142,7 @@ namespace HnS
             smallFont = contentManager.Load<SpriteFont>("smallFont");
             deathFont = contentManager.Load<SpriteFont>("deathFont");
             bloodSplat = contentManager.Load<Texture2D>("bloodSplat");
+            heroPanel = contentManager.Load<Texture2D>("hero\\heroPanel");
 
             //Set other variables (adjust default draw height for image height - to draw hero standing on platform)
             position.Y -= topImages.ElementAt(0).Height *scale;
@@ -304,11 +305,14 @@ namespace HnS
             theSpriteBatch.Draw(healthBarOutline, new Rectangle(21, 20, (int)(healthBarOutline.Width * ((double)health / 100) - 2), 18),
                  new Rectangle(0, 45, healthBarOutline.Width, 44), Color.Red);
 
+            //Draw hero panel
+            theSpriteBatch.Draw(heroPanel, Vector2.Zero, Color.White);
+
             //Write health text
             theSpriteBatch.DrawString(smallFont, "Health: " + health + "%", healthTextPos, Color.White);
 
-            //Write number of lives
-            theSpriteBatch.DrawString(smallFont, "Lives: " + numLives, numLivesPos, Color.Black);
+            //Write number of lives -- TODO: Show as image inside hero panel (hearts or something)
+   //         theSpriteBatch.DrawString(smallFont, "Lives: " + numLives, numLivesPos, Color.Black);
             
             //Display death text after dying
             if (countDownTimers[deathTimer] > 0.0f)
