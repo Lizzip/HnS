@@ -33,14 +33,8 @@ namespace HnS
         SpriteFont deathFont;
 
         //Textures
-<<<<<<< HEAD
-        Texture2D healthBarOutline, temp, bloodSplat, heroPanel;
-=======
-        List<Texture2D> legImages = new List<Texture2D>();
-        List<Texture2D> topImages = new List<Texture2D>();
         Texture2D healthBarOutline, temp, bloodSplat, heroPanel,
             heartOutlines, heart1Fill, heart2Fill, heart3Fill;
->>>>>>> 050a797e70ebda07c2dd8b9005f190bee5680185
 
         ////////////////////////////////////////////////
         //Animation
@@ -231,54 +225,8 @@ namespace HnS
             bodyAnimation.Draw(theSpriteBatch, scale, flip);
             armAnimation.Draw(theSpriteBatch, scale, flip);
 
-<<<<<<< HEAD
-            //Draw white health bar outline
-            theSpriteBatch.Draw(healthBarOutline, new Vector2(20, 19), Color.White);
-
-            //Draw grey health bar area for health lost
-            theSpriteBatch.Draw(healthBarOutline, new Rectangle(21, 20, healthBarOutline.Width - 2, 18),
-                new Rectangle(0, 45, healthBarOutline.Width, 44), Color.Gray);
-=======
-            ////Draw leg image
-            //if (isJumping)
-            //{
-            //    //Draw jumping leg image
-            //    theSpriteBatch.Draw(legImages.ElementAt(jumpingImage), position, null,
-            //        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            //}
-            //else
-            //{
-            //    if (currentKB.IsKeyDown(Keys.A) == false && currentKB.IsKeyDown(Keys.D) == false)
-            //    {
-            //        //Draw stationary leg image
-            //        theSpriteBatch.Draw(legImages.ElementAt(stationaryLegImage), position, null,
-            //        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            //    }
-            //    else
-            //    {
-            //        //Draw active walking leg image
-            //        theSpriteBatch.Draw(legImages.ElementAt(walkingPattern[walkingIndex]), position, null,
-            //            Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            //    }
-            //}
-
-            ////Draw top image
-            //if (attackIndex < 3)
-            //{
-            //    //Draw current active attack image
-            //    theSpriteBatch.Draw(topImages.ElementAt(attackPattern[attackIndex]), position, null,
-            //            Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            //}
-            //else
-            //{
-            //    //Draw default waist high sword image
-            //    theSpriteBatch.Draw(topImages.ElementAt(stationaryTopImage), position, null,
-            //            Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            //}
-
             //Draw hero panel
             theSpriteBatch.Draw(heroPanel, Vector2.Zero, Color.White);
->>>>>>> 050a797e70ebda07c2dd8b9005f190bee5680185
 
             //Draw red health bar area for current health
             theSpriteBatch.Draw(healthBarOutline, new Rectangle(21, 20, (int)(healthBarOutline.Width * ((double)health / 100) - 2), 18),
