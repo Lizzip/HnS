@@ -166,7 +166,7 @@ namespace HnS
         {
             for (int i = 0, len = entityMap.Count; i < len; i++)
             {
-                if (Vector2.Distance(origin, entityMap.ElementAt(i).Value.getPos()) < 30.0f)
+                if (Vector2.Distance(origin, entityMap.ElementAt(i).Value.getPos()) < 40.0f)
                 {
                     if (entityMap.ElementAt(i).Key != backgroundUID && entityMap.ElementAt(i).Key != heroUID)
                     {
@@ -179,7 +179,7 @@ namespace HnS
         //broadcast to hero if in range of this attack
         public void broadcastAttackEnemy(float damage, Vector2 origin)
         {
-            if (Vector2.Distance(origin, entityMap[heroUID].getPos()) < 30.0f)
+            if (Vector2.Distance(origin, entityMap[heroUID].getPos()) < 20.0f)
             {
                 entityMap[heroUID].beHit(damage, origin);
             }

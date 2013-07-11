@@ -31,7 +31,7 @@ namespace HnS
         
         //Combat 
         Vector2 healthTextPos;
-        int playerStrikingDistance = 30;
+        int playerStrikingDistance = 20;
         bool isAttacking;
 
         //General Vars
@@ -203,7 +203,7 @@ namespace HnS
                     {
                         isAttacking = true;
                         countDownTimers[attackTimer] = 1000.0f;
-                        entityManager.broadcastAttackEnemy(20.0f, position);
+                        entityManager.broadcastAttackEnemy(10.0f, position);
                     }
                 }
 
