@@ -54,9 +54,9 @@ namespace HnS
         }
 
         //Create player char entity
-        public void createHero(Vector2 pos, List<string> legAssets, List<string> topAssets)
+        public void createHero(Vector2 pos)
         {
-            Hero hero = new Hero(this, nextUID, pos, contentManager, legAssets, topAssets);
+            Hero hero = new Hero(this, nextUID, pos, contentManager);
             entityMap.Add(nextUID, hero);
             UIDs.Add(nextUID);
             heroUID = nextUID;

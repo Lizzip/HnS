@@ -26,8 +26,6 @@ namespace HnS
         //General vars
         int windowHeight = 600, windowWidth = 800;
         int platformHeight = 512;
-        List<string> heroLegAssetList = new List<string>();
-        List<string> heroTopAssetList = new List<string>();
         List<string> enemyAssetList = new List<string>();
         List<string> backgroundAssetList = new List<string>();
 
@@ -74,19 +72,6 @@ namespace HnS
             //Create entity manager
             entityManager = new EntityManager(Content, debugger, platformHeight, windowWidth, windowHeight);
 
-            //Push images for hero legs to list
-            heroLegAssetList.Add("hero//legsNarrow");
-            heroLegAssetList.Add("hero//legsMiddle");
-            heroLegAssetList.Add("hero//legsWide");
-            heroLegAssetList.Add("hero//legsStanding");
-            heroLegAssetList.Add("hero//legsFullJump");
-
-            //Push images for hero top to list
-            heroTopAssetList.Add("hero//topStandard");
-            heroTopAssetList.Add("hero//topAttack1");
-            heroTopAssetList.Add("hero//topAttack2");
-            heroTopAssetList.Add("hero//topAttack3");
-
             //Push images for enemy entity to list
             enemyAssetList.Add("enemy1");
             enemyAssetList.Add("enemy1Walk");
@@ -108,7 +93,7 @@ namespace HnS
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             entityManager.createBackground(backgroundAssetList, 2.0f);
-            entityManager.createHero(new Vector2(100, platformHeight), heroLegAssetList, heroTopAssetList);
+            entityManager.createHero(new Vector2(100, platformHeight));
             entityManager.createEnemy(new Vector2(900, platformHeight), enemyAssetList);
             entityManager.createEnemy(new Vector2(-200, platformHeight), enemyAssetList);
 

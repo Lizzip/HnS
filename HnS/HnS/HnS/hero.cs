@@ -33,16 +33,10 @@ namespace HnS
         SpriteFont deathFont;
 
         //Textures
-        List<Texture2D> legImages = new List<Texture2D>();
-        List<Texture2D> topImages = new List<Texture2D>();
         Texture2D healthBarOutline, temp, bloodSplat, heroPanel;
 
         ////////////////////////////////////////////////
         //Animation
-        int activeTopImage = 0, stationaryTopImage = 0,
-            walkingIndex = 0, jumpingImage = 4, stationaryLegImage = 3;
-        //bool isJumping, isAttacking;
-        int[] walkingPattern, attackPattern;
         float speed, scale, velocityY;
 
         //Animation
@@ -64,7 +58,7 @@ namespace HnS
 
         //Timers
         List<float> countDownTimers = new List<float>();
-        int walkingTimer = 0, deathTimer = 1, attackTimer = 2, bloodTimer = 3;
+        int deathTimer = 0, attackTimer = 1, bloodTimer = 2;
 
         //Combat
         Vector2 healthTextPos, numLivesPos, deathTextPos, bloodPos;
@@ -74,9 +68,8 @@ namespace HnS
                 
         //General Vars
         //facing 0 = right, 1 = left
-        int facing = 0, charHeightOffset = 2, UID;
+        int charHeightOffset = 2, UID;
         Vector2 position;
-        SpriteEffects spriteEffects;
         
         ///////////////////////////////////////////////////
         // CONSTRUCTORS AND LOADING ///////////////////////
@@ -84,7 +77,7 @@ namespace HnS
 
         public Hero() { }
 
-        public Hero(EntityManager eManager, int uid, Vector2 pos, ContentManager content, List<string> legAssets, List<string> topAssets)
+        public Hero(EntityManager eManager, int uid, Vector2 pos, ContentManager content)
         {
             entityManager = eManager;
             UID = uid;
@@ -102,40 +95,21 @@ namespace HnS
             bodyAnimation = new animation(position, new Vector2(4, 2), 90);
             armAnimation = new animation(position, new Vector2(6, 1), 40);
             
-
-
             scale = 0.7f;
 
             health = 100.0f;
             attackDamage = 10.0f;
             numLives = 3;
             contentManager = content;
-            walkingPattern = new int[4] { 1, 2, 1, 0 };
-            attackPattern = new int[3] { 1, 2, 3 };
-            loadContent(legAssets, topAssets);
+            loadContent();
         }
 
-        void loadContent(List<string> legAssets, List<string> topAssets)
+        void loadContent()
         {
             //Animation stuff
             bodyAnimation.AnimationImage = contentManager.Load<Texture2D>("hero\\herospritesheet");
             armAnimation.AnimationImage = contentManager.Load <Texture2D>("hero\\heroarmspritesheet");
 
-
-
-            //Load all leg images
-            for (int i = 0, len = legAssets.Count; i < len; i++)
-            {
-                temp = contentManager.Load<Texture2D>(legAssets.ElementAt(i));
-                legImages.Add(temp);
-            }
-
-            //Load all top images
-            for (int i = 0, len = topAssets.Count; i < len; i++)
-            {
-                temp = contentManager.Load<Texture2D>(topAssets.ElementAt(i));
-                topImages.Add(temp);
-            }
 
             //Load other images and fonts
             healthBarOutline = contentManager.Load<Texture2D>("healthBarOutline");
@@ -145,13 +119,12 @@ namespace HnS
             heroPanel = contentManager.Load<Texture2D>("hero\\heroPanel");
 
             //Set other variables (adjust default draw height for image height - to draw hero standing on platform)
-            position.Y -= topImages.ElementAt(0).Height *scale;
+            position.Y -=bodyAnimation.FrameHeight *scale;
             healthTextPos = new Vector2(25, 17);
             numLivesPos = new Vector2(25, 35);
             deathTextPos = new Vector2((float)entityManager.getScreenWidth() / 3, (float)entityManager.getScreenHeight() / 2);
 
             //Create countdown timers
-            countDownTimers.Add(250.0f);//walking timer
             countDownTimers.Add(0.0f);//death timer
             countDownTimers.Add(0.0f);//Attack timer
             countDownTimers.Add(0.0f);//blood timer
@@ -164,9 +137,6 @@ namespace HnS
         public override void update(GameTime theGameTime)
         {
             //Animation
-            //bodyAnimation.Active = true;
-            //armAnimation.Active = true;
-
             bodyTempCurrentFrame.X = bodyAnimation.CurrentFrame.X;
             bodyAnimation.Position = position;
             bodyAnimation.CurrentFrame = bodyTempCurrentFrame;
@@ -225,21 +195,16 @@ namespace HnS
             //Movement and animation
             if (currentKB.IsKeyDown(Keys.D))
             {
-                facing = 0;
                 MoveRight(theGameTime);
             }
 
             else if (currentKB.IsKeyDown(Keys.A))
             {
-                facing = 1;
                 MoveLeft(theGameTime);
             }
             else
             {
-                bodyTempCurrentFrame.X = 0;
-                bodyTempCurrentFrame.Y = 0;
                 bodyAnimation.Active = false;
-                armAnimation.Active = false;
             }
 
             //Set previous mouse and keyboard states
@@ -250,49 +215,9 @@ namespace HnS
 
         public override void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch theSpriteBatch)
         {
-            //If facing right (0) draw normally, if facing left (1) flip sprite horizontally
-            if(facing == 0)spriteEffects = SpriteEffects.None;
-            else spriteEffects = SpriteEffects.FlipHorizontally;
-
+            //Draw the body and arm animations for the player character
             bodyAnimation.Draw(theSpriteBatch, scale, flip);
             armAnimation.Draw(theSpriteBatch, scale, flip);
-
-            ////Draw leg image
-            //if (isJumping)
-            //{
-            //    //Draw jumping leg image
-            //    theSpriteBatch.Draw(legImages.ElementAt(jumpingImage), position, null,
-            //        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            //}
-            //else
-            //{
-            //    if (currentKB.IsKeyDown(Keys.A) == false && currentKB.IsKeyDown(Keys.D) == false)
-            //    {
-            //        //Draw stationary leg image
-            //        theSpriteBatch.Draw(legImages.ElementAt(stationaryLegImage), position, null,
-            //        Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            //    }
-            //    else
-            //    {
-            //        //Draw active walking leg image
-            //        theSpriteBatch.Draw(legImages.ElementAt(walkingPattern[walkingIndex]), position, null,
-            //            Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            //    }
-            //}
-
-            ////Draw top image
-            //if (attackIndex < 3)
-            //{
-            //    //Draw current active attack image
-            //    theSpriteBatch.Draw(topImages.ElementAt(attackPattern[attackIndex]), position, null,
-            //            Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            //}
-            //else
-            //{
-            //    //Draw default waist high sword image
-            //    theSpriteBatch.Draw(topImages.ElementAt(stationaryTopImage), position, null,
-            //            Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
-            //}
 
             //Draw white health bar outline
             theSpriteBatch.Draw(healthBarOutline, new Vector2(20, 19), Color.White);
@@ -354,17 +279,17 @@ namespace HnS
             {
                 velocityY = 0;
                 //Set the Y frame to the second line of the spritesheet
-                //bodyTempCurrentFrame.Y = 1;
+                bodyTempCurrentFrame.Y = 1;
             }
 
             //Once the player Y position reaches the platform
             //the isJumping bool is set to false (can't fall below platform)
-            if (position.Y + (legImages.ElementAt(jumpingImage).Height * scale) >= entityManager.getPlatformHeight() - charHeightOffset && isJumping)
+            if (position.Y + (bodyAnimation.FrameHeight * scale) >= entityManager.getPlatformHeight() - charHeightOffset && isJumping)
             {
                 isJumping = false;
 
                 //Ensure player is set to exact same height after every jump (was varying slightly before due to decrementing by float)
-                position.Y = entityManager.getPlatformHeight() - charHeightOffset - (legImages.ElementAt(jumpingImage).Height * scale);
+                position.Y = entityManager.getPlatformHeight() - charHeightOffset - (bodyAnimation.FrameHeight * scale);
                 
             }
         }
@@ -387,14 +312,6 @@ namespace HnS
             //method.
             flip = true;
 
-            if (countDownTimers[walkingTimer] < 0.0f)
-            {
-                if (walkingIndex < 3) walkingIndex++;
-                else walkingIndex = 0;
-
-                countDownTimers[walkingTimer] = 100.0f;
-            }
-
             if (position.X > entityManager.getScreenWidth() * 0.15)
                 position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
         }
@@ -416,13 +333,6 @@ namespace HnS
             //Don't flip the animation if moving right. This is passed into the animation draw
             //method.
             flip = false;
-
-            if (countDownTimers[walkingTimer] < 0.0f)
-            {
-                if (walkingIndex < 3) walkingIndex++;
-                else walkingIndex = 0;
-                countDownTimers[walkingTimer] = 100.0f;
-            }
 
             if (position.X < entityManager.getScreenWidth() * 0.8)
                 position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
