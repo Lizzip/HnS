@@ -35,7 +35,8 @@ namespace HnS
         //Textures
         List<Texture2D> legImages = new List<Texture2D>();
         List<Texture2D> topImages = new List<Texture2D>();
-        Texture2D healthBarOutline, temp, bloodSplat, heroPanel;
+        Texture2D healthBarOutline, temp, bloodSplat, heroPanel,
+            heartOutlines, heart1Fill, heart2Fill, heart3Fill;
 
         ////////////////////////////////////////////////
         //Animation
@@ -142,7 +143,12 @@ namespace HnS
             smallFont = contentManager.Load<SpriteFont>("smallFont");
             deathFont = contentManager.Load<SpriteFont>("deathFont");
             bloodSplat = contentManager.Load<Texture2D>("bloodSplat");
-            heroPanel = contentManager.Load<Texture2D>("hero\\heroPanel");
+            heroPanel = contentManager.Load<Texture2D>("panel\\heroPanel");
+            heartOutlines = contentManager.Load<Texture2D>("panel\\heroPanelHeartOutlines");
+            heart1Fill = contentManager.Load<Texture2D>("panel\\heroPanelHeart1");
+            heart2Fill = contentManager.Load<Texture2D>("panel\\heroPanelHeart2");
+            heart3Fill = contentManager.Load<Texture2D>("panel\\heroPanelHeart3");
+
 
             //Set other variables (adjust default draw height for image height - to draw hero standing on platform)
             position.Y -= topImages.ElementAt(0).Height *scale;
@@ -294,26 +300,35 @@ namespace HnS
             //            Color.White, 0, Vector2.Zero, scale, spriteEffects, 0);
             //}
 
-            //Draw white health bar outline
-            theSpriteBatch.Draw(healthBarOutline, new Vector2(20, 19), Color.White);
-
-            //Draw grey health bar area for health lost
-            theSpriteBatch.Draw(healthBarOutline, new Rectangle(21, 20, healthBarOutline.Width - 2, 18),
-                new Rectangle(0, 45, healthBarOutline.Width, 44), Color.Gray);
+            //Draw hero panel
+            theSpriteBatch.Draw(heroPanel, Vector2.Zero, Color.White);
 
             //Draw red health bar area for current health
             theSpriteBatch.Draw(healthBarOutline, new Rectangle(21, 20, (int)(healthBarOutline.Width * ((double)health / 100) - 2), 18),
                  new Rectangle(0, 45, healthBarOutline.Width, 44), Color.Red);
 
-            //Draw hero panel
-            theSpriteBatch.Draw(heroPanel, Vector2.Zero, Color.White);
-
             //Write health text
             theSpriteBatch.DrawString(smallFont, "Health: " + health + "%", healthTextPos, Color.White);
-
-            //Write number of lives -- TODO: Show as image inside hero panel (hearts or something)
-   //         theSpriteBatch.DrawString(smallFont, "Lives: " + numLives, numLivesPos, Color.Black);
             
+            //Draw/Fill in each heart for lives
+            if (numLives > 0)
+            {
+                theSpriteBatch.Draw(heart1Fill, Vector2.Zero, Color.White);
+
+                if (numLives > 1)
+                {
+                    theSpriteBatch.Draw(heart2Fill, Vector2.Zero, Color.White);
+
+                    if (numLives > 2)
+                    {
+                        theSpriteBatch.Draw(heart3Fill, Vector2.Zero, Color.White);
+                    }
+                }
+            }
+
+            //Draw heart outlines on hero panel
+            theSpriteBatch.Draw(heartOutlines, Vector2.Zero, Color.White);
+
             //Display death text after dying
             if (countDownTimers[deathTimer] > 0.0f)
                 theSpriteBatch.DrawString(deathFont, "YOU LOSE A LIFE", deathTextPos, Color.Red);

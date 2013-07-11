@@ -251,9 +251,30 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Compile Include="hero\heroPanel.png">
+    <Compile Include="panel\heroPanel.png">
       <Name>heroPanel</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="panel\heroPanelHeart1.png">
+      <Name>heroPanelHeart1</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="panel\heroPanelHeart2.png">
+      <Name>heroPanelHeart2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="panel\heroPanelHeart3.png">
+      <Name>heroPanelHeart3</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="panel\heroPanelHeartOutlines.png">
+      <Name>heroPanelHeartOutlines</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
