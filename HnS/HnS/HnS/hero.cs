@@ -204,7 +204,6 @@ namespace HnS
             {
                 MoveRight(theGameTime);
             }
-
             else if (currentKB.IsKeyDown(Keys.A))
             {
                 MoveLeft(theGameTime);
@@ -223,8 +222,22 @@ namespace HnS
         public override void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch theSpriteBatch)
         {
             //Draw the body and arm animations for the player character
-            bodyAnimation.Draw(theSpriteBatch, scale, flip);
             armAnimation.Draw(theSpriteBatch, scale, flip);
+            if (!isJumping)
+            {
+                if (IsMovingLeft() || IsMovingRight())
+                {
+                    bodyAnimation.Draw(theSpriteBatch, scale, flip);
+                }
+                else
+                {
+                    bodyAnimation.forceDraw(theSpriteBatch, scale, flip, 0, 0);
+                }
+            }
+            else
+            {
+                bodyAnimation.forceDraw(theSpriteBatch, scale, flip, 3, 0);
+            }
 
             //Draw hero panel
             theSpriteBatch.Draw(heroPanel, Vector2.Zero, Color.White);

@@ -32,6 +32,7 @@ namespace HnS
         Texture2D image;
         Rectangle source;
 
+
         //Getters and setters for the frame variables
         public Vector2 CurrentFrame
         {
@@ -99,6 +100,19 @@ namespace HnS
                 effect = SpriteEffects.None;
             //spriteBatch.Draw(image, position, source, Color.White);
             spriteBatch.Draw(image, position, source, Color.White, 0, Vector2.Zero, scale, effect, 0);
+        }
+
+        //Draw a specifc frame (such as when jumping or hero is stationary -- possibly better way of doing this)
+        public void forceDraw(SpriteBatch spriteBatch, float scale, bool flip, int offsetX, int offsetY)
+        {
+            SpriteEffects effect;
+            if (flip)
+                effect = SpriteEffects.FlipHorizontally;
+            else
+                effect = SpriteEffects.None;
+
+            spriteBatch.Draw(image, position, new Rectangle(offsetX * FrameWidth, offsetY * FrameHeight,
+                FrameWidth, FrameHeight), Color.White, 0, Vector2.Zero, scale, effect, 0);
         }
     }
 }
