@@ -39,6 +39,7 @@ namespace HnS
         ////////////////////////////////////////////////
         //Animation
         float speed, scale, velocityY;
+        int armAnimWidth = 6, armAnimSpeed = 30;
 
         //Animation
         animation bodyAnimation, armAnimation;
@@ -94,7 +95,7 @@ namespace HnS
             bodyTempCurrentFrame = Vector2.Zero;
             armTempCurrentFrame = Vector2.Zero;
             bodyAnimation = new animation(position, new Vector2(4, 2), 90);
-            armAnimation = new animation(position, new Vector2(6, 1), 40);
+            armAnimation = new animation(position, new Vector2(armAnimWidth, 1), armAnimSpeed);
             
             scale = 0.7f;
 
@@ -406,7 +407,7 @@ namespace HnS
                 isAttacking = true;
                 attackIndex = 0;
                 broadcastAttack();
-                countDownTimers[attackTimer] = 35.0f;
+                countDownTimers[attackTimer] = armAnimSpeed * armAnimWidth;
                 entityManager.getDebugger().Out("Attack", theGameTime.TotalGameTime); //Debugger test for attacking
             }
 
@@ -415,18 +416,12 @@ namespace HnS
                 //Enable the arm/sword animation
                 armAnimation.Active = true;
 
+                //Disable attacking when animation has finished playing
                 if (countDownTimers[attackTimer] < 0.0f)
                 {
-                    if (attackIndex < 4)
-                    {
-                        attackIndex++;
-                        countDownTimers[attackTimer] = 30.0f;
-                    }
-                    else if (attackIndex == 4)
-                    {
-                        isAttacking = false;
-                    }
+                    isAttacking = false;
                 }
+
             }
             else
                 armAnimation.Active = false;
