@@ -64,11 +64,11 @@ namespace HnS
         }
 
         //Create enemy entity
-        public void createEnemy(Vector2 pos, List<string> assets)
+        public void createEnemy(Vector2 pos)
         {
             if (maxEnemyCount > 0)
             {
-                Enemy enemy = new Enemy(this, nextUID, pos, contentManager, assets);
+                Enemy enemy = new Enemy(this, nextUID, pos, contentManager);
                 entityMap.Add(nextUID, enemy);
                 UIDs.Add(nextUID);
                 nextUID++;

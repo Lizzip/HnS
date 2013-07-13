@@ -78,8 +78,8 @@ namespace HnS
 
             entityManager.createBackground(backgroundAssetList, 2.0f);
             entityManager.createHero(new Vector2(100, platformHeight));
-            entityManager.createEnemy(new Vector2(900, platformHeight), enemyAssetList);
-            entityManager.createEnemy(new Vector2(-200, platformHeight), enemyAssetList);
+            entityManager.createEnemy(new Vector2(900, platformHeight));
+            entityManager.createEnemy(new Vector2(-200, platformHeight));
         }
 
         public override void Update(GameTime gameTime)

@@ -27,19 +27,38 @@ namespace HnS
 
         //Timers
         List<float> countDownTimers = new List<float>();
-        int walkingTimer = 0, bloodTimer = 1, attackTimer = 2;
+        int walkingTimer = 0, bloodTimer = 1, attackTimer = 2, attackBufferTimer = 3;
         
         //Combat 
         Vector2 healthTextPos;
         int playerStrikingDistance = 20;
-        bool isAttacking;
 
         //General Vars
         //facing 0 = right, 1 = left
-        int activeImage, facing, UID;
+        int facing, UID;
         Vector2 position, bloodPos, originalPos;
         float speed, scale, health, armourLevel;
         bool walking = true;
+
+        ////////////////////////////////////////////////
+        //Animation
+        int armAnimWidth = 6, armAnimSpeed = 30;
+
+        //Animation
+        animation bodyAnimation, armAnimation;
+        public animation GetBodyAnimation
+        {
+            get { return bodyAnimation; }
+        }
+
+        public animation GetArmAnimation
+        {
+            get { return armAnimation; }
+        }
+
+        Vector2 bodyTempCurrentFrame, armTempCurrentFrame;
+        bool isAttacking, flip;
+        //////////////////////////////////////////////
 
 
         ///////////////////////////////////////////////////
@@ -48,38 +67,39 @@ namespace HnS
 
         public Enemy() { }
 
-        public Enemy(EntityManager EM, int uid, Vector2 pos, ContentManager content, List<string> assets)
+        public Enemy(EntityManager EM, int uid, Vector2 pos, ContentManager content)
         {
             entityManager = EM;
             UID = uid;
             isAttacking = false;
+            flip = false;
             position = pos;
             contentManager = content;
             health = 100.0f;
             armourLevel = 1.0f;
             speed = 0.05f;
-            scale = 0.8f;
+            scale = 0.7f;
+
+            bodyAnimation = new animation(position, new Vector2(4, 2), 180);
+            armAnimation = new animation(position, new Vector2(armAnimWidth, 1), armAnimSpeed);
+            bodyTempCurrentFrame.Y = 1;
+
             facing = 1;
-            activeImage = 2;
-            loadContent(assets);
+            loadContent();
         }
 
-        void loadContent(List<string> assets)
+        void loadContent()
         {
-            //Load all animation images for hero
-            Texture2D temp;
-            for (int i = 0, len = assets.Count; i < len; i++)
-            {
-                temp = contentManager.Load<Texture2D>(assets.ElementAt(i));
-                images.Add(temp);
-            }
-
+            //Animation stuff
+            bodyAnimation.AnimationImage = contentManager.Load<Texture2D>("regularEnemy\\enemyspritesheet");
+            armAnimation.AnimationImage = contentManager.Load<Texture2D>("regularEnemy\\enemyarmspritesheet");
+            
             //Load other images and fonts
             healthBarOutline = contentManager.Load<Texture2D>("enemyHealthBarOutline");
             font = contentManager.Load<SpriteFont>("smallfont");
 
             //offset to draw ontop of the platform
-            position.Y -= images.ElementAt(0).Height * scale;
+            position.Y -= bodyAnimation.FrameHeight * scale;
             originalPos = position;
 
             //Set health text position to just above enemy position
@@ -89,6 +109,7 @@ namespace HnS
             countDownTimers.Add(250.0f);//walking timer
             countDownTimers.Add(0.0f);//blood splat timer
             countDownTimers.Add(0.0f);//Attack timer
+            countDownTimers.Add(0.0f);//Attack Buffer timer
 
             //Load bloodSplat image
             bloodSplat = contentManager.Load<Texture2D>("bloodSplat");
@@ -99,7 +120,6 @@ namespace HnS
             position = originalPos;
             health = 100.0f;
             facing = 1;
-            activeImage = 2;
             countDownTimers[walkingTimer] = 250.0f;
             countDownTimers[bloodTimer] = 0.0f;
         }
@@ -118,21 +138,45 @@ namespace HnS
             }
             else
             {
+                //Animation
+                bodyTempCurrentFrame.X = bodyAnimation.CurrentFrame.X;
+                bodyAnimation.Position = position;
+                bodyAnimation.CurrentFrame = bodyTempCurrentFrame;
+                bodyAnimation.Update(theGameTime);
+
+                armTempCurrentFrame.X = armAnimation.CurrentFrame.X;
+                armAnimation.Position = position;
+                armAnimation.CurrentFrame = armTempCurrentFrame;
+                armAnimation.Update(theGameTime);
+
                 //Count down all count down timers in progress
                 for (int i = 0, len = countDownTimers.Count; i < len; i++)
                 {
-                    if (countDownTimers[i] > 0.0f)
+                    if (countDownTimers[i] > -1.0f)
                     {
                         countDownTimers[i] -= (float)theGameTime.ElapsedGameTime.Milliseconds;
                     }
                 }
 
+                if (Vector2.Distance(position, entityManager.getHero().getPos()) > 2.0f) walking = true;
+                else walking = false;
+
                 //Walk towards player
                 if (walking)
                 {
+                    bodyAnimation.Active = true;
+
                     //face player
-                    if (entityManager.getHero().getPos().X > position.X) facing = 0;
-                    else facing = 1;
+                    if (entityManager.getHero().getPos().X > position.X)
+                    {
+                        facing = 0;
+                        flip = false;
+                    }
+                    else
+                    {
+                        facing = 1;
+                        flip = true;
+                    }
 
                     if ((entityManager.getHero().getPos().X > entityManager.getScreenWidth() * 0.8 && entityManager.getHero().IsMovingRight()) ||
                         (entityManager.getHero().getPos().X < entityManager.getScreenWidth() * 0.2 && entityManager.getHero().IsMovingLeft()))
@@ -145,64 +189,22 @@ namespace HnS
                         if (facing == 1) position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
                         else position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
                     }
-
-                    //Cycle walking animations
-                    if (countDownTimers[walkingTimer] < 0.0f)
-                    {
-                        switch (activeImage)
-                        {
-                            case 0:
-                                activeImage = 1;
-                                break;
-                            case 1:
-                                activeImage = 0;
-                                break;
-                            case 2:
-                                activeImage = 3;
-                                break;
-                            case 3:
-                                activeImage = 2;
-                                break;
-                        }
-
-                        countDownTimers[walkingTimer] = 250.0f;
-                    }
                 }
                 else
                 {
-                    if (Vector2.Distance(position, entityManager.getHero().getPos()) > playerStrikingDistance)
-                    {
-                        walking = true;
-
-                        if (activeImage == 1)
-                        {
-                            activeImage = 3;
-                        }
-                        else if (activeImage == 0)
-                        {
-                            activeImage = 2;
-                        }
-                    }
+                    bodyAnimation.Active = false;
                 }
 
                 //If close enough to hero, raise sword
-                if (Vector2.Distance(position, entityManager.getHero().getPos()) < playerStrikingDistance)
+                if (Vector2.Distance(position, entityManager.getHero().getPos()) < playerStrikingDistance && countDownTimers[attackBufferTimer] < 0.0f)
                 {
-                    if (activeImage == 3)
-                    {
-                        activeImage = 1;
-                    }
-                    else if (activeImage == 2)
-                    {
-                        activeImage = 0;
-                    }
-                    walking = false;
-
                     //Attack if not already attacking
                     if (!isAttacking)
                     {
                         isAttacking = true;
-                        countDownTimers[attackTimer] = 1000.0f;
+                        armAnimation.Active = true;
+                        countDownTimers[attackTimer] = 180.0f;
+                        countDownTimers[attackBufferTimer] = 1000.0f;
                         entityManager.broadcastAttackEnemy(10.0f, position);
                     }
                 }
@@ -210,6 +212,12 @@ namespace HnS
                 if (isAttacking && countDownTimers[attackTimer] < 0.0f)
                 {
                     isAttacking = false;
+                    armAnimation.Active = false;
+                }
+
+                if (countDownTimers[attackTimer] < 0.0f)
+                {
+                    armAnimation.Active = false;
                 }
 
                 //Update health text position
@@ -222,17 +230,15 @@ namespace HnS
         {
             if (health > 0)
             {
-                //If facing right (0) draw normally, if facing left (1) flip sprite horizontally
-                if (facing == 0) theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
-                        Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-                else theSpriteBatch.Draw(images.ElementAt(activeImage), position, null,
-                        Color.White, 0, Vector2.Zero, scale, SpriteEffects.FlipHorizontally, 0);
+
+                armAnimation.Draw(theSpriteBatch, scale, flip);
+                bodyAnimation.Draw(theSpriteBatch, scale, flip);
 
                 //draw blood if we've been hit recently
                 if (countDownTimers[bloodTimer] > 0.0f)
                 {
-                    theSpriteBatch.Draw(bloodSplat, new Vector2(position.X + (images.ElementAt(activeImage).Width * scale) / 2,
-                        position.Y + (images.ElementAt(activeImage).Height * scale) / 2),
+                    theSpriteBatch.Draw(bloodSplat, new Vector2(position.X + (85 * scale) / 2,
+                        position.Y + (35 * scale) / 2),
                         null, Color.White, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
                 }
 
