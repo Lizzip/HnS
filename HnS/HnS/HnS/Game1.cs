@@ -96,6 +96,8 @@ namespace HnS
             entityManager.createHero(new Vector2(100, platformHeight));
             entityManager.createEnemy(new Vector2(900, platformHeight));
             entityManager.createEnemy(new Vector2(-200, platformHeight));
+            entityManager.createPotion(Color.Yellow, new Vector2(250, platformHeight));
+            entityManager.createPotion(Color.Red, new Vector2(590, platformHeight));
 
             /////////////////////////////////////////////
             // GAME SCREEN INITIALISATION - IGNORE FOR NOW//

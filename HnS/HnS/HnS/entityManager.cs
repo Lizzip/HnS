@@ -86,6 +86,15 @@ namespace HnS
             nextUID++;
         }
 
+        //Create potion entity
+        public void createPotion(Color colour, Vector2 position)
+        {
+            Potion potion = new Potion(this, nextUID, position, contentManager, colour);
+            entityMap.Add(nextUID, potion);
+            UIDs.Add(nextUID);
+            nextUID++;
+        }
+
 
         ///////////////////////////////////////////////////
         // UPDATE AND DRAW ////////////////////////////////
