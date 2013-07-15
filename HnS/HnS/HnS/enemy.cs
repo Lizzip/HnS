@@ -178,10 +178,20 @@ namespace HnS
                         flip = true;
                     }
 
-                    if ((entityManager.getHero().getPos().X > entityManager.getScreenWidth() * 0.8 && entityManager.getHero().IsMovingRight()) ||
-                        (entityManager.getHero().getPos().X < entityManager.getScreenWidth() * 0.2 && entityManager.getHero().IsMovingLeft()))
+                    if (entityManager.getHero().getPos().X > entityManager.getScreenWidth() * 0.8 && entityManager.getHero().IsMovingRight())
                     {
                         //Dont move position as screen is scrolling
+                        if (facing == 1)
+                            position.X -= speed * 2 * (float)theGameTime.ElapsedGameTime.TotalMilliseconds;
+                        else
+                            position.X -= speed * (float)theGameTime.ElapsedGameTime.TotalMilliseconds;
+                    }
+                    else if (entityManager.getHero().getPos().X < entityManager.getScreenWidth() * 0.2 && entityManager.getHero().IsMovingLeft())
+                    {
+                        if (facing == 1)
+                            position.X += speed  * (float)theGameTime.ElapsedGameTime.TotalMilliseconds;
+                        else
+                            position.X += speed * 2 * (float)theGameTime.ElapsedGameTime.TotalMilliseconds;
                     }
                     else
                     {
