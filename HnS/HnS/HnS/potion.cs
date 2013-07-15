@@ -18,11 +18,11 @@ namespace HnS
         EntityManager entityManager;
         int UID;
         Vector2 position;            
-        float scale;
+        float scale, minLevel, velocityY, vChange = 0.15f;
         ContentManager contentManager;
         Texture2D image;
         Color colour;
-        bool exists;
+        bool exists, isFalling;
         
         ///////////////////////////////////////////////////
         // CONSTRUCTORS AND LOADING ///////////////////////
@@ -39,6 +39,7 @@ namespace HnS
             scale = 0.5f;
             contentManager = content;
             colour = color;
+            isFalling = false;
             loadContent();
         }
 
@@ -53,15 +54,24 @@ namespace HnS
                 image = contentManager.Load<Texture2D>("pots\\redPot");
             }
 
-            position.Y -= image.Height * scale;
+            minLevel = entityManager.getPlatformHeight() - (image.Height * scale);
         }
 
         public override void update(GameTime theGameTime)
         {
-            if (Vector2.Distance(position, entityManager.getHero().getPos()) < 40)
-            {
-                pickup();
-            }
+            //Hero picks up pot when close enough
+            if (Vector2.Distance(position, entityManager.getHero().getPos()) < 40) pickup();
+
+            //If potion is above platform height, its falling
+            if (position.Y < minLevel)isFalling = true;
+            else isFalling = false;
+
+            //If its falling, apply velocity
+            if (isFalling) velocityY += vChange;
+            else velocityY = 0;
+
+            //Update Y pos for falling
+            position.Y += velocityY;
             base.update(theGameTime);
         }
 

@@ -297,6 +297,7 @@ namespace HnS
 
             if (entityManager.getMaxEnemyCount() > 0)
             {
+                entityManager.createPotion(Color.Red, new Vector2(position.X, entityManager.getPlatformHeight() - 150));
                 entityManager.reduceMaxEnemyCount();
                 resetSelf();
             }
