@@ -440,5 +440,12 @@ namespace HnS
                 armAnimation.Active = false;
             
         }
+
+        public void heal(int amount)
+        {
+            //Heal by given amount, cap at 100
+            health += amount;
+            if (health > 100) health = 100;
+        }
     }
 }

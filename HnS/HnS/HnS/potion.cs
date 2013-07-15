@@ -22,6 +22,7 @@ namespace HnS
         ContentManager contentManager;
         Texture2D image;
         Color colour;
+        bool exists;
         
         ///////////////////////////////////////////////////
         // CONSTRUCTORS AND LOADING ///////////////////////
@@ -33,6 +34,7 @@ namespace HnS
         {
             entityManager = eManager;
             UID = uid;
+            exists = true;
             position = pos;            
             scale = 0.5f;
             contentManager = content;
@@ -56,14 +58,28 @@ namespace HnS
 
         public override void update(GameTime theGameTime)
         {
+            if (Vector2.Distance(position, entityManager.getHero().getPos()) < 40)
+            {
+                pickup();
+            }
             base.update(theGameTime);
         }
 
         public override void draw(SpriteBatch theSpriteBatch)
         {
-            theSpriteBatch.Draw(image, position, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+            if (exists)
+            {
+                theSpriteBatch.Draw(image, position, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+            }
         }
 
-
+        public void pickup()
+        {
+            if (colour == Color.Red && exists == true)
+            {
+                entityManager.getHero().heal(25);
+                exists = false;
+            }
+        }
     }
 }
