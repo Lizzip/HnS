@@ -251,7 +251,6 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Compile Include="panel\heroPanel.png">
       <Name>heroPanel</Name>
@@ -287,6 +286,18 @@
     </Compile>
     <Compile Include="regularEnemy\enemyspritesheet.png">
       <Name>enemyspritesheet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="pots\redPot.png">
+      <Name>redPot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="pots\yellowPot.png">
+      <Name>yellowPot</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
