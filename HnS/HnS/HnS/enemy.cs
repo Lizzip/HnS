@@ -247,9 +247,9 @@ namespace HnS
                 //draw blood if we've been hit recently
                 if (countDownTimers[bloodTimer] > 0.0f)
                 {
-                    theSpriteBatch.Draw(bloodSplat, new Vector2(position.X + (85 * scale) / 2,
+                    theSpriteBatch.Draw(bloodSplat, new Vector2(position.X + (50 * scale) / 2,
                         position.Y + (35 * scale) / 2),
-                        null, Color.White, 0, Vector2.Zero, 0.5f, SpriteEffects.None, 0);
+                        null, Color.White, 0, Vector2.Zero, 0.8f, SpriteEffects.None, 0);
                 }
 
                 //Draw white health bar outline
