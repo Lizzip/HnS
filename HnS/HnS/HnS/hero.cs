@@ -39,7 +39,7 @@ namespace HnS
         ////////////////////////////////////////////////
         //Animation
         float speed, scale, velocityY;
-        int armAnimWidth = 6, armAnimSpeed = 30;
+        int armAnimWidth = 6, armAnimSpeed = 10;
 
         //Animation
         animation bodyAnimation, armAnimation;
@@ -420,7 +420,7 @@ namespace HnS
                 isAttacking = true;
                 attackIndex = 0;
                 broadcastAttack();
-                countDownTimers[attackTimer] = armAnimSpeed * armAnimWidth;
+                countDownTimers[attackTimer] = armAnimSpeed * (armAnimWidth + 1); //There's some jim pokery going here, I dont know why it needs the +1
                 entityManager.getDebugger().Out("Attack", theGameTime.TotalGameTime); //Debugger test for attacking
             }
 
