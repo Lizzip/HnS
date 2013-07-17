@@ -18,6 +18,7 @@ namespace HnS
         SpriteBatch spriteBatch;
         EntityManager entityManager;
         public static Debugger debugger;
+        bool enableNetworking = false;
         
         //Input states
         KeyboardState currentKB, prevKB;
@@ -93,8 +94,8 @@ namespace HnS
             entityManager.createEnemy(new Vector2(-200, platformHeight));
 
             //Networking
-            Networking network = new Networking(this, entityManager, false);
-
+            Networking network = new Networking(this, entityManager, debugger, enableNetworking);
+            if(enableNetworking) entityManager.setNetwork(network);
 
             /////////////////////////////////////////////
             // GAME SCREEN INITIALISATION - IGNORE FOR NOW//

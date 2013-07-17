@@ -23,6 +23,8 @@ namespace HnS
         //Loaders and Managers
         ContentManager contentManager;
         Debugger debugger;
+        Networking network;
+        bool networkingEnabled;
 
         //UID Management
         int nextUID = 0, heroUID, player2UID, backgroundUID, playerCount;
@@ -52,6 +54,7 @@ namespace HnS
             maxEnemyCount = maxEnemies;
             debugger = debug;
             playerCount = 0;
+            networkingEnabled = false;
         }
 
         //Create player char entity
@@ -163,6 +166,27 @@ namespace HnS
         {
             return debugger;
         }
+
+        public Networking getNetwork()
+        {
+            return network;
+        }
+
+        public bool getNetworkingEnabled()
+        {
+            return networkingEnabled;
+        }
+
+        ///////////////////////////////////////////////////
+        // SETTERS ////////////////////////////////////////
+        ///////////////////////////////////////////////////
+
+        public void setNetwork(Networking net)
+        {
+            network = net;
+            networkingEnabled = true;
+        }
+
 
         ///////////////////////////////////////////////////
         // CHECKS /////////////////////////////////////////

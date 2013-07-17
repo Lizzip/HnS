@@ -17,22 +17,24 @@ namespace HnS
     class Networking
     {
         TcpClient client;
-        string localIP = "127.0.0.1";
+        string localIP = "2.124.124.169";
         int port = 1490;
         int bufferSize = 2048;
         byte[] readBuffer;
-        MemoryStream readStream, writeStream;
-        BinaryReader reader;
-        BinaryWriter writer;
+        public MemoryStream readStream, writeStream;
+        public BinaryReader reader;
+        public BinaryWriter writer;
         EntityManager entityManager;
         Hero hero, player2;
+        Debugger debugger;
 
-        public Networking(HnS.Game1 game1, EntityManager eManager, bool serverEnabled)
+        public Networking(HnS.Game1 game1, EntityManager eManager, Debugger deb, bool serverEnabled)
         {
             //Get entities and manager
             entityManager = eManager;
             hero = entityManager.getHero();
-            player2 = entityManager.getPlayer2(); 
+            player2 = entityManager.getPlayer2();
+            debugger = deb;
 
             //Establish connection
             if (serverEnabled)
@@ -105,6 +107,7 @@ namespace HnS
                 {
                     byte id = reader.ReadByte();
                     string ip = reader.ReadString();
+                    debugger.Out("Player 2 has connected");
 
                     if (player2.getExists() == false)
                     {
@@ -118,7 +121,18 @@ namespace HnS
                 {
                     byte id = reader.ReadByte();
                     string ip = reader.ReadString();
+                    debugger.Out("Player 2 has disconnected");
+
                     player2.setExists(false);
+                }
+                else if (p == Protocol.PlayerMoved)
+                {
+                    float px, py;
+                    px = reader.ReadSingle();
+                    py = reader.ReadSingle();
+                    byte id = reader.ReadByte();
+                    string ip = reader.ReadString();
+                    player2.setRecievedInfo(new Vector2(px, py));
                 }
             }
             catch (Exception ex)
@@ -127,7 +141,7 @@ namespace HnS
             }
         }
 
-        private byte[] GetDataFromMemoryStream(MemoryStream ms)
+        public byte[] GetDataFromMemoryStream(MemoryStream ms)
         {
             byte[] result;
 

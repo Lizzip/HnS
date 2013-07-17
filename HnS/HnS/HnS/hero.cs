@@ -72,7 +72,7 @@ namespace HnS
         //facing 0 = right, 1 = left
         int charHeightOffset = 2, UID;
         bool local, exists; //False by default so we don't draw player 2 unless theyre connected
-        Vector2 position;
+        Vector2 position, currentPos, prevPos, posDiff;
         
         ///////////////////////////////////////////////////
         // CONSTRUCTORS AND LOADING ///////////////////////
@@ -148,6 +148,9 @@ namespace HnS
         {
             if (exists)
             {
+                //store current position
+                prevPos = position;
+
                 //Animation
                 bodyTempCurrentFrame.X = bodyAnimation.CurrentFrame.X;
                 bodyAnimation.Position = position;
@@ -234,6 +237,19 @@ namespace HnS
                 prevKB = currentKB;
                 prevMouse = currentMouse;
                 prevGamePad = currentGamePad;
+                currentPos = position;
+
+                posDiff = Vector2.Subtract(prevPos, currentPos);
+                
+                //If pos has changed, alert server
+                if (posDiff != Vector2.Zero && entityManager.getNetworkingEnabled() == true)
+                {
+                    entityManager.getNetwork().writeStream.Position = 0;
+                    entityManager.getNetwork().writer.Write((byte)Protocol.PlayerMoved);
+                    entityManager.getNetwork().writer.Write(posDiff.X);
+                    entityManager.getNetwork().writer.Write(posDiff.Y);
+                    entityManager.getNetwork().SendData(entityManager.getNetwork().GetDataFromMemoryStream(entityManager.getNetwork().writeStream));
+                }
             }
 
             base.update(theGameTime);
@@ -440,6 +456,11 @@ namespace HnS
             return exists;
         }
 
+        public void setRecievedInfo(Vector2 newPos)
+        {
+            position = Vector2.Subtract(position, newPos);
+        }
+
 
         ///////////////////////////////////////////////////
         // COMBAT /////////////////////////////////////////
@@ -471,7 +492,6 @@ namespace HnS
                 attackIndex = 0;
                 broadcastAttack();
                 countDownTimers[attackTimer] = armAnimSpeed * (armAnimWidth + 1); //There's some jim pokery going here, I dont know why it needs the +1
-                entityManager.getDebugger().Out("Attack", theGameTime.TotalGameTime); //Debugger test for attacking
             }
 
             if (currentGamePad.IsConnected && !isAttacking && !local && currentGamePad.Buttons.X == ButtonState.Pressed && prevGamePad.Buttons.X == ButtonState.Released)
@@ -480,7 +500,6 @@ namespace HnS
                 attackIndex = 0;
                 broadcastAttack();
                 countDownTimers[attackTimer] = armAnimSpeed * (armAnimWidth + 1); //There's some jim pokery going here, I dont know why it needs the +1
-                entityManager.getDebugger().Out("Attack", theGameTime.TotalGameTime); //Debugger test for attacking
             }
 
             if (isAttacking)
