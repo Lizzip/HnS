@@ -65,6 +65,9 @@ namespace HnS
 
         protected override void Initialize()
         {
+            //Networking
+     //       Networking network = new Networking(this);
+
             //Create the debugger
             debugger = new Debugger(Content);
 
@@ -147,7 +150,6 @@ namespace HnS
             if (entityManager.getHero().getNumLives <= 0)
                 this.Exit();
             
-
             ///////////////////////////////////////////////
             // GAME SCREEN STUFF - IGNORE FOR NOW ///////
             //////////////////////////////////////////////
@@ -162,14 +164,12 @@ namespace HnS
             // END GAME SCREEN //
             /////////////////////////////////
 
-
             base.Update(gameTime);
 
             //Set previous mouse and keyboard states
             prevKB = currentKB;
             prevMouse = currentMouse;
-            
-            
+
         }
 
         private void HandleStartScreen()

@@ -64,8 +64,13 @@
     <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Net, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Net.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -76,12 +81,14 @@
     <Compile Include="animation.cs" />
     <Compile Include="Background.cs" />
     <Compile Include="Debugger.cs" />
+    <Compile Include="delegates.cs" />
     <Compile Include="enemy.cs" />
     <Compile Include="entity.cs" />
     <Compile Include="entityManager.cs" />
     <Compile Include="gameScreen.cs" />
     <Compile Include="hero.cs" />
     <Compile Include="menuComponent.cs" />
+    <Compile Include="networking.cs" />
     <Compile Include="popupScreen.cs" />
     <Compile Include="potion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
