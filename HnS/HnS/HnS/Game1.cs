@@ -29,8 +29,7 @@ namespace HnS
         List<string> enemyAssetList = new List<string>();
         List<string> backgroundAssetList = new List<string>();
 
-          
-        
+
         //////////////////////////////////////////////
         //GAME SCREEN STUFF - IGNORE FOR NOW ! :P
          
@@ -85,6 +84,7 @@ namespace HnS
             backgroundAssetList.Add("background//trees");
             backgroundAssetList.Add("background//platform");
             backgroundAssetList.Add("background//cloudsFull");
+
 
             base.Initialize();
         }
@@ -146,7 +146,7 @@ namespace HnS
             //If the player number of lives 0 then quit the game
             if (entityManager.getHero().getNumLives <= 0)
                 this.Exit();
-
+            
 
             ///////////////////////////////////////////////
             // GAME SCREEN STUFF - IGNORE FOR NOW ///////

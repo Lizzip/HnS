@@ -45,7 +45,7 @@ namespace HnS
         int armAnimWidth = 6, armAnimSpeed = 30;
 
         //Animation
-        animation bodyAnimation, armAnimation;
+        animation bodyAnimation, armAnimation, bloodAnimation;
         public animation GetBodyAnimation
         {
             get { return bodyAnimation; }
@@ -56,7 +56,12 @@ namespace HnS
             get { return armAnimation; }
         }
 
-        Vector2 bodyTempCurrentFrame, armTempCurrentFrame;
+        public animation GetBloodAnimation
+        {
+            get { return bloodAnimation; }
+        }
+
+        Vector2 bodyTempCurrentFrame, armTempCurrentFrame, bloodTempCurrentFrame;
         bool isAttacking, flip;
         //////////////////////////////////////////////
 
@@ -80,9 +85,14 @@ namespace HnS
             speed = 0.05f;
             scale = 0.7f;
 
+            bodyTempCurrentFrame = Vector2.Zero;
+            armTempCurrentFrame = Vector2.Zero;
+            bloodTempCurrentFrame = Vector2.Zero;
             bodyAnimation = new animation(position, new Vector2(4, 2), 180);
             armAnimation = new animation(position, new Vector2(armAnimWidth, 1), armAnimSpeed);
             bodyTempCurrentFrame.Y = 1;
+            bloodAnimation = new animation(position, new Vector2(6, 1), 60);
+
 
             facing = 1;
             loadContent();
@@ -93,7 +103,8 @@ namespace HnS
             //Animation stuff
             bodyAnimation.AnimationImage = contentManager.Load<Texture2D>("regularEnemy\\enemyspritesheet");
             armAnimation.AnimationImage = contentManager.Load<Texture2D>("regularEnemy\\enemyarmspritesheet");
-            
+            bloodAnimation.AnimationImage = contentManager.Load<Texture2D>("bloodanim");
+
             //Load other images and fonts
             healthBarOutline = contentManager.Load<Texture2D>("enemyHealthBarOutline");
             font = contentManager.Load<SpriteFont>("smallfont");
@@ -112,7 +123,7 @@ namespace HnS
             countDownTimers.Add(0.0f);//Attack Buffer timer
 
             //Load bloodSplat image
-            bloodSplat = contentManager.Load<Texture2D>("bloodSplat");
+            //bloodSplat = contentManager.Load<Texture2D>("bloodSplat");
         }
 
         void resetSelf()
@@ -148,6 +159,17 @@ namespace HnS
                 armAnimation.Position = position;
                 armAnimation.CurrentFrame = armTempCurrentFrame;
                 armAnimation.Update(theGameTime);
+
+                if (countDownTimers[bloodTimer] > 0.0f)
+                {
+                    bloodAnimation.Active = true;
+                    bloodTempCurrentFrame.X = bloodAnimation.CurrentFrame.X;
+                    bloodAnimation.Position = new Vector2(position.X - 22, position.Y - 22);
+                    bloodAnimation.CurrentFrame = bloodTempCurrentFrame;
+                    bloodAnimation.Update(theGameTime);
+                }
+                else
+                    bloodAnimation.Active = false;
 
                 //Count down all count down timers in progress
                 for (int i = 0, len = countDownTimers.Count; i < len; i++)
@@ -245,11 +267,13 @@ namespace HnS
                 bodyAnimation.Draw(theSpriteBatch, scale, flip);
 
                 //draw blood if we've been hit recently
-                if (countDownTimers[bloodTimer] > 0.0f)
+                if (bloodAnimation.Active)
                 {
-                    theSpriteBatch.Draw(bloodSplat, new Vector2(position.X + (50 * scale) / 2,
-                        position.Y + (35 * scale) / 2),
-                        null, Color.White, 0, Vector2.Zero, 0.8f, SpriteEffects.None, 0);
+                    //theSpriteBatch.Draw(bloodSplat, new Vector2(position.X + (50 * scale) / 2,
+                     //   position.Y + (35 * scale) / 2),
+                     //   null, Color.White, 0, Vector2.Zero, 0.8f, SpriteEffects.None, 0);
+
+                    bloodAnimation.Draw(theSpriteBatch, 1.0f, false);
                 }
 
                 //Draw white health bar outline
