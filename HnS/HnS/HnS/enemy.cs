@@ -164,7 +164,7 @@ namespace HnS
                 {
                     bloodAnimation.Active = true;
                     bloodTempCurrentFrame.X = bloodAnimation.CurrentFrame.X;
-                    bloodAnimation.Position = new Vector2(position.X - 22, position.Y - 22);
+                    bloodAnimation.Position = new Vector2(position.X - 24, position.Y - 22);
                     bloodAnimation.CurrentFrame = bloodTempCurrentFrame;
                     bloodAnimation.Update(theGameTime);
                 }
@@ -273,7 +273,7 @@ namespace HnS
                      //   position.Y + (35 * scale) / 2),
                      //   null, Color.White, 0, Vector2.Zero, 0.8f, SpriteEffects.None, 0);
 
-                    bloodAnimation.Draw(theSpriteBatch, 1.0f, false);
+                    bloodAnimation.Draw(theSpriteBatch, 1.0f, flip);
                 }
 
                 //Draw white health bar outline
