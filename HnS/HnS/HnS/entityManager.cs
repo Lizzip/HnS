@@ -25,7 +25,7 @@ namespace HnS
         Debugger debugger;
 
         //UID Management
-        int nextUID = 0, heroUID, backgroundUID;
+        int nextUID = 0, heroUID, player2UID, backgroundUID, playerCount;
         public List<int> UIDs = new List<int>();
 
         //Entity Management
@@ -51,16 +51,21 @@ namespace HnS
             screenHeight = screenH;
             maxEnemyCount = maxEnemies;
             debugger = debug;
+            playerCount = 0;
         }
 
         //Create player char entity
-        public void createHero(Vector2 pos)
+        public void createHero(Vector2 pos, bool localPlayer)
         {
-            Hero hero = new Hero(this, nextUID, pos, contentManager);
+            Hero hero = new Hero(this, nextUID, pos, contentManager, localPlayer);
             entityMap.Add(nextUID, hero);
             UIDs.Add(nextUID);
-            heroUID = nextUID;
+
+            if (playerCount == 0) heroUID = nextUID;
+            else player2UID = nextUID;
+
             nextUID++;
+            playerCount++;
         }
 
         //Create enemy entity
@@ -129,6 +134,11 @@ namespace HnS
             return (Hero)entityMap.ElementAt(UIDs.ElementAt(heroUID)).Value;
         }
 
+        public Hero getPlayer2()
+        {
+            return (Hero)entityMap.ElementAt(UIDs.ElementAt(player2UID)).Value;
+        }
+
         public int getPlatformHeight()
         {
             return platformHeight;
@@ -152,6 +162,16 @@ namespace HnS
         public Debugger getDebugger()
         {
             return debugger;
+        }
+
+        ///////////////////////////////////////////////////
+        // CHECKS /////////////////////////////////////////
+        ///////////////////////////////////////////////////
+
+        public bool player2Exists()
+        {
+            if (playerCount < 1) return false;
+            else return true;
         }
 
         ///////////////////////////////////////////////////

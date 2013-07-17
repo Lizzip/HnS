@@ -20,13 +20,13 @@ namespace HnS
         EntityManager entityManager;
 
         //FPS counter
-        int frameRate = 0;
-        int frameCounter = 0;
+        int frameRate = 0, frameCounter = 0;
         TimeSpan elapsedTime = TimeSpan.Zero;
 
         //Input states
         KeyboardState currentKB, prevKB;
         MouseState currentMouse, prevMouse;
+        GamePadState currentGamePad, prevGamePad; //Controls player 2
 
         //Fonts
         SpriteFont smallFont;
@@ -71,6 +71,7 @@ namespace HnS
         //General Vars
         //facing 0 = right, 1 = left
         int charHeightOffset = 2, UID;
+        bool local, exists; //False by default so we don't draw player 2 unless theyre connected
         Vector2 position;
         
         ///////////////////////////////////////////////////
@@ -79,7 +80,7 @@ namespace HnS
 
         public Hero() { }
 
-        public Hero(EntityManager eManager, int uid, Vector2 pos, ContentManager content)
+        public Hero(EntityManager eManager, int uid, Vector2 pos, ContentManager content, bool localPlayer)
         {
             entityManager = eManager;
             UID = uid;
@@ -88,6 +89,8 @@ namespace HnS
             isJumping = false;
             isAttacking = false;
             flip = false;
+            exists = false;
+            local = localPlayer;
             velocityY = 0;
             position = pos;
             speed = 0.15f;
@@ -143,140 +146,160 @@ namespace HnS
 
         public override void update(GameTime theGameTime)
         {
-            //Animation
-            bodyTempCurrentFrame.X = bodyAnimation.CurrentFrame.X;
-            bodyAnimation.Position = position;
-            bodyAnimation.CurrentFrame = bodyTempCurrentFrame;
-            bodyAnimation.Update(theGameTime);
-
-            armTempCurrentFrame.X = armAnimation.CurrentFrame.X;
-            armAnimation.Position = position;
-            armAnimation.CurrentFrame = armTempCurrentFrame;
-            armAnimation.Update(theGameTime);
-
-            //Update FPS
-            elapsedTime += theGameTime.ElapsedGameTime;
-
-            if (elapsedTime > TimeSpan.FromSeconds(1))
+            if (exists)
             {
-                elapsedTime -= TimeSpan.FromSeconds(1);
-                frameRate = frameCounter;
-                frameCounter = 0;
-            }
+                //Animation
+                bodyTempCurrentFrame.X = bodyAnimation.CurrentFrame.X;
+                bodyAnimation.Position = position;
+                bodyAnimation.CurrentFrame = bodyTempCurrentFrame;
+                bodyAnimation.Update(theGameTime);
 
-            //Count down all count down timers in progress
-            for (int i = 0, len = countDownTimers.Count; i < len; i++)
-            {
-                if (countDownTimers[i] > 0.0f)
+                armTempCurrentFrame.X = armAnimation.CurrentFrame.X;
+                armAnimation.Position = position;
+                armAnimation.CurrentFrame = armTempCurrentFrame;
+                armAnimation.Update(theGameTime);
+
+                //Update FPS
+                elapsedTime += theGameTime.ElapsedGameTime;
+
+                if (elapsedTime > TimeSpan.FromSeconds(1))
                 {
-                    countDownTimers[i] -= (float)theGameTime.ElapsedGameTime.Milliseconds;
+                    elapsedTime -= TimeSpan.FromSeconds(1);
+                    frameRate = frameCounter;
+                    frameCounter = 0;
                 }
+
+                //Count down all count down timers in progress
+                for (int i = 0, len = countDownTimers.Count; i < len; i++)
+                {
+                    if (countDownTimers[i] > 0.0f)
+                    {
+                        countDownTimers[i] -= (float)theGameTime.ElapsedGameTime.Milliseconds;
+                    }
+                }
+
+                //Get new mouse, gamepad and keyboard states
+                currentKB = Keyboard.GetState();
+                currentMouse = Mouse.GetState();
+                currentGamePad = GamePad.GetState(PlayerIndex.One);
+
+                position.Y += velocityY;
+
+                //Make the character jump based on spacebar press
+                Jump(theGameTime);
+
+                //Attack with left mouseclick
+                attack(theGameTime, currentMouse, prevMouse);
+
+                // Death
+                if (health <= 0.0)
+                {
+                    position.X = 25;
+                    RemoveLife();
+                }
+
+
+                //Movement and animation (do not move if this is player 2)
+                if (local)
+                {
+                    if (currentKB.IsKeyDown(Keys.D))
+                    {
+                        MoveRight(theGameTime);
+                    }
+                    else if (currentKB.IsKeyDown(Keys.A))
+                    {
+                        MoveLeft(theGameTime);
+                    }
+                    else
+                    {
+                        bodyAnimation.Active = false;
+                    }
+                }
+                else
+                {
+                    if (currentGamePad.IsConnected)
+                    {
+                        if (currentGamePad.ThumbSticks.Left.X > 0.0f)
+                        {
+                            MoveRight(theGameTime);
+                        }
+                        else if (currentGamePad.ThumbSticks.Left.X < 0.0f)
+                        {
+                            MoveLeft(theGameTime);
+                        }
+                    }
+                }
+
+                //Set previous mouse, gamepad and keyboard states
+                prevKB = currentKB;
+                prevMouse = currentMouse;
+                prevGamePad = currentGamePad;
             }
-            
-            //Get new mouse and keyboard states
-            currentKB = Keyboard.GetState();
-            currentMouse = Mouse.GetState();
 
-            position.Y += velocityY;
-
-            //Make the character jump based on spacebar press
-            Jump(theGameTime);
-
-            //Attack with left mouseclick
-            attack(theGameTime, currentMouse, prevMouse);
-
-            ////////////////////////////////
-            // Death testing ///////////////
-            ////////////////////////////////
-            if (Keyboard.GetState().IsKeyDown(Keys.J))
-                health--;
-
-            // Death
-            if (health <= 0.0)
-            {
-                position.X = 25;
-                RemoveLife();
-            }
-
-
-            //Movement and animation
-            if (currentKB.IsKeyDown(Keys.D))
-            {
-                MoveRight(theGameTime);
-            }
-            else if (currentKB.IsKeyDown(Keys.A))
-            {
-                MoveLeft(theGameTime);
-            }
-            else
-            {
-                bodyAnimation.Active = false;
-            }
-
-            //Set previous mouse and keyboard states
-            prevKB = currentKB;
-            prevMouse = currentMouse;
             base.update(theGameTime);
         }
 
         public override void draw(Microsoft.Xna.Framework.Graphics.SpriteBatch theSpriteBatch)
         {
-            //Draw the body and arm animations for the player character
-            armAnimation.Draw(theSpriteBatch, scale, flip);
-            if (!isJumping)
+            if (exists)
             {
-                if (IsMovingLeft() || IsMovingRight())
+                //Draw the body and arm animations for the player character
+                armAnimation.Draw(theSpriteBatch, scale, flip);
+                if (!isJumping)
                 {
-                    bodyAnimation.Draw(theSpriteBatch, scale, flip);
+                    if (IsMovingLeft() || IsMovingRight())
+                    {
+                        bodyAnimation.Draw(theSpriteBatch, scale, flip);
+                    }
+                    else
+                    {
+                        bodyAnimation.forceDraw(theSpriteBatch, scale, flip, 0, 0);
+                    }
                 }
                 else
                 {
-                    bodyAnimation.forceDraw(theSpriteBatch, scale, flip, 0, 0);
+                    bodyAnimation.forceDraw(theSpriteBatch, scale, flip, 3, 0);
                 }
-            }
-            else
-            {
-                bodyAnimation.forceDraw(theSpriteBatch, scale, flip, 3, 0);
-            }
 
-            //Draw hero panel
-            theSpriteBatch.Draw(heroPanel, Vector2.Zero, Color.White);
+                //Draw hero panel
+                theSpriteBatch.Draw(heroPanel, Vector2.Zero, Color.White);
 
-            //Draw red health bar area for current health
-            theSpriteBatch.Draw(healthBarOutline, new Rectangle(21, 20, (int)(healthBarOutline.Width * ((double)health / 100) - 2), 18),
-                 new Rectangle(0, 45, healthBarOutline.Width, 44), Color.Red);
+                //Draw red health bar area for current health
+                theSpriteBatch.Draw(healthBarOutline, new Rectangle(21, 20, (int)(healthBarOutline.Width * ((double)health / 100) - 2), 18),
+                     new Rectangle(0, 45, healthBarOutline.Width, 44), Color.Red);
 
-            //Write health text
-            theSpriteBatch.DrawString(smallFont, "Health: " + health + "%", healthTextPos, Color.White);
-            
-            //Draw/Fill in each heart for lives
-            if (numLives > 0)
-            {
-                theSpriteBatch.Draw(heart1Fill, Vector2.Zero, Color.White);
+                //Write health text
+                theSpriteBatch.DrawString(smallFont, "Health: " + health + "%", healthTextPos, Color.White);
 
-                if (numLives > 1)
+                //Draw/Fill in each heart for lives
+                if (numLives > 0)
                 {
-                    theSpriteBatch.Draw(heart2Fill, Vector2.Zero, Color.White);
+                    theSpriteBatch.Draw(heart1Fill, Vector2.Zero, Color.White);
 
-                    if (numLives > 2)
+                    if (numLives > 1)
                     {
-                        theSpriteBatch.Draw(heart3Fill, Vector2.Zero, Color.White);
+                        theSpriteBatch.Draw(heart2Fill, Vector2.Zero, Color.White);
+
+                        if (numLives > 2)
+                        {
+                            theSpriteBatch.Draw(heart3Fill, Vector2.Zero, Color.White);
+                        }
                     }
                 }
+
+                //Draw heart outlines on hero panel
+                theSpriteBatch.Draw(heartOutlines, Vector2.Zero, Color.White);
+
+                //Display death text after dying
+                if (countDownTimers[deathTimer] > 0.0f)
+                    theSpriteBatch.DrawString(deathFont, "YOU LOSE A LIFE", deathTextPos, Color.Red);
+
+                //Draw FPS
+                frameCounter++;
+                string fps = string.Format("fps: {0}", frameRate);
+                theSpriteBatch.DrawString(smallFont, fps, new Vector2(713, 13), Color.Black);
+                theSpriteBatch.DrawString(smallFont, fps, new Vector2(712, 12), Color.White);
             }
-
-            //Draw heart outlines on hero panel
-            theSpriteBatch.Draw(heartOutlines, Vector2.Zero, Color.White);
-
-            //Display death text after dying
-            if (countDownTimers[deathTimer] > 0.0f)
-                theSpriteBatch.DrawString(deathFont, "YOU LOSE A LIFE", deathTextPos, Color.Red);
-
-            //Draw FPS
-            frameCounter++;
-            string fps = string.Format("fps: {0}", frameRate);
-            theSpriteBatch.DrawString(smallFont, fps, new Vector2(713, 13), Color.Black);
-            theSpriteBatch.DrawString(smallFont, fps, new Vector2(712, 12), Color.White);
 
             base.draw(theSpriteBatch);
         }
@@ -289,11 +312,21 @@ namespace HnS
         {
             //Check if the space is pressed and character is not already jumping. Then move the character
             //in negative Y position (upwards) and set to fall back down based on the Y velocity.
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isJumping)
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isJumping && local)
             {
                 position.Y -= 10.0f;
                 velocityY = -3.0f;
                 isJumping = true;
+            }
+
+            if (!local && !isJumping && currentGamePad.IsConnected)
+            {
+                if (currentGamePad.Buttons.A == ButtonState.Pressed)
+                {
+                    position.Y -= 10.0f;
+                    velocityY = -3.0f;
+                    isJumping = true;
+                }
             }
 
             //Make the character fall based on in increasing Y velocity
@@ -325,8 +358,11 @@ namespace HnS
 
         public bool IsMovingLeft()
         {
-            if (currentKB.IsKeyDown(Keys.A))
+            if ((currentKB.IsKeyDown(Keys.A) && local) ||
+                (currentGamePad.IsConnected && currentGamePad.ThumbSticks.Left.X < 0.0f && !local))
+            {
                 return true;
+            }
             else return false;
         }
 
@@ -347,8 +383,11 @@ namespace HnS
 
         public bool IsMovingRight()
         {
-            if (currentKB.IsKeyDown(Keys.D))
+            if ((currentKB.IsKeyDown(Keys.D) && local) ||
+                (currentGamePad.IsConnected && currentGamePad.ThumbSticks.Left.X > 0.0f && !local))
+            {
                 return true;
+            }
             else return false;
         }
 
@@ -390,6 +429,17 @@ namespace HnS
         {
             get { return numLives; }
         }
+        
+        public void setExists(bool ex)
+        {
+            exists = ex;
+        }
+
+        public bool getExists()
+        {
+            return exists;
+        }
+
 
         ///////////////////////////////////////////////////
         // COMBAT /////////////////////////////////////////
@@ -415,7 +465,16 @@ namespace HnS
         private void attack(GameTime theGameTime, MouseState currentMS, MouseState prevMS)
         {
             //Check for left mouse click - Attack if not currently attacking
-            if (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released && !isAttacking)
+            if (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released && !isAttacking && local)
+            {
+                isAttacking = true;
+                attackIndex = 0;
+                broadcastAttack();
+                countDownTimers[attackTimer] = armAnimSpeed * (armAnimWidth + 1); //There's some jim pokery going here, I dont know why it needs the +1
+                entityManager.getDebugger().Out("Attack", theGameTime.TotalGameTime); //Debugger test for attacking
+            }
+
+            if (currentGamePad.IsConnected && !isAttacking && !local && currentGamePad.Buttons.X == ButtonState.Pressed && prevGamePad.Buttons.X == ButtonState.Released)
             {
                 isAttacking = true;
                 attackIndex = 0;

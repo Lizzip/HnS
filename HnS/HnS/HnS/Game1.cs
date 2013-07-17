@@ -65,21 +65,12 @@ namespace HnS
 
         protected override void Initialize()
         {
-            //Networking
-     //       Networking network = new Networking(this);
-
             //Create the debugger
             debugger = new Debugger(Content);
 
             //Create entity manager
             entityManager = new EntityManager(Content, debugger, platformHeight, windowWidth, windowHeight);
-            /*
-            //Push images for enemy entity to list
-            enemyAssetList.Add("enemy1");
-            enemyAssetList.Add("enemy1Walk");
-            enemyAssetList.Add("enemy2");
-            enemyAssetList.Add("enemy2Walk");
-            */
+
             //Push images for background manager
             backgroundAssetList.Add("background//sky");
             backgroundAssetList.Add("background//mountains");
@@ -88,7 +79,6 @@ namespace HnS
             backgroundAssetList.Add("background//platform");
             backgroundAssetList.Add("background//cloudsFull");
 
-
             base.Initialize();
         }
 
@@ -96,11 +86,15 @@ namespace HnS
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             entityManager.createBackground(backgroundAssetList, 2.0f);
-            entityManager.createHero(new Vector2(100, platformHeight));
+            entityManager.createHero(new Vector2(100, platformHeight), true);
+            entityManager.getHero().setExists(true); //Make player 1 exist
+            entityManager.createHero(new Vector2(100, platformHeight), false);
             entityManager.createEnemy(new Vector2(900, platformHeight));
             entityManager.createEnemy(new Vector2(-200, platformHeight));
-         //   entityManager.createPotion(Color.Yellow, new Vector2(250, platformHeight));
-         //   entityManager.createPotion(Color.Red, new Vector2(590, platformHeight));
+
+            //Networking
+            Networking network = new Networking(this, entityManager, false);
+
 
             /////////////////////////////////////////////
             // GAME SCREEN INITIALISATION - IGNORE FOR NOW//

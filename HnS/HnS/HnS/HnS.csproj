@@ -94,6 +94,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="protocols.cs" />
     <Compile Include="startScreen.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -77,7 +77,9 @@ namespace HnS
             base.LoadContent();
 
             entityManager.createBackground(backgroundAssetList, 2.0f);
-            entityManager.createHero(new Vector2(100, platformHeight));
+            entityManager.createHero(new Vector2(100, platformHeight), true);
+            entityManager.getHero().setExists(true); 
+            entityManager.createHero(new Vector2(100, platformHeight), false);
             entityManager.createEnemy(new Vector2(900, platformHeight));
             entityManager.createEnemy(new Vector2(-200, platformHeight));
         }
