@@ -39,7 +39,7 @@ namespace HnS
         ////////////////////////////////////////////////
         //Animation
         float speed, scale, velocityY;
-        int armAnimWidth = 6, armAnimSpeed = 10;
+        int armAnimWidth = 12, armAnimSpeed = 28;
 
         //Animation
         animation bodyAnimation, armAnimation;
@@ -113,7 +113,7 @@ namespace HnS
         {
             //Animation stuff
             bodyAnimation.AnimationImage = contentManager.Load<Texture2D>("hero\\herospritesheet");
-            armAnimation.AnimationImage = contentManager.Load <Texture2D>("hero\\heroarmspritesheet");
+            armAnimation.AnimationImage = contentManager.Load <Texture2D>("hero\\heroarmspritesheet2");
 
 
             //Load other images and fonts

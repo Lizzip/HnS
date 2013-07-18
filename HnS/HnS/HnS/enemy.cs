@@ -312,7 +312,7 @@ namespace HnS
 
         void splurgeBlood(Vector2 pointOfImpact)
         {
-            countDownTimers[bloodTimer] = 1000.0f;
+            countDownTimers[bloodTimer] = 500.0f;
             bloodPos = pointOfImpact;
         }
 
