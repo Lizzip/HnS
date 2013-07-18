@@ -15,6 +15,9 @@ NEED/NEXT/IN PROGRESS
 - Dragon is boss mob
 - Multiplayer
 - Menu Screen
+- Fuller animations
+- Stamina bar/pickups
+- Power attacks
 
 ----------------------------------------------
 NICE/LATER
@@ -23,7 +26,6 @@ NICE/LATER
 - Final art
 - Final animations
 - Alternative weapons/magic
-- Complex attacks
 - Platformer elements
 - Inventory
 - Items + Armour

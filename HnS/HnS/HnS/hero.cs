@@ -42,7 +42,7 @@ namespace HnS
         int armAnimWidth = 12, armAnimSpeed = 28;
 
         //Animation
-        animation bodyAnimation, armAnimation;
+        animation bodyAnimation, armAnimation, bloodAnimation;
         public animation GetBodyAnimation
         {
             get { return bodyAnimation; }
@@ -53,7 +53,12 @@ namespace HnS
             get { return armAnimation; }
         }
 
-        Vector2 bodyTempCurrentFrame, armTempCurrentFrame;
+        public animation GetBloodAnimation
+        {
+            get { return bloodAnimation; }
+        }
+
+        Vector2 bodyTempCurrentFrame, armTempCurrentFrame, bloodTempCurrentFrame;
         bool isJumping, isAttacking, flip;
         //////////////////////////////////////////////
         
@@ -97,9 +102,11 @@ namespace HnS
 
             bodyTempCurrentFrame = Vector2.Zero;
             armTempCurrentFrame = Vector2.Zero;
+            bloodTempCurrentFrame = Vector2.Zero;
             bodyAnimation = new animation(position, new Vector2(4, 2), 90);
             armAnimation = new animation(position, new Vector2(armAnimWidth, 1), armAnimSpeed);
-            
+            bloodAnimation = new animation(position, new Vector2(6, 1), 60);
+
             scale = 0.7f;
 
             health = 100.0f;
@@ -114,7 +121,7 @@ namespace HnS
             //Animation stuff
             bodyAnimation.AnimationImage = contentManager.Load<Texture2D>("hero\\herospritesheet");
             armAnimation.AnimationImage = contentManager.Load <Texture2D>("hero\\heroarmspritesheet2");
-
+            bloodAnimation.AnimationImage = contentManager.Load<Texture2D>("bloodanim");
 
             //Load other images and fonts
             healthBarOutline = contentManager.Load<Texture2D>("healthBarOutline");
@@ -161,6 +168,19 @@ namespace HnS
                 armAnimation.Position = position;
                 armAnimation.CurrentFrame = armTempCurrentFrame;
                 armAnimation.Update(theGameTime);
+
+                //Only show and update the blood animation when the blood timer is above 0
+                // (when the character has been hit)
+                if (countDownTimers[bloodTimer] > 0.0f)
+                {
+                    bloodAnimation.Active = true;
+                    bloodTempCurrentFrame.X = bloodAnimation.CurrentFrame.X;
+                    bloodAnimation.Position = new Vector2(position.X-5, position.Y-5);
+                    bloodAnimation.CurrentFrame = bloodTempCurrentFrame;
+                    bloodAnimation.Update(theGameTime);
+                }
+                else
+                    bloodAnimation.Active = false;
 
                 //Update FPS
                 elapsedTime += theGameTime.ElapsedGameTime;
@@ -259,6 +279,12 @@ namespace HnS
         {
             if (exists)
             {
+                //Draw blood if the hero has been recently hit
+                if (bloodAnimation.Active)
+                {
+                    bloodAnimation.Draw(theSpriteBatch, scale, flip);
+                }
+
                 //Draw the body and arm animations for the player character
                 armAnimation.Draw(theSpriteBatch, scale, flip);
                 if (!isJumping)

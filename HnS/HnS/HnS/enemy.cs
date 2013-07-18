@@ -160,6 +160,8 @@ namespace HnS
                 armAnimation.CurrentFrame = armTempCurrentFrame;
                 armAnimation.Update(theGameTime);
 
+                //Only show and update the blood animation when the blood timer is above 0
+                // (when the character has been hit)
                 if (countDownTimers[bloodTimer] > 0.0f)
                 {
                     bloodAnimation.Active = true;
@@ -262,11 +264,7 @@ namespace HnS
         {
             if (health > 0)
             {
-
-                armAnimation.Draw(theSpriteBatch, scale, flip);
-                bodyAnimation.Draw(theSpriteBatch, scale, flip);
-
-                //draw blood if we've been hit recently
+                //Draw the blood animation if the enemy has recently been hit
                 if (bloodAnimation.Active)
                 {
                     //theSpriteBatch.Draw(bloodSplat, new Vector2(position.X + (50 * scale) / 2,
@@ -275,6 +273,10 @@ namespace HnS
 
                     bloodAnimation.Draw(theSpriteBatch, 1.0f, flip);
                 }
+
+                //Draw the arm and body
+                armAnimation.Draw(theSpriteBatch, scale, flip);
+                bodyAnimation.Draw(theSpriteBatch, scale, flip);
 
                 //Draw white health bar outline
                 theSpriteBatch.Draw(healthBarOutline, new Vector2(position.X, position.Y - 17), Color.White);
