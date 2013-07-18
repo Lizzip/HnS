@@ -267,10 +267,6 @@ namespace HnS
                 //Draw the blood animation if the enemy has recently been hit
                 if (bloodAnimation.Active)
                 {
-                    //theSpriteBatch.Draw(bloodSplat, new Vector2(position.X + (50 * scale) / 2,
-                     //   position.Y + (35 * scale) / 2),
-                     //   null, Color.White, 0, Vector2.Zero, 0.8f, SpriteEffects.None, 0);
-
                     bloodAnimation.Draw(theSpriteBatch, 1.0f, flip);
                 }
 

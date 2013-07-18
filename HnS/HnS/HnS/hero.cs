@@ -34,7 +34,7 @@ namespace HnS
 
         //Textures
         Texture2D healthBarOutline, temp, bloodSplat, heroPanel,
-            heartOutlines, heart1Fill, heart2Fill, heart3Fill;
+            heartOutlines, heart1Fill, heart2Fill, heart3Fill, staminaBarOutline;
 
         ////////////////////////////////////////////////
         //Animation
@@ -69,7 +69,7 @@ namespace HnS
 
         //Combat
         Vector2 healthTextPos, numLivesPos, deathTextPos, bloodPos;
-        float attackDamage, health;
+        float attackDamage, health, stamina;
         int numLives, attackIndex = 4, armourLevel = 1;
         
                 
@@ -110,6 +110,7 @@ namespace HnS
             scale = 0.7f;
 
             health = 100.0f;
+            stamina = 100.0f;
             attackDamage = 10.0f;
             numLives = 3;
             contentManager = content;
@@ -125,6 +126,7 @@ namespace HnS
 
             //Load other images and fonts
             healthBarOutline = contentManager.Load<Texture2D>("healthBarOutline");
+            staminaBarOutline = contentManager.Load<Texture2D>("staminaBarOutline");
             smallFont = contentManager.Load<SpriteFont>("smallFont");
             deathFont = contentManager.Load<SpriteFont>("deathFont");
             bloodSplat = contentManager.Load<Texture2D>("bloodSplat");
@@ -158,17 +160,18 @@ namespace HnS
                 //store current position
                 prevPos = position;
 
-                //Animation
+                //Update the body position and animation frames
                 bodyTempCurrentFrame.X = bodyAnimation.CurrentFrame.X;
                 bodyAnimation.Position = position;
                 bodyAnimation.CurrentFrame = bodyTempCurrentFrame;
                 bodyAnimation.Update(theGameTime);
 
+                //Update the arm position and animation frames
                 armTempCurrentFrame.X = armAnimation.CurrentFrame.X;
                 armAnimation.Position = position;
                 armAnimation.CurrentFrame = armTempCurrentFrame;
                 armAnimation.Update(theGameTime);
-
+                
                 //Only show and update the blood animation when the blood timer is above 0
                 // (when the character has been hit)
                 if (countDownTimers[bloodTimer] > 0.0f)
@@ -331,6 +334,10 @@ namespace HnS
 
                 //Draw heart outlines on hero panel
                 theSpriteBatch.Draw(heartOutlines, Vector2.Zero, Color.White);
+
+                //Draw yellow stamina bar area for current stamina
+                theSpriteBatch.Draw(staminaBarOutline, new Rectangle(180, 56, (int)(staminaBarOutline.Width * ((double)stamina / 100) - 2), 18),
+                    new Rectangle(0, 44, staminaBarOutline.Width, 44), Color.Yellow);
 
                 //Display death text after dying
                 if (countDownTimers[deathTimer] > 0.0f)
@@ -532,6 +539,7 @@ namespace HnS
             {
                 //Enable the arm/sword animation
                 armAnimation.Active = true;
+
 
                 //Disable attacking when animation has finished playing
                 if (countDownTimers[attackTimer] < 0.0f)
