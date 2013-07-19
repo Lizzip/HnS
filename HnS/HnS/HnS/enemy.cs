@@ -138,10 +138,7 @@ namespace HnS
         public override void update(Microsoft.Xna.Framework.GameTime theGameTime)
         {
             //Die if health is 0
-            if (health < 1)
-            {
-                die();
-            }
+            if (health < 1) die();
             else
             {
                 //Animation
@@ -172,9 +169,7 @@ namespace HnS
                 for (int i = 0, len = countDownTimers.Count; i < len; i++)
                 {
                     if (countDownTimers[i] > -1.0f)
-                    {
                         countDownTimers[i] -= (float)theGameTime.ElapsedGameTime.Milliseconds;
-                    }
                 }
 
                 if (Vector2.Distance(position, entityManager.getHero().getPos()) > 2.0f) walking = true;
@@ -245,9 +240,7 @@ namespace HnS
                 }
 
                 if (countDownTimers[attackTimer] < 0.0f)
-                {
                     armAnimation.Active = false;
-                }
 
                 //Update health text position
                 healthTextPos = new Vector2(position.X, position.Y - 15);
@@ -261,9 +254,7 @@ namespace HnS
             {
                 //Draw the blood animation if the enemy has recently been hit
                 if (bloodAnimation.Active)
-                {
                     bloodAnimation.Draw(theSpriteBatch, 1.0f, flip);
-                }
 
                 //Draw the arm and body
                 armAnimation.Draw(theSpriteBatch, scale, flip);

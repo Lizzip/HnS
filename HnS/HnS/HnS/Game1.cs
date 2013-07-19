@@ -203,10 +203,8 @@ namespace HnS
                     activeScreen = actionScreen;
                     activeScreen.Show();
                 }
-                if (startScreen.SelectedIndex == 1)
-                {
-                    this.Exit();
-                }
+                
+                if (startScreen.SelectedIndex == 1) this.Exit();
             }
         }
 
@@ -228,8 +226,6 @@ namespace HnS
                 activeScreen = pauseScreen;
                 activeScreen.Show();
             }
-
-
         }
 
         private void HandleQuitScreen()
