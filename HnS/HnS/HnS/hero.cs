@@ -218,7 +218,7 @@ namespace HnS
                 Jump(theGameTime);
 
                 //Attack with left mouseclick
-                attack(theGameTime, currentMouse, prevMouse);
+                attack(theGameTime);
 
                 // Death
                 if (health <= 0.0)
@@ -239,10 +239,7 @@ namespace HnS
                     {
                         MoveLeft(theGameTime);
                     }
-                    else
-                    {
-                        bodyAnimation.Active = false;
-                    }
+                    else bodyAnimation.Active = false;
                 }
                 else
                 {
@@ -256,7 +253,18 @@ namespace HnS
                         {
                             MoveLeft(theGameTime);
                         }
+                        else bodyAnimation.Active = false;
                     }
+
+                    if (currentKB.IsKeyDown(Keys.Right))
+                    {
+                        MoveRight(theGameTime);
+                    }
+                    else if (currentKB.IsKeyDown(Keys.Left))
+                    {
+                        MoveLeft(theGameTime);
+                    }
+                    else bodyAnimation.Active = false;
                 }
 
                 //Set previous mouse, gamepad and keyboard states
@@ -410,12 +418,11 @@ namespace HnS
 
         public bool IsMovingLeft()
         {
-            if ((currentKB.IsKeyDown(Keys.A) && local) ||
-                (currentGamePad.IsConnected && currentGamePad.ThumbSticks.Left.X < 0.0f && !local))
-            {
-                return true;
-            }
-            else return false;
+            if (currentKB.IsKeyDown(Keys.A) && local) return true;
+            if (currentGamePad.IsConnected && currentGamePad.ThumbSticks.Left.X < 0.0f && !local) return true;
+            if (currentKB.IsKeyDown(Keys.Left) && !local) return true;
+
+            return false;
         }
 
         public void MoveLeft(GameTime theGameTime)
@@ -435,12 +442,11 @@ namespace HnS
 
         public bool IsMovingRight()
         {
-            if ((currentKB.IsKeyDown(Keys.D) && local) ||
-                (currentGamePad.IsConnected && currentGamePad.ThumbSticks.Left.X > 0.0f && !local))
-            {
-                return true;
-            }
-            else return false;
+            if (currentKB.IsKeyDown(Keys.D) && local) return true;
+            if (currentGamePad.IsConnected && currentGamePad.ThumbSticks.Left.X > 0.0f && !local) return true;
+            if (currentKB.IsKeyDown(Keys.Right) && !local) return true;
+
+            return false;
         }
 
         public void MoveRight(GameTime theGameTime)
@@ -504,7 +510,57 @@ namespace HnS
             Game1.network.writer.Write(posDiff.X);
             Game1.network.writer.Write(posDiff.Y);
             Game1.network.SendData(Game1.network.GetDataFromMemoryStream(Game1.network.writeStream));
+
+            //Send animation update
+            sendAnimationState();
         }
+
+        public void sendAnimationState()
+        {
+            Game1.network.writeStream.Position = 0;
+            Game1.network.writer.Write((byte)Protocol.PlayerAnimationState);
+
+            //Send the state of the following:
+            // body animation current frame
+            // position
+            // arm animation current frame
+            // if blood countdown timer > 0 - make active, current frame, position
+            // if blood countdown timer < 0 - make inactive
+
+            Game1.network.writer.Write(position.X);
+            Game1.network.writer.Write(position.Y);
+            Game1.network.writer.Write(bodyTempCurrentFrame.X);
+            Game1.network.writer.Write(bodyTempCurrentFrame.Y);
+            Game1.network.writer.Write(armTempCurrentFrame.X);
+            Game1.network.writer.Write(armTempCurrentFrame.Y);
+
+            if (countDownTimers[bloodTimer] > 0.0f)
+            {
+                Game1.network.writer.Write(true);
+                Game1.network.writer.Write(bloodTempCurrentFrame.X);
+                Game1.network.writer.Write(bloodTempCurrentFrame.Y);
+            }
+            else Game1.network.writer.Write(false);
+        }
+
+        public void getAnimationState(List<float> values)
+        {
+            //Set positions
+            bodyAnimation.Position = new Vector2(values[0], values[1]);
+            armAnimation.Position = new Vector2(values[0], values[1]);
+
+            bodyAnimation.CurrentFrame = new Vector2(values[2], values[3]);
+            armAnimation.CurrentFrame = new Vector2(values[4], values[5]);
+/*
+            if (values[6] > 0.0f)
+            {
+                bloodAnimation.Active = true;
+                bloodAnimation.CurrentFrame = new Vector2(values[7], values[8]);
+                bloodAnimation.Position = new Vector2(values[0] - 5, values[1] - 5);
+            }
+            else bloodAnimation.Active = false;*/
+        }
+
         #endregion
 
         #region Combat
@@ -526,7 +582,7 @@ namespace HnS
             bloodPos = pointOfImpact;
         }
 
-        private void attack(GameTime theGameTime, MouseState currentMS, MouseState prevMS)
+        private void attack(GameTime theGameTime)
         {
             //Check for left mouse click - Attack if not currently attacking
             if (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released && !isAttacking && local)
@@ -544,6 +600,15 @@ namespace HnS
                 broadcastAttack();
                 countDownTimers[attackTimer] = armAnimSpeed * (armAnimWidth + 1); //There's some jim pokery going here, I dont know why it needs the +1
             }
+            
+            if (currentKB.IsKeyDown(Keys.NumPad0) && !isAttacking && !local)
+            {
+                isAttacking = true;
+                attackIndex = 0;
+                broadcastAttack();
+                countDownTimers[attackTimer] = armAnimSpeed * (armAnimWidth + 1); //There's some jim pokery going here, I dont know why it needs the +1
+            }
+            
 
             if (isAttacking)
             {

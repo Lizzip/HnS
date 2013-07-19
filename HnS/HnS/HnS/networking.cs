@@ -19,7 +19,8 @@ namespace HnS
         #region Variables
 
         TcpClient client;
-        string localIP = "127.0.0.1";
+        string localIP = "127.0.0.1", ip;
+        byte id;
         int port = 1490;
         int bufferSize = 2048;
         byte[] readBuffer;
@@ -109,11 +110,10 @@ namespace HnS
             {
                 p = (Protocol)reader.ReadByte();
 
-                //Player Connect and Disconnect
-                if (p == Protocol.Connected)
+                if (p == Protocol.Connected) //Player Connected
                 {
-                    byte id = reader.ReadByte();
-                    string ip = reader.ReadString();
+                    id = reader.ReadByte();
+                    ip = reader.ReadString();
                     debugger.Out("Player 2 has connected");
 
                     if (player2.getExists() == false)
@@ -124,22 +124,48 @@ namespace HnS
                         SendData(GetDataFromMemoryStream(writeStream));
                     }
                 }
-                else if (p == Protocol.Disconnected)
+                else if (p == Protocol.Disconnected) //Player Disconnected
                 {
-                    byte id = reader.ReadByte();
-                    string ip = reader.ReadString();
+                    id = reader.ReadByte();
+                    ip = reader.ReadString();
                     debugger.Out("Player 2 has disconnected");
 
                     player2.setExists(false);
                 }
-                else if (p == Protocol.PlayerMoved)
+                else if (p == Protocol.PlayerMoved) //Player Moved
                 {
                     float px, py;
                     px = reader.ReadSingle();
                     py = reader.ReadSingle();
-                    byte id = reader.ReadByte();
-                    string ip = reader.ReadString();
+                    id = reader.ReadByte();
+                    ip = reader.ReadString();
                     player2.setRecievedInfo(new Vector2(px, py));
+                }
+                else if (p == Protocol.PlayerAnimationTrigger) //Update Player Animation
+                {
+                    
+                }
+                else if (p == Protocol.PlayerAnimationState)
+                {
+                    List<float> values = new List<float>();
+                    int floatValues = 6;
+                    bool bloodActive;
+
+                    for (int i = 0; i < floatValues; i++)
+                    {
+                        values.Add(reader.ReadSingle());
+                    }
+/*
+                    bloodActive = reader.ReadBoolean();
+
+                    if (bloodActive)
+                    {
+                        values.Add(1.0f);
+                        values.Add(reader.ReadSingle());
+                        values.Add(reader.ReadSingle());
+                    }
+                    else values.Add(-1.0f);
+                    */
                 }
             }
             catch (Exception ex)

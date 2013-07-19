@@ -67,7 +67,7 @@ namespace HnS
         ///////////////////////////
         #endregion
 
-        #region Update and Draw
+        #region Constructor
         public animation(Vector2 thePosition, Vector2 theNumFrames, int theFrameSwitch)
         {
             active = false;
@@ -76,7 +76,9 @@ namespace HnS
             this.position = thePosition;
             this.numFrames = theNumFrames;
         }
+        #endregion
 
+        #region Update and Draw
         public void Update(GameTime gameTime)
         {
             if (active)

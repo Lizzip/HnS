@@ -11,6 +11,6 @@ namespace HnS
         Connected = 1,
         PlayerMoved = 2,
         PlayerAnimationTrigger = 3,
-        SyncEnemies = 4
+        PlayerAnimationState = 4
     }
 }
