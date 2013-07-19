@@ -13,6 +13,7 @@ namespace HnS
 {
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        #region Variables
         //Loaders and Managers
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -52,8 +53,9 @@ namespace HnS
 
         // END GAME SCREEN STUFF
         ////////////////////////
+        #endregion
 
-
+        #region Constructors, Initialising and Loading
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -129,7 +131,9 @@ namespace HnS
         }
 
         protected override void UnloadContent(){}
+        #endregion
 
+        #region Update and Draw
         protected override void Update(GameTime gameTime)
         {
             //Get new mouse and keyboard states
@@ -165,9 +169,30 @@ namespace HnS
             //Set previous mouse and keyboard states
             prevKB = currentKB;
             prevMouse = currentMouse;
-
         }
 
+        protected override void Draw(GameTime gameTime)
+        {
+            //Set background colour as gray
+            GraphicsDevice.Clear(Color.Gray);
+            spriteBatch.Begin();
+
+            /////////////////////////////////////
+            // COMMENT THIS SECTION OUT TO TEST GAME SCREENS
+
+            //EntityManager - Draw all entities
+            entityManager.drawAll(spriteBatch);
+            debugger.Output(spriteBatch);
+
+            // END OF COMMENT OUT SECTION
+            /////////////////////////////////
+
+            base.Draw(gameTime);
+            spriteBatch.End();
+        }
+        #endregion
+
+        #region Screens
         private void HandleStartScreen()
         {
             if (CheckKey(Keys.Enter))
@@ -239,32 +264,14 @@ namespace HnS
                 activeScreen.Show();
             }
         }
+        #endregion
 
+        #region Input
         private bool CheckKey(Keys key)
         {
             return currentKB.IsKeyUp(key) && prevKB.IsKeyDown(key);
         }
-        
+        #endregion
 
-        protected override void Draw(GameTime gameTime)
-        {
-            //Set background colour as gray
-            GraphicsDevice.Clear(Color.Gray);
-            spriteBatch.Begin();
-            
-            /////////////////////////////////////
-            // COMMENT THIS SECTION OUT TO TEST GAME SCREENS
-
-            //EntityManager - Draw all entities
-            entityManager.drawAll(spriteBatch);
-            debugger.Output(spriteBatch);
-
-            // END OF COMMENT OUT SECTION
-            /////////////////////////////////
-
-            base.Draw(gameTime);
-            spriteBatch.End();
-            
-        }
     }
 }

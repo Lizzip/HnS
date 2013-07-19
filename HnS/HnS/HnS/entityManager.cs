@@ -19,7 +19,7 @@ namespace HnS
         ///////////////////////////////////////////////////
         // VARIABLES //////////////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Variables
         //Loaders and Managers
         ContentManager contentManager;
         Debugger debugger;
@@ -38,12 +38,12 @@ namespace HnS
 
         //Store screen width and height
         int screenWidth, screenHeight;
-        
+        #endregion
 
         ///////////////////////////////////////////////////
         // CONSTRUCTORS ///////////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Constructors
         //Constructor
         public EntityManager(ContentManager content, Debugger debug, int pHeight, int screenW, int screenH, int maxEnemies = 8)
         {
@@ -102,12 +102,12 @@ namespace HnS
             UIDs.Add(nextUID);
             nextUID++;
         }
-
+        #endregion
 
         ///////////////////////////////////////////////////
         // UPDATE AND DRAW ////////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Update and Draw
         //Update all entities
         public void updateAll(GameTime theGameTime)
         {
@@ -125,12 +125,12 @@ namespace HnS
                 entityMap[i].draw(theSpriteBatch);
             }
         }
-
+        #endregion
 
         ///////////////////////////////////////////////////
         // GETTERS ////////////////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Getters
         //Return hero entity
         public Hero getHero()
         {
@@ -176,32 +176,34 @@ namespace HnS
         {
             return networkingEnabled;
         }
+        #endregion
 
         ///////////////////////////////////////////////////
         // SETTERS ////////////////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Setters
         public void setNetwork(Networking net)
         {
             network = net;
             networkingEnabled = true;
         }
-
+        #endregion
 
         ///////////////////////////////////////////////////
-        // CHECKS /////////////////////////////////////////
+        // Network ////////////////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Network
         public bool player2Exists()
         {
             if (playerCount < 1) return false;
             else return true;
         }
+        #endregion
 
         ///////////////////////////////////////////////////
         // COMBAT /////////////////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Combat
         //hit an entity in given position with given damage (via UID)
         public void damageEntity(int UID, float damage, Vector2 pos)
         {
@@ -242,5 +244,7 @@ namespace HnS
         {
             maxEnemyCount -= reduction;
         }
+        #endregion
+
     }
 }
