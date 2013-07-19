@@ -137,9 +137,7 @@ namespace HnS
 
             //Only load texture if this is player 2
             if (!local)
-            {
                 player2Indicator = contentManager.Load<Texture2D>("hero\\secondPlayerIndicator");
-            }
 
 
             //Set other variables (adjust default draw height for image height - to draw hero standing on platform)
@@ -163,30 +161,9 @@ namespace HnS
                 //store current position
                 prevPos = position;
 
-                //Update the body position and animation frames
-                bodyTempCurrentFrame.X = bodyAnimation.CurrentFrame.X;
-                bodyAnimation.Position = position;
-                bodyAnimation.CurrentFrame = bodyTempCurrentFrame;
-                bodyAnimation.Update(theGameTime);
+                //Update the hero animations
+                AnimateHero(theGameTime);
 
-                //Update the arm position and animation frames
-                armTempCurrentFrame.X = armAnimation.CurrentFrame.X;
-                armAnimation.Position = position;
-                armAnimation.CurrentFrame = armTempCurrentFrame;
-                armAnimation.Update(theGameTime);
-                
-                //Only show and update the blood animation when the blood timer is above 0
-                // (when the character has been hit)
-                if (countDownTimers[bloodTimer] > 0.0f)
-                {
-                    bloodAnimation.Active = true;
-                    bloodTempCurrentFrame.X = bloodAnimation.CurrentFrame.X;
-                    bloodAnimation.Position = new Vector2(position.X-5, position.Y-5);
-                    bloodAnimation.CurrentFrame = bloodTempCurrentFrame;
-                    bloodAnimation.Update(theGameTime);
-                }
-                else
-                    bloodAnimation.Active = false;
 
                 //Update FPS
                 elapsedTime += theGameTime.ElapsedGameTime;
@@ -202,9 +179,7 @@ namespace HnS
                 for (int i = 0, len = countDownTimers.Count; i < len; i++)
                 {
                     if (countDownTimers[i] > 0.0f)
-                    {
-                        countDownTimers[i] -= (float)theGameTime.ElapsedGameTime.Milliseconds;
-                    }
+                        countDownTimers[i] -= (float)theGameTime.ElapsedGameTime.Milliseconds;   
                 }
 
                 //Get new mouse, gamepad and keyboard states
@@ -232,13 +207,9 @@ namespace HnS
                 if (local)
                 {
                     if (currentKB.IsKeyDown(Keys.D))
-                    {
                         MoveRight(theGameTime);
-                    }
                     else if (currentKB.IsKeyDown(Keys.A))
-                    {
                         MoveLeft(theGameTime);
-                    }
                     else bodyAnimation.Active = false;
                 }
                 else
@@ -246,24 +217,16 @@ namespace HnS
                     if (currentGamePad.IsConnected)
                     {
                         if (currentGamePad.ThumbSticks.Left.X > 0.0f)
-                        {
                             MoveRight(theGameTime);
-                        }
                         else if (currentGamePad.ThumbSticks.Left.X < 0.0f)
-                        {
                             MoveLeft(theGameTime);
-                        }
                         else bodyAnimation.Active = false;
                     }
 
                     if (currentKB.IsKeyDown(Keys.Right))
-                    {
                         MoveRight(theGameTime);
-                    }
                     else if (currentKB.IsKeyDown(Keys.Left))
-                    {
                         MoveLeft(theGameTime);
-                    }
                     else bodyAnimation.Active = false;
                 }
 
@@ -277,9 +240,7 @@ namespace HnS
                 
                 //If pos has changed, alert server
                 if (posDiff != Vector2.Zero && entityManager.getNetworkingEnabled() == true)
-                {
                     sendPosition(posDiff);
-                }
             }
 
             base.update(theGameTime);
@@ -291,27 +252,19 @@ namespace HnS
             {
                 //Draw blood if the hero has been recently hit
                 if (bloodAnimation.Active)
-                {
                     bloodAnimation.Draw(theSpriteBatch, scale, flip);
-                }
 
                 //Draw the body and arm animations for the player character
                 armAnimation.Draw(theSpriteBatch, scale, flip);
                 if (!isJumping)
                 {
                     if (IsMovingLeft() || IsMovingRight())
-                    {
                         bodyAnimation.Draw(theSpriteBatch, scale, flip);
-                    }
                     else
-                    {
                         bodyAnimation.forceDraw(theSpriteBatch, scale, flip, 0, 0);
-                    }
                 }
                 else
-                {
                     bodyAnimation.forceDraw(theSpriteBatch, scale, flip, 3, 0);
-                }
 
                 //Draw hero panel
                 theSpriteBatch.Draw(heroPanel, Vector2.Zero, Color.White);
@@ -333,9 +286,7 @@ namespace HnS
                         theSpriteBatch.Draw(heart2Fill, Vector2.Zero, Color.White);
 
                         if (numLives > 2)
-                        {
                             theSpriteBatch.Draw(heart3Fill, Vector2.Zero, Color.White);
-                        }
                     }
                 }
 
@@ -358,9 +309,7 @@ namespace HnS
 
                 //If player 2, show indicator
                 if (!local)
-                {
                     theSpriteBatch.Draw(player2Indicator, new Vector2(position.X, position.Y - player2Indicator.Height), null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
-                }
             }
 
             base.draw(theSpriteBatch);
@@ -429,8 +378,7 @@ namespace HnS
         {
             //Set the Y frame to the second line of the body spritesheet if not jumping
             //and set the animation to active.
-            if(!isJumping)
-                bodyTempCurrentFrame.Y = 1;
+            if(!isJumping) bodyTempCurrentFrame.Y = 1;
             bodyAnimation.Active = true;
             //Flip the animation if moving left. This is passed into the animation draw
             //method.
@@ -453,8 +401,7 @@ namespace HnS
         {
             //Set the Y frame to the second line of the body spritesheet if not jumping
             //and set the animation to active.
-            if (!isJumping)
-                bodyTempCurrentFrame.Y = 1;
+            if (!isJumping) bodyTempCurrentFrame.Y = 1;
             bodyAnimation.Active = true;
             //Don't flip the animation if moving right. This is passed into the animation draw
             //method.
@@ -463,6 +410,35 @@ namespace HnS
             if (position.X < entityManager.getScreenWidth() * 0.8)
                 position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
         }
+
+        private void AnimateHero(GameTime theGameTime)
+        {
+            //Update the body position and animation frames
+            bodyTempCurrentFrame.X = bodyAnimation.CurrentFrame.X;
+            bodyAnimation.Position = position;
+            bodyAnimation.CurrentFrame = bodyTempCurrentFrame;
+            bodyAnimation.Update(theGameTime);
+
+            //Update the arm position and animation frames
+            armTempCurrentFrame.X = armAnimation.CurrentFrame.X;
+            armAnimation.Position = position;
+            armAnimation.CurrentFrame = armTempCurrentFrame;
+            armAnimation.Update(theGameTime);
+
+            //Only show and update the blood animation when the blood timer is above 0
+            // (when the character has been hit)
+            if (countDownTimers[bloodTimer] > 0.0f)
+            {
+                bloodAnimation.Active = true;
+                bloodTempCurrentFrame.X = bloodAnimation.CurrentFrame.X;
+                bloodAnimation.Position = new Vector2(position.X - 5, position.Y - 5);
+                bloodAnimation.CurrentFrame = bloodTempCurrentFrame;
+                bloodAnimation.Update(theGameTime);
+            }
+            else
+                bloodAnimation.Active = false;
+        }
+
         #endregion
 
         #region Death
@@ -615,12 +591,8 @@ namespace HnS
                 //Enable the arm/sword animation
                 armAnimation.Active = true;
 
-
                 //Disable attacking when animation has finished playing
-                if (countDownTimers[attackTimer] < 0.0f)
-                {
-                    isAttacking = false;
-                }
+                if (countDownTimers[attackTimer] < 0.0f) isAttacking = false;
 
             }
             else

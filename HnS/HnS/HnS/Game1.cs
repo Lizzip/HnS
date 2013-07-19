@@ -20,7 +20,7 @@ namespace HnS
         public static EntityManager entityManager;
         public static Debugger debugger;
         public static Networking network;
-        bool enableNetworking = true;
+        bool enableNetworking = false;
         
         //Input states
         KeyboardState currentKB, prevKB;
