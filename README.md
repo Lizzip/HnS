@@ -34,6 +34,10 @@ NICE/LATER
 - Sound
 - Sound options
 - Soundtrack
+- Host server from within game
+- Toggle server enabled from within game
+- Join/Host server screen
+- Change server config from ingame (ip, port, info)
 
 ----------------------------------------------
 COMPLETED
