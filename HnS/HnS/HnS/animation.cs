@@ -13,6 +13,7 @@ namespace HnS
 {
     public class animation
     {
+        #region Variables
         //Variables to store the number of frames passed and
         //a counter to determine when to switch to the next frame.
         int frameCount;
@@ -31,8 +32,9 @@ namespace HnS
         Vector2 position, numFrames, currentFrame;
         Texture2D image;
         Rectangle source;
+        #endregion
 
-
+        #region Getters and Setters
         //Getters and setters for the frame variables
         public Vector2 CurrentFrame
         {
@@ -63,7 +65,9 @@ namespace HnS
 
         //End getters and setters
         ///////////////////////////
-        
+        #endregion
+
+        #region Update and Draw
         public animation(Vector2 thePosition, Vector2 theNumFrames, int theFrameSwitch)
         {
             active = false;
@@ -114,10 +118,13 @@ namespace HnS
             spriteBatch.Draw(image, position, new Rectangle(offsetX * FrameWidth, offsetY * FrameHeight,
                 FrameWidth, FrameHeight), Color.White, 0, Vector2.Zero, scale, effect, 0);
         }
+        #endregion
 
+        #region Network
         public void sendAnimation()
         {
-            
+
         }
+        #endregion
     }
 }

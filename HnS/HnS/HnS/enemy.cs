@@ -15,6 +15,7 @@ namespace HnS
 {
     class Enemy : Entity
     {
+        #region Variables
         //Loaders and Managers
         ContentManager contentManager;
         EntityManager entityManager;
@@ -64,12 +65,12 @@ namespace HnS
         Vector2 bodyTempCurrentFrame, armTempCurrentFrame, bloodTempCurrentFrame;
         bool isAttacking, flip;
         //////////////////////////////////////////////
-
+        #endregion
 
         ///////////////////////////////////////////////////
         // CONSTRUCTORS AND LOADING ///////////////////////
         ///////////////////////////////////////////////////
-
+        #region Constructors and Loading
         public Enemy() { }
 
         public Enemy(int uid, Vector2 pos, ContentManager content)
@@ -134,12 +135,12 @@ namespace HnS
             countDownTimers[walkingTimer] = 250.0f;
             countDownTimers[bloodTimer] = 0.0f;
         }
-
-
+        #endregion
+        
         ///////////////////////////////////////////////////
         // ENTITY OVERRIDES ///////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Entity Overrides (Update/Draw)
         public override void update(Microsoft.Xna.Framework.GameTime theGameTime)
         {
             //Die if health is 0
@@ -288,20 +289,22 @@ namespace HnS
 
             base.draw(theSpriteBatch);
         }
+        #endregion
 
         ///////////////////////////////////////////////////
         // GETTERS AND SETTERS ////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Getters and Setters
         public override Vector2 getPos()
         {
             return position;
         }
+        #endregion
 
         ///////////////////////////////////////////////////
         // COMBAT /////////////////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Combat
         public override void beHit(float damage, Vector2 pointOfImpact)
         {
             health -= damage * armourLevel;
@@ -324,6 +327,6 @@ namespace HnS
                 resetSelf();
             }
         }
-
+        #endregion
     }
 }
