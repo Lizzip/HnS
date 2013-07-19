@@ -33,7 +33,7 @@ namespace HnS
         SpriteFont deathFont;
 
         //Textures
-        Texture2D healthBarOutline, temp, bloodSplat, heroPanel,
+        Texture2D healthBarOutline, temp, bloodSplat, heroPanel, player2Indicator,
             heartOutlines, heart1Fill, heart2Fill, heart3Fill, staminaBarOutline;
 
         ////////////////////////////////////////////////
@@ -135,6 +135,12 @@ namespace HnS
             heart1Fill = contentManager.Load<Texture2D>("panel\\heroPanelHeart1");
             heart2Fill = contentManager.Load<Texture2D>("panel\\heroPanelHeart2");
             heart3Fill = contentManager.Load<Texture2D>("panel\\heroPanelHeart3");
+
+            //Only load texture if this is player 2
+            if (!local)
+            {
+                player2Indicator = contentManager.Load<Texture2D>("hero\\secondPlayerIndicator");
+            }
 
 
             //Set other variables (adjust default draw height for image height - to draw hero standing on platform)
@@ -348,6 +354,12 @@ namespace HnS
                 string fps = string.Format("fps: {0}", frameRate);
                 theSpriteBatch.DrawString(smallFont, fps, new Vector2(713, 13), Color.Black);
                 theSpriteBatch.DrawString(smallFont, fps, new Vector2(712, 12), Color.White);
+
+                //If player 2, show indicator
+                if (!local)
+                {
+                    theSpriteBatch.Draw(player2Indicator, new Vector2(position.X, position.Y - player2Indicator.Height), null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                }
             }
 
             base.draw(theSpriteBatch);

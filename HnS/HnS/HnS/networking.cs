@@ -17,7 +17,7 @@ namespace HnS
     class Networking
     {
         TcpClient client;
-        string localIP = "2.124.124.169";
+        string localIP = "127.0.0.1";
         int port = 1490;
         int bufferSize = 2048;
         byte[] readBuffer;

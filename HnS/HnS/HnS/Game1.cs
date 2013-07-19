@@ -18,7 +18,7 @@ namespace HnS
         SpriteBatch spriteBatch;
         EntityManager entityManager;
         public static Debugger debugger;
-        bool enableNetworking = false;
+        bool enableNetworking = true;
         
         //Input states
         KeyboardState currentKB, prevKB;
