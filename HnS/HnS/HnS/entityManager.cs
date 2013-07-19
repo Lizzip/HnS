@@ -16,9 +16,6 @@ namespace HnS
 {
     public class EntityManager
     {
-        ///////////////////////////////////////////////////
-        // VARIABLES //////////////////////////////////////
-        ///////////////////////////////////////////////////
         #region Variables
         //Loaders and Managers
         ContentManager contentManager;
@@ -40,9 +37,6 @@ namespace HnS
         int screenWidth, screenHeight;
         #endregion
 
-        ///////////////////////////////////////////////////
-        // CONSTRUCTORS ///////////////////////////////////
-        ///////////////////////////////////////////////////
         #region Constructors
         //Constructor
         public EntityManager(ContentManager content, Debugger debug, int pHeight, int screenW, int screenH, int maxEnemies = 8)
@@ -104,9 +98,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // UPDATE AND DRAW ////////////////////////////////
-        ///////////////////////////////////////////////////
         #region Update and Draw
         //Update all entities
         public void updateAll(GameTime theGameTime)
@@ -127,9 +118,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // GETTERS ////////////////////////////////////////
-        ///////////////////////////////////////////////////
         #region Getters
         //Return hero entity
         public Hero getHero()
@@ -178,9 +166,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // SETTERS ////////////////////////////////////////
-        ///////////////////////////////////////////////////
         #region Setters
         public void setNetwork(Networking net)
         {
@@ -189,9 +174,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // Network ////////////////////////////////////////
-        ///////////////////////////////////////////////////
         #region Network
         public bool player2Exists()
         {
@@ -200,9 +182,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // COMBAT /////////////////////////////////////////
-        ///////////////////////////////////////////////////
         #region Combat
         //hit an entity in given position with given damage (via UID)
         public void damageEntity(int UID, float damage, Vector2 pos)

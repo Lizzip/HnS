@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace HnS
 {
+    #region Constructors and Loading
     //Game screen layout class. Not instantiated itself but contains all items
     //to instantiate a basic screen: main menu, pop-up menu, main game etc.
     public abstract class gameScreen : Microsoft.Xna.Framework.DrawableGameComponent
@@ -83,4 +84,5 @@ namespace HnS
             }
         }
     }
+    #endregion
 }

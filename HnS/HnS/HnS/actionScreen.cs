@@ -17,6 +17,7 @@ namespace HnS
     //code from the Game1 class can be placed here. *
     class actionScreen : gameScreen
     {
+        #region Variables
         EntityManager entityManager;
         //Game game;
         public static Debugger debugger;
@@ -32,7 +33,9 @@ namespace HnS
         List<string> heroTopAssetList = new List<string>();
         List<string> enemyAssetList = new List<string>();
         List<string> backgroundAssetList = new List<string>();
+        #endregion
 
+        #region Constructors and Loading
         public actionScreen(Game theGame, ContentManager theContent, SpriteBatch theSpriteBatch)
             : base(theGame, theSpriteBatch)
         {
@@ -83,7 +86,9 @@ namespace HnS
             entityManager.createEnemy(new Vector2(900, platformHeight));
             entityManager.createEnemy(new Vector2(-200, platformHeight));
         }
+        #endregion
 
+        #region Update and Draw
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -106,8 +111,6 @@ namespace HnS
             //Set previous mouse and keyboard states
             prevKB = currentKB;
             prevMouse = currentMouse;
-            
-            
         }
 
         public override void Draw(GameTime gameTime)
@@ -122,9 +125,8 @@ namespace HnS
             debugger.Out(spriteBatch);
 
             //spriteBatch.End();
-
-            
         }
+        #endregion
 
     }
 }

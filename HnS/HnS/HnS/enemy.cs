@@ -67,9 +67,6 @@ namespace HnS
         //////////////////////////////////////////////
         #endregion
 
-        ///////////////////////////////////////////////////
-        // CONSTRUCTORS AND LOADING ///////////////////////
-        ///////////////////////////////////////////////////
         #region Constructors and Loading
         public Enemy() { }
 
@@ -136,10 +133,7 @@ namespace HnS
             countDownTimers[bloodTimer] = 0.0f;
         }
         #endregion
-        
-        ///////////////////////////////////////////////////
-        // ENTITY OVERRIDES ///////////////////////////////
-        ///////////////////////////////////////////////////
+
         #region Entity Overrides (Update/Draw)
         public override void update(Microsoft.Xna.Framework.GameTime theGameTime)
         {
@@ -291,9 +285,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // GETTERS AND SETTERS ////////////////////////////
-        ///////////////////////////////////////////////////
         #region Getters and Setters
         public override Vector2 getPos()
         {
@@ -301,9 +292,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // COMBAT /////////////////////////////////////////
-        ///////////////////////////////////////////////////
         #region Combat
         public override void beHit(float damage, Vector2 pointOfImpact)
         {

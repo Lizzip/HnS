@@ -15,6 +15,7 @@ namespace HnS
 {
     class Potion : Entity
     {
+        #region Variables
         EntityManager entityManager;
         int UID;
         Vector2 position;            
@@ -23,11 +24,9 @@ namespace HnS
         Texture2D image;
         Color colour;
         bool exists, isFalling;
-        
-        ///////////////////////////////////////////////////
-        // CONSTRUCTORS AND LOADING ///////////////////////
-        ///////////////////////////////////////////////////
+        #endregion
 
+        #region Constructors and Loading
         public Potion() { }
 
         public Potion(EntityManager eManager, int uid, Vector2 pos, ContentManager content, Color color)
@@ -56,7 +55,9 @@ namespace HnS
 
             minLevel = entityManager.getPlatformHeight() - (image.Height * scale);
         }
+        #endregion
 
+        #region Update and Draw
         public override void update(GameTime theGameTime)
         {
             //Hero picks up pot when close enough
@@ -82,7 +83,9 @@ namespace HnS
                 theSpriteBatch.Draw(image, position, null, Color.White, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
             }
         }
+        #endregion
 
+        #region Use
         public void pickup()
         {
             if (colour == Color.Red && exists == true)
@@ -91,5 +94,7 @@ namespace HnS
                 exists = false;
             }
         }
+        #endregion
+
     }
 }

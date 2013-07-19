@@ -16,6 +16,8 @@ namespace HnS
 {
     public class Networking
     {
+        #region Variables
+
         TcpClient client;
         string localIP = "127.0.0.1";
         int port = 1490;
@@ -28,6 +30,9 @@ namespace HnS
         Hero hero, player2;
         Debugger debugger;
 
+        #endregion
+
+        #region Constructors
         public Networking(bool serverEnabled)
         {
             //Get entities and manager
@@ -53,7 +58,9 @@ namespace HnS
                 writer = new BinaryWriter(writeStream);
             }
         }
+        #endregion
 
+        #region Handle Data
         private void StreamRecieved(IAsyncResult ar)
         {
             int bytesRead = 0;
@@ -140,7 +147,9 @@ namespace HnS
                 MessageBox.Show(ex.Message);
             }
         }
+        #endregion
 
+        #region Helper
         public byte[] GetDataFromMemoryStream(MemoryStream ms)
         {
             byte[] result;
@@ -157,7 +166,9 @@ namespace HnS
 
             return result;
         }
+        #endregion
 
+        #region Transmit Data
         public void SendData(byte[] b)
         {
             //Try to send the data.  If an exception is thrown, disconnect the client
@@ -173,6 +184,7 @@ namespace HnS
                
             }
         }
+        #endregion
 
     }
 }

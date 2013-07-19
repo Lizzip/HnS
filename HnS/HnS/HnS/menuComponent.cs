@@ -18,6 +18,7 @@ namespace HnS
     //from its list, allowing transition up and down the items in the list.
     public class menuComponent : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        #region Variables
         //List of menu strings that will be traversed with input keys.
         string[] menuItems;
         //Stores the currently selected item in the list.
@@ -36,7 +37,9 @@ namespace HnS
         Vector2 position;
         float width = 0.0f;
         float height = 0.0f;
+        #endregion
 
+        #region Getters and Setters
         public Vector2 Position
         {
             get { return position; }
@@ -52,7 +55,7 @@ namespace HnS
         {
             get { return height; }
         }
-
+        
         //Gets and sets the current selection of the items in the list.
         public int SelectedIndex
         {
@@ -67,7 +70,9 @@ namespace HnS
                     selectedIndex = menuItems.Length - 1;
             }
         }
+        #endregion
 
+        #region Constructors and Loading
         public menuComponent(Game theGame, SpriteBatch theSpriteBatch,
             SpriteFont theSpriteFont, string[] theMenuItems)
             : base(theGame)
@@ -78,6 +83,13 @@ namespace HnS
             MeasureMenu();
         }
 
+        public override void Initialize()
+        {
+            base.Initialize();
+        }
+        #endregion
+
+        #region Helper
         private void MeasureMenu()
         {
             height = 0;
@@ -97,18 +109,15 @@ namespace HnS
             position = new Vector2((Game.Window.ClientBounds.Width - width) / 2,
                 (Game.Window.ClientBounds.Height - height) / 2);
         }
-
-        public override void Initialize()
-        {
-            base.Initialize();
-        }
-
+        
         //Returns the currently pressed key.
         private bool CheckKey(Keys theKey)
         {
             return kbState.IsKeyUp(theKey) && prevKbState.IsKeyDown(theKey);
         }
+        #endregion
 
+        #region Update and Draw
         public override void Update(GameTime gameTime)
         {
             kbState = Keyboard.GetState();
@@ -152,5 +161,7 @@ namespace HnS
 
             base.Draw(gameTime);
         }
+        #endregion
+
     }
 }

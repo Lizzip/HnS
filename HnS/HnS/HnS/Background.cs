@@ -10,6 +10,7 @@ namespace HnS
 {
     class Background : Entity
     {
+        #region Variables
         //-------------
         //Loaders and Managers
         EntityManager entityManager;
@@ -37,8 +38,9 @@ namespace HnS
         //-------------
         //Scroll speed variables
         private float speed, floorSpeed, cloudsSpeed;
+        #endregion
 
-
+        #region Constructors and Loading
         //Constructor
         public Background(ContentManager contentManager, EntityManager eManager, List<string> textureNames, float scrollSpeed)
         {
@@ -82,7 +84,9 @@ namespace HnS
             clouds1Pos = Vector2.Zero;
             clouds2Pos = new Vector2(clouds1Tex.Width, 0);
         }
+        #endregion
 
+        #region Update and Draw
         public override void update(GameTime gameTime)
         {
             //Set the scroll speed for if the player is moving right. Move left the third and fifth
@@ -172,5 +176,7 @@ namespace HnS
             spriteBatch.Draw(floor1Tex, floor1Pos, Color.White);
             spriteBatch.Draw(floor2Tex, floor2Pos, Color.White);
         }
+        #endregion
+
     }
 }

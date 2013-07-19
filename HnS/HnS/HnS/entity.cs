@@ -16,6 +16,7 @@ namespace HnS
 {
     public class Entity
     {
+        #region Virtuals
         //Update class to override
         public virtual void update(GameTime theGameTime){}
 
@@ -30,6 +31,6 @@ namespace HnS
         {
             return Vector2.Zero;
         }
-
+        #endregion
     }
 }

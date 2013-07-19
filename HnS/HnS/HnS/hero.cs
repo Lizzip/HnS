@@ -81,9 +81,6 @@ namespace HnS
         Vector2 position, currentPos, prevPos, posDiff;
         #endregion
 
-        ///////////////////////////////////////////////////
-        // CONSTRUCTORS AND LOADING ///////////////////////
-        ///////////////////////////////////////////////////
         #region Constructors and Loading
         public Hero() { }
 
@@ -158,9 +155,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // ENTITY OVERRIDES ///////////////////////////////
-        ///////////////////////////////////////////////////
         #region Entity Overrides (Update/Draw)
         public override void update(GameTime theGameTime)
         {
@@ -365,9 +359,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // ADDITIONAL MOVEMENT ////////////////////////////
-        ///////////////////////////////////////////////////
         #region Additional Movement
         private void Jump(GameTime theGameTime)
         {
@@ -468,9 +459,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // DEATH //////////////////////////////////////////
-        ///////////////////////////////////////////////////
         #region Death
         public void RemoveLife()
         {
@@ -480,9 +468,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // GETTERS AND SETTERS ////////////////////////////
-        ///////////////////////////////////////////////////
         #region Getters and Setters
         public override Vector2 getPos()
         {
@@ -510,9 +495,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // NETWORK ////////////////////////////////////////
-        ///////////////////////////////////////////////////
         #region Network
 
         public void sendPosition(Vector2 posDiff)
@@ -525,9 +507,6 @@ namespace HnS
         }
         #endregion
 
-        ///////////////////////////////////////////////////
-        // COMBAT /////////////////////////////////////////
-        ///////////////////////////////////////////////////
         #region Combat
 
         void broadcastAttack()
