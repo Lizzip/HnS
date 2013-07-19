@@ -15,6 +15,7 @@ namespace HnS
 {
     public class Hero : Entity
     {
+        #region Variables
         //Loaders and Managers
         ContentManager contentManager;
         EntityManager entityManager;
@@ -78,11 +79,12 @@ namespace HnS
         int charHeightOffset = 2, UID;
         bool local, exists; //False by default so we don't draw player 2 unless theyre connected
         Vector2 position, currentPos, prevPos, posDiff;
-        
+        #endregion
+
         ///////////////////////////////////////////////////
         // CONSTRUCTORS AND LOADING ///////////////////////
         ///////////////////////////////////////////////////
-
+        #region Constructors and Loading
         public Hero() { }
 
         public Hero(int uid, Vector2 pos, ContentManager content, bool localPlayer)
@@ -154,11 +156,12 @@ namespace HnS
             countDownTimers.Add(0.0f);//Attack timer
             countDownTimers.Add(0.0f);//blood timer
         }
+        #endregion
 
         ///////////////////////////////////////////////////
         // ENTITY OVERRIDES ///////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Entity Overrides (Update/Draw)
         public override void update(GameTime theGameTime)
         {
             if (exists)
@@ -273,11 +276,7 @@ namespace HnS
                 //If pos has changed, alert server
                 if (posDiff != Vector2.Zero && entityManager.getNetworkingEnabled() == true)
                 {
-                    entityManager.getNetwork().writeStream.Position = 0;
-                    entityManager.getNetwork().writer.Write((byte)Protocol.PlayerMoved);
-                    entityManager.getNetwork().writer.Write(posDiff.X);
-                    entityManager.getNetwork().writer.Write(posDiff.Y);
-                    entityManager.getNetwork().SendData(entityManager.getNetwork().GetDataFromMemoryStream(entityManager.getNetwork().writeStream));
+                    sendPosition(posDiff);
                 }
             }
 
@@ -364,11 +363,12 @@ namespace HnS
 
             base.draw(theSpriteBatch);
         }
+        #endregion
 
         ///////////////////////////////////////////////////
         // ADDITIONAL MOVEMENT ////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Additional Movement
         private void Jump(GameTime theGameTime)
         {
             //Check if the space is pressed and character is not already jumping. Then move the character
@@ -466,21 +466,24 @@ namespace HnS
             if (position.X < entityManager.getScreenWidth() * 0.8)
                 position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
         }
+        #endregion
 
         ///////////////////////////////////////////////////
         // DEATH //////////////////////////////////////////
         ///////////////////////////////////////////////////
+        #region Death
         public void RemoveLife()
         {
             numLives--;
             health = 100.0f;
             countDownTimers[deathTimer] = 1500.0f;
         }
+        #endregion
 
         ///////////////////////////////////////////////////
         // GETTERS AND SETTERS ////////////////////////////
         ///////////////////////////////////////////////////
-
+        #region Getters and Setters
         public override Vector2 getPos()
         {
             return position;
@@ -505,11 +508,27 @@ namespace HnS
         {
             position = Vector2.Subtract(position, newPos);
         }
+        #endregion
 
+        ///////////////////////////////////////////////////
+        // NETWORK ////////////////////////////////////////
+        ///////////////////////////////////////////////////
+        #region Network
+
+        public void sendPosition(Vector2 posDiff)
+        {
+            Game1.network.writeStream.Position = 0;
+            Game1.network.writer.Write((byte)Protocol.PlayerMoved);
+            Game1.network.writer.Write(posDiff.X);
+            Game1.network.writer.Write(posDiff.Y);
+            Game1.network.SendData(Game1.network.GetDataFromMemoryStream(Game1.network.writeStream));
+        }
+        #endregion
 
         ///////////////////////////////////////////////////
         // COMBAT /////////////////////////////////////////
         ///////////////////////////////////////////////////
+        #region Combat
 
         void broadcastAttack()
         {
@@ -571,5 +590,7 @@ namespace HnS
             health += amount;
             if (health > 100) health = 100;
         }
+
+        #endregion
     }
 }
