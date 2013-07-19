@@ -164,6 +164,8 @@ namespace HnS
                 //Update the hero animations
                 AnimateHero(theGameTime);
 
+                //Make the hero charge (currently makes him ice skate :P)
+                if(IsCharging()) Charge(theGameTime);
 
                 //Update FPS
                 elapsedTime += theGameTime.ElapsedGameTime;
@@ -258,7 +260,7 @@ namespace HnS
                 armAnimation.Draw(theSpriteBatch, scale, flip);
                 if (!isJumping)
                 {
-                    if (IsMovingLeft() || IsMovingRight())
+                    if (IsMovingLeft() || IsMovingRight() || IsCharging())
                         bodyAnimation.Draw(theSpriteBatch, scale, flip);
                     else
                         bodyAnimation.forceDraw(theSpriteBatch, scale, flip, 0, 0);
@@ -376,6 +378,7 @@ namespace HnS
 
         public void MoveLeft(GameTime theGameTime)
         {
+            speed = Math.Abs(speed) * -1;
             //Set the Y frame to the second line of the body spritesheet if not jumping
             //and set the animation to active.
             if(!isJumping) bodyTempCurrentFrame.Y = 1;
@@ -385,7 +388,7 @@ namespace HnS
             flip = true;
 
             if (position.X > entityManager.getScreenWidth() * 0.15)
-                position.X -= speed * theGameTime.ElapsedGameTime.Milliseconds;
+                position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
         }
 
         public bool IsMovingRight()
@@ -399,6 +402,7 @@ namespace HnS
 
         public void MoveRight(GameTime theGameTime)
         {
+            speed = Math.Abs(speed);
             //Set the Y frame to the second line of the body spritesheet if not jumping
             //and set the animation to active.
             if (!isJumping) bodyTempCurrentFrame.Y = 1;
@@ -598,6 +602,23 @@ namespace HnS
             else
                 armAnimation.Active = false;
             
+        }
+
+
+        public bool IsCharging()
+        {
+            if (currentKB.IsKeyDown(Keys.LeftShift))
+                return true;
+            else return false;
+        }
+
+        //Need to attach a timer with this like with the attack and such
+        private void Charge(GameTime theGameTime)
+        {
+            float chargeSpeed;
+
+            chargeSpeed = speed * 2.5f;
+            position.X += chargeSpeed * (float)theGameTime.ElapsedGameTime.TotalMilliseconds;
         }
 
         public void heal(int amount)
