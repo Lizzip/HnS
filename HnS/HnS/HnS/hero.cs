@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace HnS
 {
-    class Hero : Entity
+    public class Hero : Entity
     {
         //Loaders and Managers
         ContentManager contentManager;
@@ -85,9 +85,9 @@ namespace HnS
 
         public Hero() { }
 
-        public Hero(EntityManager eManager, int uid, Vector2 pos, ContentManager content, bool localPlayer)
+        public Hero(int uid, Vector2 pos, ContentManager content, bool localPlayer)
         {
-            entityManager = eManager;
+            entityManager = Game1.entityManager;
             UID = uid;
 
             //Movement and animation

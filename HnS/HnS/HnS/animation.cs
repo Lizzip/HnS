@@ -114,5 +114,10 @@ namespace HnS
             spriteBatch.Draw(image, position, new Rectangle(offsetX * FrameWidth, offsetY * FrameHeight,
                 FrameWidth, FrameHeight), Color.White, 0, Vector2.Zero, scale, effect, 0);
         }
+
+        public void sendAnimation()
+        {
+            
+        }
     }
 }

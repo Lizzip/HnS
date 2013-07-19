@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace HnS
 {
-    class Entity
+    public class Entity
     {
         //Update class to override
         public virtual void update(GameTime theGameTime){}

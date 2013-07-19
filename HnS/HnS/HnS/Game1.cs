@@ -16,8 +16,9 @@ namespace HnS
         //Loaders and Managers
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        EntityManager entityManager;
+        public static EntityManager entityManager;
         public static Debugger debugger;
+        public static Networking network;
         bool enableNetworking = true;
         
         //Input states
@@ -94,7 +95,7 @@ namespace HnS
             entityManager.createEnemy(new Vector2(-200, platformHeight));
 
             //Networking
-            Networking network = new Networking(this, entityManager, debugger, enableNetworking);
+            network = new Networking(enableNetworking);
             if(enableNetworking) entityManager.setNetwork(network);
 
             /////////////////////////////////////////////

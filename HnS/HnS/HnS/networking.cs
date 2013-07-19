@@ -14,7 +14,7 @@ using System.IO;
 
 namespace HnS
 {
-    class Networking
+    public class Networking
     {
         TcpClient client;
         string localIP = "127.0.0.1";
@@ -28,13 +28,13 @@ namespace HnS
         Hero hero, player2;
         Debugger debugger;
 
-        public Networking(HnS.Game1 game1, EntityManager eManager, Debugger deb, bool serverEnabled)
+        public Networking(bool serverEnabled)
         {
             //Get entities and manager
-            entityManager = eManager;
+            entityManager = Game1.entityManager;
             hero = entityManager.getHero();
             player2 = entityManager.getPlayer2();
-            debugger = deb;
+            debugger = Game1.debugger;
 
             //Establish connection
             if (serverEnabled)

@@ -14,7 +14,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace HnS
 {
-    class EntityManager
+    public class EntityManager
     {
         ///////////////////////////////////////////////////
         // VARIABLES //////////////////////////////////////
@@ -60,7 +60,7 @@ namespace HnS
         //Create player char entity
         public void createHero(Vector2 pos, bool localPlayer)
         {
-            Hero hero = new Hero(this, nextUID, pos, contentManager, localPlayer);
+            Hero hero = new Hero(nextUID, pos, contentManager, localPlayer);
             entityMap.Add(nextUID, hero);
             UIDs.Add(nextUID);
 
@@ -76,7 +76,7 @@ namespace HnS
         {
             if (maxEnemyCount > 0)
             {
-                Enemy enemy = new Enemy(this, nextUID, pos, contentManager);
+                Enemy enemy = new Enemy(nextUID, pos, contentManager);
                 entityMap.Add(nextUID, enemy);
                 UIDs.Add(nextUID);
                 nextUID++;

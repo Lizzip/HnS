@@ -72,9 +72,9 @@ namespace HnS
 
         public Enemy() { }
 
-        public Enemy(EntityManager EM, int uid, Vector2 pos, ContentManager content)
+        public Enemy(int uid, Vector2 pos, ContentManager content)
         {
-            entityManager = EM;
+            entityManager = Game1.entityManager;
             UID = uid;
             isAttacking = false;
             flip = false;
