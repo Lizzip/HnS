@@ -93,6 +93,12 @@ namespace HnS
                 entityManager.getHero().heal(25);
                 exists = false;
             }
+
+            if (colour == Color.Yellow && exists == true)
+            {
+                entityManager.getHero().gainStamina(20);
+                exists = false;
+            }
         }
         #endregion
 

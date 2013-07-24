@@ -619,6 +619,8 @@ namespace HnS
 
             chargeSpeed = speed * 2.5f;
             position.X += chargeSpeed * (float)theGameTime.ElapsedGameTime.TotalMilliseconds;
+
+            stamina -= 0.5f;
         }
 
         public void heal(int amount)
@@ -626,6 +628,13 @@ namespace HnS
             //Heal by given amount, cap at 100
             health += amount;
             if (health > 100) health = 100;
+        }
+
+        public void gainStamina(int amount)
+        {
+            //Increase stamina, cap at 100
+            stamina += amount;
+            if (stamina > 100) stamina = 100;
         }
 
         #endregion

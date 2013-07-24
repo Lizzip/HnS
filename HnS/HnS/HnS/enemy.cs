@@ -298,10 +298,10 @@ namespace HnS
 
         public void die()
         {
-
             if (entityManager.getMaxEnemyCount() > 0)
             {
                 entityManager.createPotion(Color.Red, new Vector2(position.X, entityManager.getPlatformHeight() - 150));
+                entityManager.createPotion(Color.Yellow, new Vector2(position.X+50, entityManager.getPlatformHeight() - 150));
                 entityManager.reduceMaxEnemyCount();
                 resetSelf();
             }
