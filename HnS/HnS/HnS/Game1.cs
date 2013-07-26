@@ -20,7 +20,7 @@ namespace HnS
         public static EntityManager entityManager;
         public static Debugger debugger;
         public static Networking network;
-        bool enableNetworking = false;
+        public static bool enableNetworking;
         
         //Input states
         KeyboardState currentKB, prevKB;
@@ -97,7 +97,7 @@ namespace HnS
             entityManager.createEnemy(new Vector2(-200, platformHeight));
 
             //Networking
-            network = new Networking(enableNetworking);
+            network = new Networking();
             if(enableNetworking) entityManager.setNetwork(network);
 
             /////////////////////////////////////////////

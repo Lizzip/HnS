@@ -34,20 +34,30 @@ namespace HnS
         #endregion
 
         #region Constructors
-        public Networking(bool serverEnabled)
+        public Networking()
         {
             //Get entities and manager
+            bool serverEnabled = true;
             entityManager = Game1.entityManager;
             hero = entityManager.getHero();
             player2 = entityManager.getPlayer2();
             debugger = Game1.debugger;
 
-            //Establish connection
-            if (serverEnabled)
+            try
             {
                 client = new TcpClient();
                 client.NoDelay = true;
                 client.Connect(localIP, port);
+            }
+            catch (Exception ex)
+            {
+                serverEnabled = false;
+                Game1.enableNetworking = false;
+            }
+
+            if (serverEnabled)
+            {
+                Game1.enableNetworking = true;
                 readBuffer = new byte[bufferSize];
 
                 client.GetStream().BeginRead(readBuffer, 0, bufferSize, StreamRecieved, null);
