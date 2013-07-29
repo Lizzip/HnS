@@ -10,7 +10,6 @@ namespace HnS
         Disconnected = 0,
         Connected = 1,
         PlayerMoved = 2,
-        PlayerAnimationTrigger = 3,
-        PlayerAnimationState = 4
+        PlayerAnimationState = 3
     }
 }

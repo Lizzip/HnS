@@ -67,6 +67,8 @@ namespace HnS
 
                 writeStream = new MemoryStream();
                 writer = new BinaryWriter(writeStream);
+
+                debugger.Out("Connected to server: " + localIP);
             }
         }
         #endregion
@@ -145,27 +147,23 @@ namespace HnS
                 else if (p == Protocol.PlayerMoved) //Player Moved
                 {
                     float px, py;
-                    px = reader.ReadSingle();
+                    px = reader.ReadSingle(); 
                     py = reader.ReadSingle();
                     id = reader.ReadByte();
-                    ip = reader.ReadString();
+                    ip = reader.ReadString(); // -- Throwing error - Don't know why yet. TO FIX
                     player2.setRecievedInfo(new Vector2(px, py));
-                }
-                else if (p == Protocol.PlayerAnimationTrigger) //Update Player Animation
-                {
-                    
                 }
                 else if (p == Protocol.PlayerAnimationState)
                 {
                     List<float> values = new List<float>();
                     int floatValues = 6;
                     bool bloodActive;
-
+                    
                     for (int i = 0; i < floatValues; i++)
                     {
                         values.Add(reader.ReadSingle());
                     }
-/*
+                    
                     bloodActive = reader.ReadBoolean();
 
                     if (bloodActive)
@@ -175,7 +173,9 @@ namespace HnS
                         values.Add(reader.ReadSingle());
                     }
                     else values.Add(-1.0f);
-                    */
+
+                    player2.getAnimationState(values);
+                    
                 }
             }
             catch (Exception ex)

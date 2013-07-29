@@ -243,6 +243,9 @@ namespace HnS
                 //If pos has changed, alert server
                 if (posDiff != Vector2.Zero && entityManager.getNetworkingEnabled() == true)
                     sendPosition(posDiff);
+
+                //Send animation update for player 2
+                sendAnimationState();
             }
 
             base.update(theGameTime);
@@ -492,7 +495,7 @@ namespace HnS
             Game1.network.SendData(Game1.network.GetDataFromMemoryStream(Game1.network.writeStream));
 
             //Send animation update
-            sendAnimationState();
+            //sendAnimationState();
         }
 
         public void sendAnimationState()
@@ -513,7 +516,7 @@ namespace HnS
             Game1.network.writer.Write(bodyTempCurrentFrame.Y);
             Game1.network.writer.Write(armTempCurrentFrame.X);
             Game1.network.writer.Write(armTempCurrentFrame.Y);
-
+            
             if (countDownTimers[bloodTimer] > 0.0f)
             {
                 Game1.network.writer.Write(true);
@@ -521,24 +524,26 @@ namespace HnS
                 Game1.network.writer.Write(bloodTempCurrentFrame.Y);
             }
             else Game1.network.writer.Write(false);
+
+            Game1.network.SendData(Game1.network.GetDataFromMemoryStream(Game1.network.writeStream));
         }
 
         public void getAnimationState(List<float> values)
         {
             //Set positions
-            bodyAnimation.Position = new Vector2(values[0], values[1]);
+            position = bodyAnimation.Position = new Vector2(values[0], values[1]);
             armAnimation.Position = new Vector2(values[0], values[1]);
 
-            bodyAnimation.CurrentFrame = new Vector2(values[2], values[3]);
-            armAnimation.CurrentFrame = new Vector2(values[4], values[5]);
-/*
+            bodyTempCurrentFrame = bodyAnimation.CurrentFrame = new Vector2(values[2], values[3]);
+            armTempCurrentFrame = armAnimation.CurrentFrame = new Vector2(values[4], values[5]);
+            
             if (values[6] > 0.0f)
             {
                 bloodAnimation.Active = true;
-                bloodAnimation.CurrentFrame = new Vector2(values[7], values[8]);
+                bloodTempCurrentFrame = bloodAnimation.CurrentFrame = new Vector2(values[7], values[8]);
                 bloodAnimation.Position = new Vector2(values[0] - 5, values[1] - 5);
             }
-            else bloodAnimation.Active = false;*/
+            else bloodAnimation.Active = false;
         }
 
         #endregion
@@ -565,30 +570,16 @@ namespace HnS
         private void attack(GameTime theGameTime)
         {
             //Check for left mouse click - Attack if not currently attacking
-            if (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released && !isAttacking && local)
-            {
-                isAttacking = true;
-                attackIndex = 0;
-                broadcastAttack();
-                countDownTimers[attackTimer] = armAnimSpeed * (armAnimWidth + 1); //There's some jim pokery going here, I dont know why it needs the +1
-            }
 
-            if (currentGamePad.IsConnected && !isAttacking && !local && currentGamePad.Buttons.X == ButtonState.Pressed && prevGamePad.Buttons.X == ButtonState.Released)
+            if (!isAttacking && (currentKB.IsKeyDown(Keys.NumPad0) && !local) ||
+                (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released && local) ||
+                (currentGamePad.IsConnected && !local && currentGamePad.Buttons.X == ButtonState.Pressed && prevGamePad.Buttons.X == ButtonState.Released))
             {
                 isAttacking = true;
                 attackIndex = 0;
                 broadcastAttack();
                 countDownTimers[attackTimer] = armAnimSpeed * (armAnimWidth + 1); //There's some jim pokery going here, I dont know why it needs the +1
             }
-            
-            if (currentKB.IsKeyDown(Keys.NumPad0) && !isAttacking && !local)
-            {
-                isAttacking = true;
-                attackIndex = 0;
-                broadcastAttack();
-                countDownTimers[attackTimer] = armAnimSpeed * (armAnimWidth + 1); //There's some jim pokery going here, I dont know why it needs the +1
-            }
-            
 
             if (isAttacking)
             {

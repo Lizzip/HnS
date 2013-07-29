@@ -140,7 +140,7 @@ namespace HnS
             //Die if health is 0
             if (health < 1) die();
             else
-            {
+            {/*
                 //Animation
                 bodyTempCurrentFrame.X = bodyAnimation.CurrentFrame.X;
                 bodyAnimation.Position = position;
@@ -243,7 +243,7 @@ namespace HnS
                     armAnimation.Active = false;
 
                 //Update health text position
-                healthTextPos = new Vector2(position.X, position.Y - 15);
+                healthTextPos = new Vector2(position.X, position.Y - 15);*/
             }
             base.update(theGameTime);
         }
