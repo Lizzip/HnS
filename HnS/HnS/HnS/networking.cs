@@ -175,7 +175,33 @@ namespace HnS
                     else values.Add(-1.0f);
 
                     player2.getAnimationState(values);
+                }
+                else if (p == Protocol.KeyPressDown)
+                {
+                    int key, numKeys = reader.ReadInt32();
                     
+                    if (numKeys > 0)
+                    {
+                        Microsoft.Xna.Framework.Input.Keys[] pressed = new Microsoft.Xna.Framework.Input.Keys[numKeys];
+
+                        for (int i = 0; i < numKeys; i++)
+                        {
+                            key = reader.ReadInt32();
+                            pressed[i] = (Microsoft.Xna.Framework.Input.Keys)key;
+                        }
+
+               //         player2.getPressedKeys(pressed);
+                    }
+
+                    id = reader.ReadByte();
+                    ip = reader.ReadString();
+                }
+                else if (p == Protocol.KeyPressUp)
+                {
+                    int key = reader.ReadInt32();
+                    id = reader.ReadByte();
+                    ip = reader.ReadString();
+                    debugger.Out("KEY RELEASED: " + (Microsoft.Xna.Framework.Input.Keys)key);
                 }
             }
             catch (Exception ex)
