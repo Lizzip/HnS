@@ -190,18 +190,11 @@ namespace HnS
                             pressed[i] = (Microsoft.Xna.Framework.Input.Keys)key;
                         }
 
-               //         player2.getPressedKeys(pressed);
+                        player2.getPressedKeys(pressed);
                     }
 
                     id = reader.ReadByte();
                     ip = reader.ReadString();
-                }
-                else if (p == Protocol.KeyPressUp)
-                {
-                    int key = reader.ReadInt32();
-                    id = reader.ReadByte();
-                    ip = reader.ReadString();
-                    debugger.Out("KEY RELEASED: " + (Microsoft.Xna.Framework.Input.Keys)key);
                 }
             }
             catch (Exception ex)

@@ -96,7 +96,7 @@ namespace HnS
             isAttacking = false;
             flip = false;
             exists = false;
-            local = true;// = localPlayer;
+            local = localPlayer;
             velocityY = 0;
             position = pos;
             speed = 0.15f;
@@ -215,15 +215,13 @@ namespace HnS
                 }
 
                 //Movement and animation (do not move if this is player 2)
-                if (local)
-                {
-                    if (currentKB.IsKeyDown(Keys.D) || KeyD)
-                        MoveRight(theGameTime);
-                    else if (currentKB.IsKeyDown(Keys.A) || KeyA)
-                        MoveLeft(theGameTime);
-                    else bodyAnimation.Active = false;
-                }
-                else
+                if ((currentKB.IsKeyDown(Keys.D) && local) || KeyD)
+                    MoveRight(theGameTime);
+                else if ((currentKB.IsKeyDown(Keys.A) && local) || KeyA)
+                    MoveLeft(theGameTime);
+                else bodyAnimation.Active = false;
+                
+                if(!local)
                 {
                     if (currentGamePad.IsConnected)
                     {
@@ -339,7 +337,7 @@ namespace HnS
         {
             //Check if the space is pressed and character is not already jumping. Then move the character
             //in negative Y position (upwards) and set to fall back down based on the Y velocity.
-            if ((Keyboard.GetState().IsKeyDown(Keys.Space) || KeySpace) && !isJumping && local)
+            if (((Keyboard.GetState().IsKeyDown(Keys.Space) && local) || KeySpace) && !isJumping)
             {
                 position.Y -= 10.0f;
                 velocityY = -3.0f;
@@ -385,7 +383,7 @@ namespace HnS
 
         public bool IsMovingLeft()
         {
-            if ((currentKB.IsKeyDown(Keys.A) || KeyA) && local) return true;
+            if ((currentKB.IsKeyDown(Keys.A) && local) || KeyA) return true;
             if (currentGamePad.IsConnected && currentGamePad.ThumbSticks.Left.X < 0.0f && !local) return true;
             if (currentKB.IsKeyDown(Keys.Left) && !local) return true;
 
@@ -409,7 +407,7 @@ namespace HnS
 
         public bool IsMovingRight()
         {
-            if ((currentKB.IsKeyDown(Keys.D) || KeyD) && local) return true;
+            if ((currentKB.IsKeyDown(Keys.D) && local) || KeyD) return true;
             if (currentGamePad.IsConnected && currentGamePad.ThumbSticks.Left.X > 0.0f && !local) return true;
             if (currentKB.IsKeyDown(Keys.Right) && !local) return true;
 
