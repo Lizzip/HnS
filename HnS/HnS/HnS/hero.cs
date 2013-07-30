@@ -198,7 +198,17 @@ namespace HnS
                 if (entityManager.getNetworkingEnabled() == true)
                 {
                     Keys[] pressedKeys = currentKB.GetPressedKeys();
-                    sendPressedKeys(pressedKeys);
+                    if (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released)
+                    {
+                        Keys[] copiedPressedKeys = new Keys[pressedKeys.Length+1];
+                        pressedKeys.CopyTo(copiedPressedKeys, 0);
+                        copiedPressedKeys[pressedKeys.Length] = Keys.Attn;
+                        sendPressedKeys(copiedPressedKeys);
+                    }
+                    else
+                    {
+                        sendPressedKeys(pressedKeys);
+                    }
                 }
                 
                 //Make the character jump based on spacebar press
@@ -522,6 +532,7 @@ namespace HnS
             if (pressedKeys.Contains(Keys.S)) KeyS = true; else KeyS = false;
             if (pressedKeys.Contains(Keys.D)) KeyD = true; else KeyD = false;
             if (pressedKeys.Contains(Keys.Space)) KeySpace = true; else KeySpace = false;
+            if (pressedKeys.Contains(Keys.Attn)) KeyAttack = true; else KeyAttack = false;
         }
 
         public void sendPosition(Vector2 posDiff)
@@ -609,7 +620,7 @@ namespace HnS
         {
             //Check for left mouse click - Attack if not currently attacking
 
-            if (!isAttacking && (currentKB.IsKeyDown(Keys.NumPad0) && !local) ||
+            if (!isAttacking && (currentKB.IsKeyDown(Keys.NumPad0) && !local) || (KeyAttack && !isAttacking) ||
                 (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released && local) ||
                 (currentGamePad.IsConnected && !local && currentGamePad.Buttons.X == ButtonState.Pressed && prevGamePad.Buttons.X == ButtonState.Released))
             {
