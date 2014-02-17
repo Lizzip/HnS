@@ -81,10 +81,11 @@ namespace HnS
         #region Update and Draw
         public void Update(GameTime gameTime)
         {
+            if (!active)
+                currentFrame.X = 0;
             if (active)
                 frameCount += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
-            else
-                frameCount = 0;
+                
             if (frameCount >= frameSwitch)
             {
                 frameCount = 0;

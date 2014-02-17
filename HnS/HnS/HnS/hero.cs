@@ -248,6 +248,8 @@ namespace HnS
                 sendAnimationState();
             }
 
+            
+
             base.update(theGameTime);
         }
 
@@ -500,7 +502,7 @@ namespace HnS
 
         public void sendAnimationState()
         {
-            Game1.network.writeStream.Position = 0;
+            Game1.network.writeStream.Position = 1;
             Game1.network.writer.Write((byte)Protocol.PlayerAnimationState);
 
             //Send the state of the following:
