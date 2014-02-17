@@ -63,6 +63,9 @@ namespace HnS
         bool isJumping, isAttacking, flip;
         //////////////////////////////////////////////
         
+        //Important Keys (to allow for forced key presses)
+        bool KeyW = false, KeyA = false, KeyS = false, 
+            KeyD = false, KeySpace = false, KeyAttack = false;
 
         //Timers
         List<float> countDownTimers = new List<float>();
@@ -72,8 +75,7 @@ namespace HnS
         Vector2 healthTextPos, numLivesPos, deathTextPos, bloodPos;
         float attackDamage, health, stamina;
         int numLives, attackIndex = 4, armourLevel = 1;
-        
-                
+             
         //General Vars
         //facing 0 = right, 1 = left
         int charHeightOffset = 2, UID;
@@ -189,8 +191,26 @@ namespace HnS
                 currentMouse = Mouse.GetState();
                 currentGamePad = GamePad.GetState(PlayerIndex.One);
 
+                //Brindley, what is a gravity?!
                 position.Y += velocityY;
 
+                //Send key press/release changes across server
+                if (entityManager.getNetworkingEnabled() == true)
+                {
+                    Keys[] pressedKeys = currentKB.GetPressedKeys();
+                    if (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released)
+                    {
+                        Keys[] copiedPressedKeys = new Keys[pressedKeys.Length+1];
+                        pressedKeys.CopyTo(copiedPressedKeys, 0);
+                        copiedPressedKeys[pressedKeys.Length] = Keys.Attn;
+                        sendPressedKeys(copiedPressedKeys);
+                    }
+                    else
+                    {
+                        sendPressedKeys(pressedKeys);
+                    }
+                }
+                
                 //Make the character jump based on spacebar press
                 Jump(theGameTime);
 
@@ -204,17 +224,14 @@ namespace HnS
                     RemoveLife();
                 }
 
-
                 //Movement and animation (do not move if this is player 2)
-                if (local)
-                {
-                    if (currentKB.IsKeyDown(Keys.D))
-                        MoveRight(theGameTime);
-                    else if (currentKB.IsKeyDown(Keys.A))
-                        MoveLeft(theGameTime);
-                    else bodyAnimation.Active = false;
-                }
-                else
+                if ((currentKB.IsKeyDown(Keys.D) && local) || KeyD)
+                    MoveRight(theGameTime);
+                else if ((currentKB.IsKeyDown(Keys.A) && local) || KeyA)
+                    MoveLeft(theGameTime);
+                else bodyAnimation.Active = false;
+                
+                if(!local)
                 {
                     if (currentGamePad.IsConnected)
                     {
@@ -232,12 +249,15 @@ namespace HnS
                     else bodyAnimation.Active = false;
                 }
 
+
                 //Set previous mouse, gamepad and keyboard states
                 prevKB = currentKB;
                 prevMouse = currentMouse;
                 prevGamePad = currentGamePad;
                 currentPos = position;
-
+                KeyW = false; KeyA = false; KeyS = false; 
+                KeyD = false; KeySpace = false; KeyAttack = false;
+/*
                 posDiff = Vector2.Subtract(prevPos, currentPos);
                 
                 //If pos has changed, alert server
@@ -245,7 +265,8 @@ namespace HnS
                     sendPosition(posDiff);
 
                 //Send animation update for player 2
-                sendAnimationState();
+                sendAnimationState();*/
+
             }
 
             
@@ -328,7 +349,7 @@ namespace HnS
         {
             //Check if the space is pressed and character is not already jumping. Then move the character
             //in negative Y position (upwards) and set to fall back down based on the Y velocity.
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) && !isJumping && local)
+            if (((Keyboard.GetState().IsKeyDown(Keys.Space) && local) || KeySpace) && !isJumping)
             {
                 position.Y -= 10.0f;
                 velocityY = -3.0f;
@@ -374,7 +395,7 @@ namespace HnS
 
         public bool IsMovingLeft()
         {
-            if (currentKB.IsKeyDown(Keys.A) && local) return true;
+            if ((currentKB.IsKeyDown(Keys.A) && local) || KeyA) return true;
             if (currentGamePad.IsConnected && currentGamePad.ThumbSticks.Left.X < 0.0f && !local) return true;
             if (currentKB.IsKeyDown(Keys.Left) && !local) return true;
 
@@ -398,7 +419,7 @@ namespace HnS
 
         public bool IsMovingRight()
         {
-            if (currentKB.IsKeyDown(Keys.D) && local) return true;
+            if ((currentKB.IsKeyDown(Keys.D) && local) || KeyD) return true;
             if (currentGamePad.IsConnected && currentGamePad.ThumbSticks.Left.X > 0.0f && !local) return true;
             if (currentKB.IsKeyDown(Keys.Right) && !local) return true;
 
@@ -488,6 +509,34 @@ namespace HnS
 
         #region Network
 
+        public void sendPressedKeys(Keys[] pressedKeys)
+        {
+            int numPressed = pressedKeys.Length;
+            Game1.network.writeStream.Position = 0;
+            Game1.network.writer.Write((byte)Protocol.KeyPressDown);
+            Game1.network.writer.Write(numPressed);
+
+            for (int i = 0; i < numPressed; i++)
+            {
+                Game1.network.writer.Write((int)pressedKeys[i]);
+            }
+
+            Game1.network.SendData(Game1.network.GetDataFromMemoryStream(Game1.network.writeStream));
+        }
+
+        public void getPressedKeys(Keys[] pressedKeys)
+        {
+            int numPressed = pressedKeys.Length;
+            Game1.debugger.Out("KEYS PRESSED = ", numPressed);
+
+            if (pressedKeys.Contains(Keys.W)) KeyW = true; else KeyW = false;
+            if (pressedKeys.Contains(Keys.A)) KeyA = true; else KeyA = false;
+            if (pressedKeys.Contains(Keys.S)) KeyS = true; else KeyS = false;
+            if (pressedKeys.Contains(Keys.D)) KeyD = true; else KeyD = false;
+            if (pressedKeys.Contains(Keys.Space)) KeySpace = true; else KeySpace = false;
+            if (pressedKeys.Contains(Keys.Attn)) KeyAttack = true; else KeyAttack = false;
+        }
+
         public void sendPosition(Vector2 posDiff)
         {
             Game1.network.writeStream.Position = 0;
@@ -497,7 +546,7 @@ namespace HnS
             Game1.network.SendData(Game1.network.GetDataFromMemoryStream(Game1.network.writeStream));
 
             //Send animation update
-            //sendAnimationState();
+            sendAnimationState();
         }
 
         public void sendAnimationState()
@@ -573,7 +622,7 @@ namespace HnS
         {
             //Check for left mouse click - Attack if not currently attacking
 
-            if (!isAttacking && (currentKB.IsKeyDown(Keys.NumPad0) && !local) ||
+            if (!isAttacking && (currentKB.IsKeyDown(Keys.NumPad0) && !local) || (KeyAttack && !isAttacking) ||
                 (currentMouse.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released && local) ||
                 (currentGamePad.IsConnected && !local && currentGamePad.Buttons.X == ButtonState.Pressed && prevGamePad.Buttons.X == ButtonState.Released))
             {
