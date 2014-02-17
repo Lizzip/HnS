@@ -413,7 +413,7 @@ namespace HnS
             //method.
             flip = true;
 
-            if (position.X > entityManager.getScreenWidth() * 0.15)
+            if (position.X > entityManager.getScreenWidth() * 0.15 - bodyAnimation.FrameWidth)
                 position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
         }
 
@@ -437,7 +437,7 @@ namespace HnS
             //method.
             flip = false;
 
-            if (position.X < entityManager.getScreenWidth() * 0.8)
+            if (position.X < entityManager.getScreenWidth() * 0.9)
                 position.X += speed * theGameTime.ElapsedGameTime.Milliseconds;
         }
 
@@ -649,9 +649,14 @@ namespace HnS
 
         public bool IsCharging()
         {
-            if (currentKB.IsKeyDown(Keys.LeftShift))
-                return true;
-            else return false;
+            bool charge = false;
+            if (stamina > 0)
+            {
+                if (currentKB.IsKeyDown(Keys.LeftShift))
+                    return true;
+            }
+            
+            return charge;
         }
 
         //Need to attach a timer with this like with the attack and such
