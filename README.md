@@ -51,3 +51,18 @@ COMPLETED
 - Animation manager
 - Potions
 - Gamepad Controls
+
+
+----------------------------------------------
+BASIC GAME-COMPLETE IDEA?
+----------------------------------------------
+
+- 5 Levels
+- Level difficulty increases as you progress
+- Level composed of waves of enemies followed by a level boss
+- Enemies attack as they reach you
+- Stamina use for special/strong attacks
+- Enemies have a chance to drop stam and health potions
+
+- As character doesn't *really* move, level movement/progression should be done on 
+  a counter that increases as you move right, and decreases as you move left.
